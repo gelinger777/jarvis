@@ -165,8 +165,7 @@ project(":common") {
 project(":engine") {
     apply plugin: 'spring-boot'
 
-    description =
-            "[app] Uses collector services to get realtime exchange data, runs all the projections (indicators etc...) and generates trade signals."
+    description = "[app] Uses collector services to get realtime exchange data to generate trade signals."
     version = "0.1"
 
     dependencies {
