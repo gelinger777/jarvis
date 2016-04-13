@@ -17,7 +17,6 @@ fun main(args: Array<String>) {
     val path = bitfinex.config.tradeDataPath(pair)
     val stream = EventStream.get(path)
 
-
     stream.streamFromStart()
             .map { it.toOrder() }
             .subscribe {

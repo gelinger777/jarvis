@@ -3,6 +3,60 @@ option java_multiple_files = true;
 
 package proto;
 
+// services
+
+service Collector{
+
+    // getting info about collector service
+
+    rpc status(Empty) returns (ServiceStatus){}
+
+    rpc heartBeat(Empty) returns (stream ServiceStatus){}
+
+    rpc getCurrententlyRecordingTradePairs(Empty) returns (Pairs){}
+
+    rpc getCurrententlyRecordingOrderPairs(Empty) returns (Pairs){}
+
+    rpc shutDown(Empty) returns (ExecutionStatus){}
+
+    // streaming realtime data
+
+    rpc streamTrades(Pair) returns (stream Trade){}
+
+    rpc streamOrders(Pair) returns (stream Order){}
+
+    // trade historical data
+
+    rpc getTradeStreamInfo(Pair) returns (TradeStreamInfo){}
+
+    rpc startRecordingTrades(Pair) returns (ExecutionStatus){}
+
+    rpc stopRecordingTrades(Pair) returns (ExecutionStatus){}
+
+    // orderbook historical data
+
+    rpc getOrderStreamInfo(Pair) returns (OrderStreamInfo){}
+
+    rpc startRecordingOrders(Pair) returns (ExecutionStatus){}
+
+    rpc stopRecordingOrders(Pair) returns (ExecutionStatus){}
+
+    // expose historical data trough chronicle TCP connection
+
+    rpc exposeHistoricalTradesData(Pair) returns (InetAddress){}
+
+    rpc closeHistoricalTradeData(Pair) returns (ExecutionStatus){}
+
+    rpc exposeHistoricalOrderbookData(Pair) returns (InetAddress){}
+
+    rpc closeHistoricalOrderbookData(Pair) returns (ExecutionStatus){}
+
+}
+
+// types
+
+message Empty {}
+
 message Currency {
     string symbol = 1;
 }
@@ -12,14 +66,16 @@ message Pair {
     Currency quote = 2;
 }
 
+message Pairs {
+    repeated Pair pairs = 1;
+}
+
 enum Side {
     BID = 0;
     ASK = 1;
 }
 
-/**
-    Orders that are canceled shall have same order id but 0 price and 0 volume
-**/
+// Canceled orders shall have same order id but 0 price and 0 volume
 message Order {
     double price = 1;
     double volume = 2;
@@ -32,4 +88,24 @@ message Trade {
     int64 time = 1;
     double price = 2;
     double volume = 3;
+}
+
+message ServiceStatus {
+    string placeholder = 1;
+}
+
+message ExecutionStatus {
+    string placeholder = 1;
+}
+
+message TradeStreamInfo {
+    string placeholder = 1;
+}
+
+message OrderStreamInfo {
+    string placeholder = 1;
+}
+
+message InetAddress{
+    string placeholder = 1;
 }

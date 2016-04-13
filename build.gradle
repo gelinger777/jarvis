@@ -21,7 +21,6 @@ buildscript {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'kotlin'
-    apply plugin: 'com.google.protobuf'
 
     group = "jarvis" // we don't need the domain
 
@@ -76,6 +75,26 @@ subprojects {
     configurations.all.collect {
         it.exclude group: 'commons-logging'
         it.exclude group: 'ch.qos.logback'
+    }
+
+    task 'create-dirs' << {
+        description = 'Initializes directory structure according to source sets'
+        sourceSets.all { set ->
+            set.allSource.srcDirs.each { it.mkdirs() }
+        }
+    }
+
+}
+
+// Common =======================================================================================
+
+project(":common") {
+    apply plugin: 'com.google.protobuf'
+
+    description = "[lib] Common jarvis specific codebase."
+
+    dependencies {
+        compile project(":util")
     }
 
     protobuf {
@@ -139,25 +158,6 @@ subprojects {
             }
         }
     }
-
-    task 'create-dirs' << {
-        description = 'Initializes directory structure according to source sets'
-        sourceSets.all { set ->
-            set.allSource.srcDirs.each { it.mkdirs() }
-        }
-    }
-
-}
-
-// Common =======================================================================================
-
-project(":common") {
-
-    description = "[lib] Common jarvis specific codebase."
-
-    dependencies {
-        compile project(":util")
-    }
 }
 
 // Engine =======================================================================================
@@ -165,7 +165,8 @@ project(":common") {
 project(":engine") {
     apply plugin: 'spring-boot'
 
-    description = "[app] Uses collector services to get realtime exchange data, runs all the projections (indicators etc...) and generates trade signals."
+    description =
+            "[app] Uses collector services to get realtime exchange data, runs all the projections (indicators etc...) and generates trade signals."
     version = "0.1"
 
     dependencies {
@@ -185,7 +186,6 @@ project(":util") {
 
     // For now we push all dependencies to global project (will split them later)
     dependencies {
-
 
         // persistance
         compile 'net.openhft:chronicle:3.6.0'
