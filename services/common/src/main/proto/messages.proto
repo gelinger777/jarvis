@@ -1,0 +1,35 @@
+syntax = "proto3";
+option java_multiple_files = true;
+
+package proto;
+
+message Currency {
+    string symbol = 1;
+}
+
+message Pair {
+    Currency base = 1;
+    Currency quote = 2;
+}
+
+enum Side {
+    BID = 0;
+    ASK = 1;
+}
+
+/**
+    Orders that are canceled shall have same order id but 0 price and 0 volume
+**/
+message Order {
+    double price = 1;
+    double volume = 2;
+    int64 id = 3;
+    Side side = 4;
+    int64 time = 5;
+}
+
+message Trade {
+    int64 time = 1;
+    double price = 2;
+    double volume = 3;
+}

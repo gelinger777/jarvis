@@ -19,6 +19,12 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="bitfinex_main" target="1.8" />
+      <module name="bitfinex_test" target="1.8" />
+      <module name="collector-bitfinex_main" target="1.8" />
+      <module name="collector-bitfinex_test" target="1.8" />
+      <module name="common_main" target="1.8" />
+      <module name="common_test" target="1.8" />
       <module name="core_main" target="1.8" />
       <module name="core_test" target="1.8" />
       <module name="engine_main" target="1.8" />

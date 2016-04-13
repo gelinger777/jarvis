@@ -2,13 +2,19 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/engine/engine.iml" filepath="$PROJECT_DIR$/.idea/modules/engine/engine.iml" group="engine" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/engine/engine_main.iml" filepath="$PROJECT_DIR$/.idea/modules/engine/engine_main.iml" group="engine" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/engine/engine_test.iml" filepath="$PROJECT_DIR$/.idea/modules/engine/engine_test.iml" group="engine" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/collector/bitfinex/bitfinex.iml" filepath="$PROJECT_DIR$/.idea/modules/services/collector/bitfinex/bitfinex.iml" group="bitfinex" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/collector/bitfinex/bitfinex_main.iml" filepath="$PROJECT_DIR$/.idea/modules/services/collector/bitfinex/bitfinex_main.iml" group="bitfinex" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/collector/bitfinex/bitfinex_test.iml" filepath="$PROJECT_DIR$/.idea/modules/services/collector/bitfinex/bitfinex_test.iml" group="bitfinex" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/common/common.iml" filepath="$PROJECT_DIR$/.idea/modules/services/common/common.iml" group="common" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/common/common_main.iml" filepath="$PROJECT_DIR$/.idea/modules/services/common/common_main.iml" group="common" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/common/common_test.iml" filepath="$PROJECT_DIR$/.idea/modules/services/common/common_test.iml" group="common" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/engine/engine.iml" filepath="$PROJECT_DIR$/.idea/modules/services/engine/engine.iml" group="engine" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/engine/engine_main.iml" filepath="$PROJECT_DIR$/.idea/modules/services/engine/engine_main.iml" group="engine" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/engine/engine_test.iml" filepath="$PROJECT_DIR$/.idea/modules/services/engine/engine_test.iml" group="engine" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jarvis.iml" filepath="$PROJECT_DIR$/.idea/modules/jarvis.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/util.iml" filepath="$PROJECT_DIR$/.idea/modules/util/util.iml" group="util" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/util_main.iml" filepath="$PROJECT_DIR$/.idea/modules/util/util_main.iml" group="util" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/util_test.iml" filepath="$PROJECT_DIR$/.idea/modules/util/util_test.iml" group="util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/util/util.iml" filepath="$PROJECT_DIR$/.idea/modules/services/util/util.iml" group="util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/util/util_main.iml" filepath="$PROJECT_DIR$/.idea/modules/services/util/util_main.iml" group="util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/util/util_test.iml" filepath="$PROJECT_DIR$/.idea/modules/services/util/util_test.iml" group="util" />
     </modules>
   </component>
 </project>

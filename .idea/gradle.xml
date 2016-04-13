@@ -9,8 +9,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/engine" />
-            <option value="$PROJECT_DIR$/util" />
+            <option value="$PROJECT_DIR$/services/collector/bitfinex" />
+            <option value="$PROJECT_DIR$/services/common" />
+            <option value="$PROJECT_DIR$/services/engine" />
+            <option value="$PROJECT_DIR$/services/util" />
           </set>
         </option>
       </GradleProjectSettings>

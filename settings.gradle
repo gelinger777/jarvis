@@ -1,9 +1,20 @@
 rootProject.name = 'jarvis'
 
-//include ":core"
-include ":util"
-include ":engine"
 
-//project(':core').projectDir = "$rootDir/core" as File
-project(':util').projectDir = "$rootDir/util" as File
-project(':engine').projectDir = "$rootDir/engine" as File
+include ":common"
+project(':common').projectDir = "$rootDir/services/common" as File
+
+
+include ":engine"
+project(':engine').projectDir = "$rootDir/services/engine" as File
+
+
+include ":util"
+project(':util').projectDir = "$rootDir/services/util" as File
+
+
+// collectors
+
+
+include ":bitfinex"
+project(':bitfinex').projectDir = "$rootDir/services/collector/bitfinex" as File
