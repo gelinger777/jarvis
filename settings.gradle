@@ -1,0 +1,9 @@
+rootProject.name = 'jarvis'
+
+//include ":core"
+include ":util"
+include ":engine"
+
+//project(':core').projectDir = "$rootDir/core" as File
+project(':util').projectDir = "$rootDir/util" as File
+project(':engine').projectDir = "$rootDir/engine" as File

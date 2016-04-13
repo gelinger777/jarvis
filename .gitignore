@@ -1,0 +1,22 @@
+# Java template
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Gradle
+.gradle
+build/
+!gradle-wrapper.jar
+
+
+# JetBrains
+.idea/libraries
+.idea/workspace.xml
+.idea/tasks.xml
+/out/
+
+# custom stuff
+gen/

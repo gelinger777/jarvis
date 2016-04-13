@@ -1,0 +1,32 @@
+package proto;
+
+message Currency {
+    required string symbol = 1;
+}
+
+message Pair {
+    required Currency base = 1;
+    required Currency quote = 2;
+}
+
+enum Side {
+    BID = 0;
+    ASK = 1;
+}
+
+/**
+    Orders that are canceled shall have same order id but 0 price and 0 volume
+**/
+message Order {
+    required double price = 1;
+    required double volume = 2;
+    required int64 id = 3;
+    required Side side = 4;
+    optional int64 time = 5;
+}
+
+message Trade {
+    required int64 time = 1;
+    required double price = 2;
+    required double volume = 3;
+}
