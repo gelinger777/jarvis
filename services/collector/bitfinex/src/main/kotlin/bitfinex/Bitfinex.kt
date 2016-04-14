@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit.MINUTES
  */
 internal class Bitfinex(val config: Config) : GenericClient {
     private val log by logger()
-    private val client = net.websocket.client("wss://api2.bitfinex.com:3000/ws")
+    private val client = net.websocket.client(config.websocketConnectionURL)
     private val tradeChannels = mutableMapOf<Any, TradeChannel>()
     private val bookChannels = mutableMapOf<Any, BookChannel>()
 
@@ -91,6 +91,7 @@ internal class Bitfinex(val config: Config) : GenericClient {
     private fun handleMessage(data: String) {
         log.debug("handling websocket message : {}", data)
 
+        // todo replace with protobuf util
         val rootElement = JsonParser().parse(data)
 
         if (rootElement.isJsonObject) {

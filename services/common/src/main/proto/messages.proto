@@ -13,9 +13,11 @@ service Collector{
 
     rpc heartBeat(Empty) returns (stream ServiceStatus){}
 
-    rpc getCurrententlyRecordingTradePairs(Empty) returns (Pairs){}
+    rpc accessibleMarketPairs(Empty) returns (Pairs){}
 
-    rpc getCurrententlyRecordingOrderPairs(Empty) returns (Pairs){}
+    rpc getCurrentlyRecordingTradePairs(Empty) returns (Pairs){}
+
+    rpc getCurrentlyRecordingOrderPairs(Empty) returns (Pairs){}
 
     rpc shutDown(Empty) returns (ExecutionStatus){}
 
@@ -47,9 +49,9 @@ service Collector{
 
     rpc closeHistoricalTradeData(Pair) returns (ExecutionStatus){}
 
-    rpc exposeHistoricalOrderbookData(Pair) returns (InetAddress){}
+    rpc exposeHistoricalBookData(Pair) returns (InetAddress){}
 
-    rpc closeHistoricalOrderbookData(Pair) returns (ExecutionStatus){}
+    rpc closeHistoricalBookData(Pair) returns (ExecutionStatus){}
 
 }
 
@@ -91,7 +93,8 @@ message Trade {
 }
 
 message ServiceStatus {
-    string placeholder = 1;
+    string name = 1;
+    map<string, string> properties = 2;
 }
 
 message ExecutionStatus {

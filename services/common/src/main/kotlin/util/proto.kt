@@ -3,6 +3,12 @@ package util
 import proto.*
 import java.util.regex.Pattern
 
+// Empty
+
+fun empty(): Empty {
+    return Empty.getDefaultInstance()
+}
+
 
 // Currency
 
@@ -51,7 +57,7 @@ fun Pair.folderName(): String {
 
 // Order
 
-fun Order.json() : String{
+fun Order.json(): String {
     return "{$id | $side | $price | $volume}}"
 }
 
@@ -66,6 +72,6 @@ fun ByteArray.toOrder(): Order {
  * JSON representation of a pair.
  */
 fun Trade.json(): String {
-//    val time = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(Instant.ofEpochMilli(this.time))
+    //    val time = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(Instant.ofEpochMilli(this.time))
     return "{$price | $volume}"
 }

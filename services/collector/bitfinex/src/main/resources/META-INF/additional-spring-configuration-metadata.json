@@ -1,9 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "data.path",
-      "type": "java.lang.String",
-      "description": "Root path of data storage."
-    }
-  ]
-}

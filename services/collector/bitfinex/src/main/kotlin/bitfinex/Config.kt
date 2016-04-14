@@ -9,6 +9,7 @@ import java.io.File.separator
  * Configuration for bitfinex exchange
  */
 internal data class Config(
+        var websocketConnectionURL : String = "",
         var publicKey: String = "",
         var privateKey: String = "",
         var dataPath: String = "",

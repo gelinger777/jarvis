@@ -1,6 +1,7 @@
 package bitfinex
 
-import com.tars.util.exceptions.ExceptionUtils
+import com.tars.util.exceptions.ExceptionUtils.onUnrecoverableFailure
+import com.tars.util.exceptions.ExceptionUtils.stackTraceAsString
 import com.tars.util.net.messenger.Mailer
 import extensions.logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,11 +39,11 @@ internal open class BitfinexContext {
         cpu.init()
         net.init()
 
-        // if in production report failures
+        // if in production email errors
         for (profile in environment!!.activeProfiles) {
             log.info("registering failure handler (production mode)")
             if (profile == "prod") {
-                ExceptionUtils.onUnrecoverableFailure { throwable -> Mailer.alert("unrecoverable error", ExceptionUtils.stackTraceAsString(throwable)) }
+                onUnrecoverableFailure { throwable -> Mailer.alert("unrecoverable error", stackTraceAsString(throwable)) }
                 break
             }
         }

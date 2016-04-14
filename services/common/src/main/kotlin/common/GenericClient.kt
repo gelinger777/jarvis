@@ -8,6 +8,7 @@ import rx.Observable
 /**
  * Generic api client that shall provide all the necessary functionality for an exchange.
  */
+@Deprecated(message = "this is temporary interface", replaceWith = ReplaceWith("GenericCollector"), level = DeprecationLevel.WARNING)
 interface GenericClient {
 
     // lifecycle

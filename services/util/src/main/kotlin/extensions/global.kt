@@ -3,9 +3,11 @@ package extensions
 // extension convenience functions
 
 import com.tars.util.misc.BatchPerSubscriber
+import io.grpc.stub.StreamObserver
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import rx.Observable
+import rx.subjects.PublishSubject
 import util.Option
 import util.cpu
 import java.io.PrintWriter
@@ -19,6 +21,27 @@ import java.io.StringWriter
  */
 fun <T> Observable<T>.batch(): Observable<Collection<T>> {
     return this.lift(BatchPerSubscriber<T>(cpu.schedulers.io))
+}
+
+/**
+ * Create GRPC compatible StreamObserver which will delegate all calls to this subject.
+ */
+fun <T> PublishSubject<T>.grpcDelegate(): StreamObserver<T> {
+    val subject = this
+    return object : StreamObserver<T> {
+
+        override fun onNext(value: T) {
+            subject.onNext(value)
+        }
+
+        override fun onError(error: Throwable) {
+            subject.onError(error)
+        }
+
+        override fun onCompleted() {
+            subject.onCompleted()
+        }
+    }
 }
 
 // logger
