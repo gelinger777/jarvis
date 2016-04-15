@@ -1,30 +1,24 @@
 package com.tars.util.net.ws;
 
-import com.tars.util.Option;
+import org.slf4j.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.LinkedList;
-
-import javax.websocket.CloseReason;
-import javax.websocket.ContainerProvider;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler.Whole;
-import javax.websocket.Session;
+import javax.websocket.*;
+import javax.websocket.MessageHandler.*;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.subjects.*;
+import util.*;
 
 class IndependentClient extends Endpoint implements WebsocketClient {
 
   Logger log = LoggerFactory.getLogger(WebsocketClient.class);
 
   URI address;
-  Option<Session> session = Option.empty();
+  Option<Session> session = Option.<Session>empty();
   PublishSubject<String> subject = PublishSubject.create();
   LinkedList<String> pending = new LinkedList<>();
 

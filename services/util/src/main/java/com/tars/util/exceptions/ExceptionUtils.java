@@ -1,20 +1,14 @@
 package com.tars.util.exceptions;
 
-import com.tars.util.Option;
+import org.slf4j.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.*;
+import java.util.function.*;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
+import javaslang.control.Try.*;
+import util.*;
 
-import javaslang.control.Try.CheckedRunnable;
-
-import static com.tars.util.validation.Validator.condition;
-import static com.tars.util.validation.Validator.notNull;
-import static com.tars.util.validation.Validator.notNullOrEmpty;
+import static com.tars.util.validation.Validator.*;
 
 /**
  * Utility class for exception handling and boilerplate elimination.
@@ -109,7 +103,7 @@ public class ExceptionUtils {
 
   // hooks
 
-  private static final Option<Consumer<Throwable>> logCallback = Option.empty();
+  private static final Option<Consumer<Throwable>> logCallback = Option.<Consumer<Throwable>>empty();
 
   /**
    * Sets callback to be executed when unrecoverable exception is about to kill the process. This can be used to notify
@@ -117,7 +111,7 @@ public class ExceptionUtils {
    */
   public static void onUnrecoverableFailure(Consumer<Throwable> task) {
     logCallback
-        .map(currentTasks -> currentTasks.andThen(task))
+        .map(consumer -> consumer.andThen(task))
         .ifNotPresentTake(task);
   }
 
@@ -178,7 +172,9 @@ public class ExceptionUtils {
 
   private static <T> T reportAndDie(Throwable cause) {
     log.error("unrecoverable exception", cause);
-    logCallback.ifPresent(throwableConsumer -> throwableConsumer.accept(cause));
+    logCallback.ifPresent(throwableConsumer -> {
+      throwableConsumer.accept(cause);
+    });
     System.exit(-1); // kill process
     return null;
   }
@@ -228,7 +224,7 @@ public class ExceptionUtils {
       return Option.ofNullable(callable.call());
     } catch (Throwable cause) {
       report(cause);
-      return Option.empty();
+      return Option.<T>empty();
     }
   }
 
@@ -266,13 +262,6 @@ public class ExceptionUtils {
     } catch (Throwable cause) {
       return wtf(cause);
     }
-  }
-
-  public static String stackTraceAsString(Throwable throwable) {
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    throwable.printStackTrace(pw);
-    return sw.toString();
   }
 }
 

@@ -8,16 +8,6 @@ interface GenericCollector {
     // getting info about collector service
 
     /**
-     * Get a single status report.
-     */
-    fun status(): ServiceStatus
-
-    /**
-     * Get a heartbeat stream.
-     */
-    fun heartBeat(): Observable<ServiceStatus>
-
-    /**
      * Get supported markets on the exchange.
      */
     fun accessibleMarketPairs() : List<Pair>

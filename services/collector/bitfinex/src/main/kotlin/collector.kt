@@ -1,11 +1,12 @@
+
 import bitfinex.Bitfinex
 import bitfinex.BitfinexContext
 import com.tars.util.storage.EventStream
 import extensions.batch
 import org.springframework.boot.SpringApplication
+import proto.Order
 import util.json
 import util.repo
-import util.toOrder
 
 fun main(args: Array<String>) {
 
@@ -18,7 +19,7 @@ fun main(args: Array<String>) {
     val stream = EventStream.get(path)
 
     stream.streamFromStart()
-            .map { it.toOrder() }
+            .map { Order.parseFrom(it) }
             .subscribe {
                 println("Order persisted ${it.json()}")
             }

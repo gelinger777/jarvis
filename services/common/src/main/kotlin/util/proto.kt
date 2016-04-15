@@ -1,6 +1,9 @@
 package util
 
-import proto.*
+import com.google.protobuf.GeneratedMessage
+import com.google.protobuf.util.JsonFormat
+import proto.Empty
+import proto.Pair
 import java.util.regex.Pattern
 
 // Empty
@@ -9,31 +12,7 @@ fun empty(): Empty {
     return Empty.getDefaultInstance()
 }
 
-
-// Currency
-
-/**
- * Create or get existing Currency.
- */
-fun Currency.from(symbol: String): Currency {
-    return repo.currency(symbol)
-}
-
-/**
- * JSON representation of a pair.
- */
-fun Currency.json(): String {
-    return "{${this.symbol}}"
-}
-
 // Pair
-
-/**
- * JSON representation of a pair.
- */
-fun Pair.json(): String {
-    return "{${this.base.symbol} | ${this.quote.symbol}}"
-}
 
 /**
  * Convert to Pair instance.
@@ -55,23 +34,9 @@ fun Pair.folderName(): String {
     return "${this.base.symbol.toLowerCase()}-${this.quote.symbol.toLowerCase()}"
 }
 
-// Order
+// json
 
-fun Order.json(): String {
-    return "{$id | $side | $price | $volume}}"
+inline fun GeneratedMessage.json(): String {
+    return JsonFormat.printer().print(this).replace(Regex("[ |\\n]+"), " ")
 }
 
-
-fun ByteArray.toOrder(): Order {
-    return Order.parseFrom(this)
-}
-
-// Trade
-
-/**
- * JSON representation of a pair.
- */
-fun Trade.json(): String {
-    //    val time = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(Instant.ofEpochMilli(this.time))
-    return "{$price | $volume}"
-}

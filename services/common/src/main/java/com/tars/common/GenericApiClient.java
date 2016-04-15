@@ -1,6 +1,6 @@
 package com.tars.common;
 
-import com.tars.util.Option;
+import util.Option;
 
 import java.util.Set;
 

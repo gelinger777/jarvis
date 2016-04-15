@@ -1,6 +1,6 @@
 package com.tars.util.net.http;
 
-import com.tars.util.Option;
+import util.Option;
 
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;

@@ -13,7 +13,7 @@ import proto.Trade;
 import rx.Observable;
 import com.tars.common.GenericApiClient;
 import com.tars.common.ProtoBufUtil;
-import com.tars.util.Option;
+import util.Option;
 
 import static com.tars.util.exceptions.ExceptionUtils.notImplemented;
 import static com.tars.util.validation.Validator.condition;

@@ -1,4 +1,4 @@
-package util.util.common
+package util.common
 
 import org.junit.Test
 import util.Option
@@ -14,62 +14,62 @@ class OptionTest {
 
     @Test
     fun testIsPresent() {
-        assertTrue { Option.of(1).isPresent() }
+        assertTrue { Option.Companion.of(1).isPresent() }
     }
 
     @Test
     fun testGetExisting() {
-        assertEquals("val", Option.of("val").get())
+        assertEquals("val", Option.Companion.of("val").get())
     }
 
     @Test
     fun testFilter() {
         assertEquals(
-                Option.empty(),
-                Option.of("val").filter { it.isEmpty() }
+                Option.Companion.empty(),
+                Option.Companion.of("val").filter { it.isEmpty() }
         )
     }
 
     @Test
     fun testMap() {
         assertEquals(
-                Option.of("VAL"),
-                Option.of("val").map { it.toUpperCase() })
+                Option.Companion.of("VAL"),
+                Option.Companion.of("val").map { it.toUpperCase() })
     }
 
     @Test
     fun testFlatMap() {
         assertEquals(
-                Option.of("VAL"),
-                Option.of("val").flatMap { Option.of(it.toUpperCase()) }
+                Option.Companion.of("VAL"),
+                Option.Companion.of("val").flatMap { Option.Companion.of(it.toUpperCase()) }
         )
     }
 
     @Test
     fun testIfNotPresentTakeValue() {
         assertEquals(
-                Option.of("val"),
-                Option.empty<String>().ifNotPresentTake("val")
+                Option.Companion.of("val"),
+                Option.Companion.empty<String>().ifNotPresentTake("val")
         )
     }
 
     @Test
     fun testIfNotPresentTakeSupplier() {
         assertEquals(
-                Option.of("val"),
-                Option.empty<String>().ifNotPresentTakeCompute { "val" }
+                Option.Companion.of("val"),
+                Option.Companion.empty<String>().ifNotPresentTakeCompute { "val" }
         )
     }
 
     @Test
     fun testTake() {
         assertEquals(
-                Option.of(1),
-                Option.of("val").take(1)
+                Option.Companion.of(1),
+                Option.Companion.of("val").take(1)
         )
         assertEquals(
-                Option.of(1),
-                Option.of("val").take(Option.of(1))
+                Option.Companion.of(1),
+                Option.Companion.of("val").take(Option.Companion.of(1))
         )
     }
 
@@ -102,8 +102,8 @@ class OptionTest {
     @Test
     fun testClear() {
         assertEquals(
-                Option.empty,
-                Option.of("val").clear()
+                Option.Companion.empty,
+                Option.Companion.of("val").clear()
         )
     }
 

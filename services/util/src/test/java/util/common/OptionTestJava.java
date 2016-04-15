@@ -1,16 +1,15 @@
-package com.tars.util;
+package util.common;
 
-import org.junit.Test;
+import org.junit.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import util.*;
 
-public class OptionTest {
+
+public class OptionTestJava {
 
   @Test
   public void testOf() {
-    assertEquals(Option.of("value").get(), "value");
+    Assert.assertEquals(Option.of("value").get(), "value");
   }
 
   @Test(expected = NullPointerException.class)
@@ -22,8 +21,8 @@ public class OptionTest {
   public void testOfNullable() {
     Option<String> opt = Option.ofNullable("value");
 
-    assertNotNull(opt);
-    assertEquals(opt.get(), "value");
+    Assert.assertNotNull(opt);
+    Assert.assertEquals(opt.get(), "value");
 
     Option.ofNullable(null);
   }
@@ -41,7 +40,9 @@ public class OptionTest {
   @Test
   public void testIfPresent() {
     Option.of("value")
-        .ifPresent((value) -> assertTrue(true))
+        .ifPresent((value) -> {
+          Assert.assertTrue(true);
+        })
         .ifNotPresentThrow(IllegalStateException::new);
   }
 
@@ -56,7 +57,9 @@ public class OptionTest {
   public void testMap() {
     Option.of("")
         .map(String::hashCode)
-        .ifPresent((value) -> assertTrue(value == 0))
+        .ifPresent((value) -> {
+          Assert.assertTrue(value == 0);
+        })
         .ifNotPresentThrow(IllegalStateException::new);
   }
 
@@ -64,7 +67,9 @@ public class OptionTest {
   public void testFlatMap() {
     Option.of("value")
         .flatMap(s -> Option.of(s.length()))
-        .ifPresent((value) -> assertTrue(value == 5))
+        .ifPresent((value) -> {
+          Assert.assertTrue(value == 5);
+        })
         .ifNotPresentThrow(IllegalStateException::new);
   }
 
@@ -72,15 +77,19 @@ public class OptionTest {
   public void testOrElse() {
     Option.empty()
         .ifNotPresentTake("value")
-        .ifPresent((value) -> assertEquals(value, "value"))
+        .ifPresent((value) -> {
+          Assert.assertEquals(value, "value");
+        })
         .ifNotPresentThrow(IllegalStateException::new);
   }
 
   @Test
   public void testOrElseGet() {
     Option.empty()
-        .ifNotPresentTake(() -> "value")
-        .ifPresent((value) -> assertEquals(value, "value"))
+        .ifNotPresentTakeCompute(() -> "value")
+        .ifPresent((value) -> {
+          Assert.assertEquals(value, "value");
+        })
         .ifNotPresentThrow(IllegalStateException::new);
 
   }
@@ -107,16 +116,4 @@ public class OptionTest {
     assert Option.of("value").toString().equals("Option[value]");
   }
 
-  public static void main(String[] args) {
-//    long millisecondsSinceEpoch = System.currentTimeMillis();
-//
-//    DateTimeFormatter.ofLocalizedTime (FormatStyle.SHORT).format(Instant.ofEpochMilli (millisecondsSinceEpoch ));
-//
-//
-//
-//    DateTimeFormatter formatter =
-//    String output = formatter.format ( zdt );
-//
-//    System.out.println ( "millisecondsSinceEpoch: " + millisecondsSinceEpoch + " instant: " + instant + " output: " + output );
-  }
 }

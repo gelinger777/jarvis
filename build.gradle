@@ -126,13 +126,20 @@ project(":common") {
 
             compileJava.dependsOn(generateProto)
             compileKotlin.dependsOn(generateProto)
+
+
+            task deleteGeneratedProto << {
+                delete generatedFilesBaseDir
+            }
+
+            task recompileProto {}
+
+            recompileProto.dependsOn(deleteGeneratedProto)
+            recompileProto.dependsOn(generateProto)
+
+            clean.dependsOn(deleteGeneratedProto)
         }
 
-        task deleteGeneratedProto << {
-            delete generatedFilesBaseDir
-        }
-
-        clean.dependsOn(deleteGeneratedProto)
     }
 
     sourceSets {

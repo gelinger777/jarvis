@@ -1,9 +1,11 @@
-import extensions.associateKeys
-import extensions.removeWithAssociations
+package extensions
+
 import org.junit.Test
 import kotlin.test.assertTrue
 
+
 class ExtensionsTest {
+
     @Test(expected = IllegalStateException::class)
     fun testBothAbsent() {
         mutableMapOf(3 to "3").associateKeys(1, 2)

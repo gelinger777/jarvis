@@ -1,5 +1,7 @@
 package util
 
+import java.util.function.Consumer
+
 @Suppress("UNCHECKED_CAST")
 class Option<T>(val value: T?) {
 
@@ -14,10 +16,10 @@ class Option<T>(val value: T?) {
     }
 
     fun filter(predicate: (T) -> Boolean): Option<T> {
-        if (value != null && !predicate.invoke(value)) {
-            return empty()
+        if (value != null && predicate.invoke(value)) {
+            return this
         }
-        return this
+        return empty()
     }
 
     fun <U> map(mapper: (T) -> U): Option<U> {
@@ -25,7 +27,7 @@ class Option<T>(val value: T?) {
             return Option(mapper.invoke(value))
         }
 
-        return this as Option<U>
+        return empty()
     }
 
     fun <U> flatMap(mapper: (T) -> Option<U>): Option<U> {
@@ -33,7 +35,7 @@ class Option<T>(val value: T?) {
             return mapper.invoke(value)
         }
 
-        return this as Option<U>
+        return empty()
     }
 
     fun ifNotPresentTake(other: T): Option<T> {
@@ -63,12 +65,18 @@ class Option<T>(val value: T?) {
         return other
     }
 
-
     /**
      * Clear the value (same as empty optional).
      */
     fun <U> clear(): Option<U> {
         return empty()
+    }
+
+    fun ifPresent(consumer: Consumer<T>): Option<T> {
+        if (value != null) {
+            consumer.accept(value);
+        }
+        return this;
     }
 
     fun ifPresent(action: (T) -> Unit): Option<T> {
@@ -78,6 +86,13 @@ class Option<T>(val value: T?) {
         return this
     }
 
+    fun ifNotPresent(runnable: Runnable): Option<T> {
+        if (value == null) {
+            runnable.run()
+        }
+        return this;
+    }
+
     fun ifNotPresent(action: () -> Unit): Option<T> {
         if (value == null) {
             action.invoke()
@@ -85,46 +100,28 @@ class Option<T>(val value: T?) {
         return this;
     }
 
-    //    /**
-    //     * Throw exception if value is not present.
-    //     */
-    //    fun <X : Throwable> ifNotPresentThrow(exceptionSupplier: Supplier<out X>): Option<T> {
-    //        if (value == null) {
-    //            throw exceptionSupplier.get()
-    //        }
-    //        return this
-    //    }
-    //
-    //    /**
-    //     * If not present execute action.
-    //     */
-    //    fun ifNotPresent(action: Runnable): Option<T> {
-    //        if (value == null) {
-    //            action.run()
-    //        }
-    //        return this
-    //    }
-    //
-    //    fun anyExceptionThrow(): Option<T> {
-    //        return notImplemented()
-    //    }
-    //
-    //    fun anyExceptionHandle(handler: Consumer<Throwable>): Option<T> {
-    //        return notImplemented()
-    //    }
-    //
+    /**
+     * Throw exception if value is not present.
+     */
+    fun <X : Throwable> ifNotPresentThrow(exceptionSupplier: () -> X): Option<T> {
+        if (value == null) {
+            throw exceptionSupplier.invoke()
+        }
+        return this
+    }
+
     // equals, hashcode and toString (these are delegated to actual value)
 
-    override fun equals(obj: Any?): Boolean {
-        if (this === obj) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
             return true
         }
 
-        if (obj !is Option<*>) {
+        if (other !is Option<*>) {
             return false
         }
 
-        return value == obj.value
+        return value == other.value
     }
 
     override fun hashCode(): Int {
@@ -137,18 +134,20 @@ class Option<T>(val value: T?) {
     }
 
     companion object {
-
         val empty = Option<Any>(null)
 
-        fun <T> empty(): Option<T> {
+        @JvmStatic fun <T> empty(): Option<T> {
             return empty as Option<T>
         }
 
-        fun <T> of(value: T): Option<T> {
+        @JvmStatic fun <T> of(value: T?): Option<T> {
+            if(value == null){
+                throw NullPointerException()
+            }
             return Option(value)
         }
 
-        fun <T> ofNullable(value: T?): Option<T> {
+        @JvmStatic fun <T> ofNullable(value: T?): Option<T> {
             return Option(value)
         }
     }

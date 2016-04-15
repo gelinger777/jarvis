@@ -1,7 +1,7 @@
 package com.tars.util.health;
 
 
-import com.tars.util.Option;
+import util.Option;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

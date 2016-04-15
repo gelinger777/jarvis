@@ -2,7 +2,9 @@ package com.tars.controller.bitstamp;
 
 import com.tars.common.GenericApiClient;
 import com.tars.common.ProtoBufUtil;
-import com.tars.util.Option;
+
+import util.Option;
+
 import com.tars.util.concurrent.ConcurrencyUtils.Schedulers;
 import com.tars.util.exceptions.ExceptionUtils;
 import com.tars.util.net.NetworkUtils;
@@ -87,7 +89,9 @@ public class BitstampClient implements GenericApiClient {
 //    condition(supportedMarkets.contains(pair), "not supported market pair");
 
     Option.ofNullable(tradeStreams.remove(pair))
-        .ifPresent(stream -> PusherHub.close("de504dc5763aeef9ff52", "live_trades", "trade"));
+        .ifPresent(stream -> {
+          PusherHub.close("de504dc5763aeef9ff52", "live_trades", "trade");
+        });
   }
 
   // orderbook stream
@@ -123,7 +127,9 @@ public class BitstampClient implements GenericApiClient {
 //    condition(supportedMarkets.contains(pair), "not supported market pair");
 
     Option.ofNullable(orderBookStreams.remove(pair))
-        .ifPresent(stream -> PusherHub.close("de504dc5763aeef9ff52", "diff_order_book", "data"));
+        .ifPresent(stream -> {
+          PusherHub.close("de504dc5763aeef9ff52", "diff_order_book", "data");
+        });
   }
 
   // account stream

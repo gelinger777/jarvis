@@ -7,7 +7,7 @@ import proto.Trade;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import com.tars.common.ProtoBufUtil;
-import com.tars.util.Option;
+import util.Option;
 import com.tars.util.net.NetworkUtils;
 import com.tars.util.net.streamer.SingleThreadStreamer;
 

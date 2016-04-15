@@ -1,7 +1,7 @@
 package rpc.client
 
 import common.GenericCollector
-import extensions.grpcDelegate
+import extensions.asGrpcObserver
 import io.grpc.ManagedChannelBuilder
 import proto.*
 import rx.Observable
@@ -10,23 +10,12 @@ import util.cpu
 import util.empty
 
 class BitfinexClient(val host: String, val port: Int) : GenericCollector {
-    var channel = ManagedChannelBuilder
+    private var channel = ManagedChannelBuilder
             .forAddress(host, port)
             .executor(cpu.executors.io)
             .build()
-    var asyncStub = CollectorGrpc.newStub(channel)
-    var blockingStub = CollectorGrpc.newBlockingStub(channel)
-
-
-    override fun status(): ServiceStatus {
-        return blockingStub.status(empty())
-    }
-
-    override fun heartBeat(): Observable<ServiceStatus> {
-        val subject = PublishSubject.create<ServiceStatus>()
-        asyncStub.heartBeat(empty(), subject.grpcDelegate())
-        return subject
-    }
+    private var asyncStub = CollectorGrpc.newStub(channel)
+    private var blockingStub = CollectorGrpc.newBlockingStub(channel)
 
     override fun accessibleMarketPairs(): List<Pair> {
         return blockingStub.accessibleMarketPairs(empty()).pairsList
@@ -46,13 +35,13 @@ class BitfinexClient(val host: String, val port: Int) : GenericCollector {
 
     override fun streamTrades(pair: Pair): Observable<Trade> {
         val subject = PublishSubject.create<Trade>()
-        asyncStub.streamTrades(pair, subject.grpcDelegate())
+        asyncStub.streamTrades(pair, subject.asGrpcObserver())
         return subject
     }
 
     override fun streamOrders(pair: Pair): Observable<Order> {
         val subject = PublishSubject.create<Order>()
-        asyncStub.streamOrders(pair, subject.grpcDelegate())
+        asyncStub.streamOrders(pair, subject.asGrpcObserver())
         return subject
     }
 
@@ -74,7 +63,6 @@ class BitfinexClient(val host: String, val port: Int) : GenericCollector {
 
     override fun startRecordingOrders(pair: Pair): ExecutionStatus {
         return blockingStub.startRecordingOrders(pair)
-
     }
 
     override fun stopRecordingOrders(pair: Pair): ExecutionStatus {

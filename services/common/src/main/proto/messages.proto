@@ -9,10 +9,6 @@ service Collector{
 
     // getting info about collector service
 
-    rpc status(Empty) returns (ServiceStatus){}
-
-    rpc heartBeat(Empty) returns (stream ServiceStatus){}
-
     rpc accessibleMarketPairs(Empty) returns (Pairs){}
 
     rpc getCurrentlyRecordingTradePairs(Empty) returns (Pairs){}
@@ -92,10 +88,10 @@ message Trade {
     double volume = 3;
 }
 
-message ServiceStatus {
-    string name = 1;
-    map<string, string> properties = 2;
-}
+//message ServiceInfo {
+//    string name = 1;
+//    map<string, string> properties = 2;
+//}
 
 message ExecutionStatus {
     string placeholder = 1;

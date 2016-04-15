@@ -12,6 +12,7 @@ import util.Option
 import util.cpu
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.util.function.Consumer
 
 
 // observable
@@ -26,7 +27,7 @@ fun <T> Observable<T>.batch(): Observable<Collection<T>> {
 /**
  * Create GRPC compatible StreamObserver which will delegate all calls to this subject.
  */
-fun <T> PublishSubject<T>.grpcDelegate(): StreamObserver<T> {
+fun <T> PublishSubject<T>.asGrpcObserver(): StreamObserver<T> {
     val subject = this
     return object : StreamObserver<T> {
 
@@ -137,4 +138,13 @@ fun Throwable.stackTraceAsString(): String {
     return sw.toString()
 }
 
+// todo remove after java 8 default method support
 
+fun <T> Consumer<T>.andThen(after: Consumer<T>): Consumer<T> {
+    return object : Consumer<T> {
+        override fun accept(t: T) {
+            this.accept(t)
+            after.accept(t)
+        }
+    }
+}

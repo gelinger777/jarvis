@@ -91,7 +91,6 @@ internal class Bitfinex(val config: Config) : GenericClient {
     private fun handleMessage(data: String) {
         log.debug("handling websocket message : {}", data)
 
-        // todo replace with protobuf util
         val rootElement = JsonParser().parse(data)
 
         if (rootElement.isJsonObject) {
