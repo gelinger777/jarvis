@@ -16,14 +16,14 @@ public class RefCountToggle {
     this.stop = onStop;
   }
 
-  public synchronized void increment() {
+  public void increment() {
     if (refCount == 0) {
       start.run();
     }
     refCount++;
   }
 
-  public synchronized void decrement() {
+  public void decrement() {
     if (refCount == 0) {
       return; // cant go negative
     } else if (refCount == 1) {
@@ -32,11 +32,15 @@ public class RefCountToggle {
     refCount--;
   }
 
-  public synchronized void reset(){
-    if(refCount!=0){
+  public void reset() {
+    if (refCount != 0) {
       stop.run();
     }
 
     refCount = 0;
+  }
+
+  public int count() {
+    return refCount;
   }
 }

@@ -34,7 +34,7 @@
     // close TCP endpoint
     stream.closeTCP()
 
-    // close and release resources (eligable for garbage collection)
+    // close and release resources (eligible for garbage collection)
     stream.close()
 
 

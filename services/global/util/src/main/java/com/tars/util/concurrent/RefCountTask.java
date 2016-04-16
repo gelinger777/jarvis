@@ -55,12 +55,10 @@ public class RefCountTask {
 
 
   public synchronized void increment() {
-    System.err.println("INCREMENT");
     toggle.increment();
   }
 
   public synchronized void decrement() {
-    System.err.println("DECREMENT");
     toggle.decrement();
   }
 
