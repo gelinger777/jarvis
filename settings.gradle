@@ -10,7 +10,10 @@ project(':engine').projectDir = "$rootDir/services/engine" as File
 
 
 include ":util"
-project(':util').projectDir = "$rootDir/services/util" as File
+project(':util').projectDir = "$rootDir/services/global/util" as File
+
+include ":eventstore"
+project(':eventstore').projectDir = "$rootDir/services/global/eventstore" as File
 
 
 // collectors
