@@ -3,9 +3,9 @@ import bitfinex.Bitfinex
 import bitfinex.BitfinexContext
 import com.tars.util.storage.EventStream
 import extensions.batch
+import extensions.json
 import org.springframework.boot.SpringApplication
 import proto.Order
-import util.json
 import util.repo
 
 fun main(args: Array<String>) {

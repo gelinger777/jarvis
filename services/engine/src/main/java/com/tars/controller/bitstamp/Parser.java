@@ -3,10 +3,11 @@ package com.tars.controller.bitstamp;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import com.tars.util.exceptions.ExceptionUtils;
+
 import proto.Order;
 import proto.Side;
 import proto.Trade;
-import com.tars.util.exceptions.ExceptionUtils;
 
 import static com.tars.controller.bitstamp.BitstampClient.log;
 
@@ -71,7 +72,7 @@ class Parser {
 //    checkForError(json);
 //
 //    Builder builder = Orderbook.newBuilder();
-////        .setTime(json.get("timestamp").getAsLong()); todo
+////        .setTime(json.get("timestamp").getAsLong());
 //
 //    for (JsonElement elem : json.get("bids").getAsJsonArray()) {
 //      JsonArray orderArray = elem.getAsJsonArray();

@@ -63,6 +63,11 @@ class EventStreamImpl extends EventStream {
     return Chronicles.size(path);
   }
 
+  @Override
+  public void close() {
+    // todo
+  }
+
   Observable<byte[]> observe(long from, long to) {
     return Observable.create(subscriber -> {
       ExcerptTailer tailer = null;

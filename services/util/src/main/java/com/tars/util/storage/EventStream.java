@@ -20,6 +20,7 @@ import static com.tars.util.validation.Validator.condition;
  * By default all observables are operating on current thread or on event loop of watcher (if its a realtime stream),
  * make sure to provide appropriate schedulers to subscribeOn and observeOn.
  */
+// TODO move to a separate lib project
 public abstract class EventStream {
 
   private static final Logger log = LoggerFactory.getLogger(EventStream.class);
@@ -86,4 +87,6 @@ public abstract class EventStream {
   public abstract void append(byte[] data);
 
   public abstract long size();
+
+  public abstract void close();
 }

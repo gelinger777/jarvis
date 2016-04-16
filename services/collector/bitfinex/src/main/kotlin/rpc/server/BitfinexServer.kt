@@ -5,12 +5,12 @@ import io.grpc.ServerBuilder
 import proto.CollectorGrpc
 import util.cpu
 
-class BitfinexServer(val port: Int) {
+class BitfinexServer(val port: Int, val config: Config) {
     val log by logger()
 
     private val server = ServerBuilder
             .forPort(port)
-            .addService(CollectorGrpc.bindService(CollectorServer()))
+            .addService(CollectorGrpc.bindService(BitfinexService(config)))
             .executor(cpu.executors.io)
             .build()
 
@@ -22,6 +22,7 @@ class BitfinexServer(val port: Int) {
             }
         })
 
+        // start server for the service
         server.start()
     }
 }

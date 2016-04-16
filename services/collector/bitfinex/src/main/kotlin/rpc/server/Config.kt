@@ -1,4 +1,4 @@
-package bitfinex
+package rpc.server
 
 import com.tars.util.Util.absolutePathOf
 import extensions.folderName
@@ -8,7 +8,7 @@ import java.io.File.separator
 /**
  * Configuration for bitfinex exchange
  */
-internal data class Config(
+data class Config(
         var websocketConnectionURL : String = "",
         var publicKey: String = "",
         var privateKey: String = "",

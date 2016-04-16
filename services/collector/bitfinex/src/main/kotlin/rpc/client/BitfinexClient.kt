@@ -2,12 +2,12 @@ package rpc.client
 
 import common.GenericCollector
 import extensions.asGrpcObserver
+import extensions.empty
 import io.grpc.ManagedChannelBuilder
 import proto.*
 import rx.Observable
 import rx.subjects.PublishSubject
 import util.cpu
-import util.empty
 
 class BitfinexClient(val host: String, val port: Int) : GenericCollector {
     private var channel = ManagedChannelBuilder

@@ -11,7 +11,7 @@ class CollectorServerTest {
 
     @Test
     fun accessibleMarketPairs() {
-        CollectorServer().accessibleMarketPairs(empty(), object : StreamObserver<Pairs> {
+        BitfinexService().accessibleMarketPairs(empty(), object : StreamObserver<Pairs> {
 
             override fun onNext(pairs: Pairs) {
                 println(pairs.json())
