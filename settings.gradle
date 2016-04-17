@@ -2,22 +2,22 @@ rootProject.name = 'jarvis'
 
 
 include ":common"
-project(':common').projectDir = "$rootDir/services/common" as File
+project(':common').projectDir = "$rootDir/sources/common" as File
 
 
 include ":engine"
-project(':engine').projectDir = "$rootDir/services/engine" as File
+project(':engine').projectDir = "$rootDir/sources/engine" as File
 
 
 include ":util"
-project(':util').projectDir = "$rootDir/services/global/util" as File
+project(':util').projectDir = "$rootDir/sources/global/util" as File
 
 include ":eventstore"
-project(':eventstore').projectDir = "$rootDir/services/global/eventstore" as File
+project(':eventstore').projectDir = "$rootDir/sources/global/eventstore" as File
 
 
 // collectors
 
 
 include ":bitfinex"
-project(':bitfinex').projectDir = "$rootDir/services/collector/bitfinex" as File
+project(':bitfinex').projectDir = "$rootDir/sources/collector/bitfinex" as File
