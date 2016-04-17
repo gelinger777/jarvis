@@ -1,6 +1,6 @@
 package sandbox.bitmanipulation;
 
-public class Test {
+public class TestPrimitives {
 
   public static void main(String args[]) {
     int a = 60;	/* 60 = 0011 1100 */

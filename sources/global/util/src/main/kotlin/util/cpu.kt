@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 object cpu {
 
-    val log by logger()
+    private val log by logger()
 
     private val threadFactory = { runnable: Runnable ->
         val thread = Thread(runnable)

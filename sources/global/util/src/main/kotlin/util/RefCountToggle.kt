@@ -15,4 +15,11 @@ class RefCountToggle(private val start: () -> Unit, private val stop: () -> Unit
             stop.invoke()
         }
     }
+
+    @Synchronized fun reset() {
+        if ( refCount != 0) {
+            refCount = 0;
+            stop.invoke()
+        }
+    }
 }

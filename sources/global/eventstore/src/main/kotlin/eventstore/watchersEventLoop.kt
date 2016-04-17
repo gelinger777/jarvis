@@ -10,17 +10,17 @@ internal object watchersEventLoop {
     val log by logger()
     val activeWatchers = CopyOnWriteArraySet<Watcher>()
 
-    val eventLoopTask = RefCountTask("chronicle-watcher-event-loop",{
+    val eventLoopTask = RefCountTask("chronicle-watcher-event-loop", {
         log.debug("event loop started")
 
         // while not interrupted
-        while(!currentThread().isInterrupted){
+        while (!currentThread().isInterrupted) {
             activeWatchers.forEach { it.checkAndEmit() }
             `yield`()
         }
 
         log.debug("event loop completed")
-    })
+    }).stopOnShutdown()
 
     fun add(watcher: Watcher) {
         activeWatchers.add(watcher)

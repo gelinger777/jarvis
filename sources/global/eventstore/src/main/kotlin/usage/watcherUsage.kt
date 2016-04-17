@@ -1,5 +1,6 @@
-package eventstore
+package usage
 
+import eventstore.storage
 import global.logger
 import rx.Observer
 import java.util.*
@@ -11,10 +12,6 @@ fun main(args: Array<String>) {
             .getWatcher("/Users/vach/workspace/projects/jarvis/data/temp")
             .stream()
             .subscribe(printObserver())
-
-    readLine()
-
-    subscription.unsubscribe()
 
     readLine()
 }
