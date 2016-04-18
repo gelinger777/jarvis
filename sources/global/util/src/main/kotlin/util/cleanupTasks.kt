@@ -2,55 +2,59 @@ package util
 
 import com.tars.util.validation.Validator.condition
 import global.addShutdownHook
+import global.logger
+import global.toClosure
 import util.exceptionUtils.executeSilent
 
 
 object cleanupTasks {
+    val log by logger()
+    val tasks = mutableListOf<Pair<Int, () -> Unit>>()
+    internal val internalTasks = mutableListOf<Pair<Int, () -> Unit>>()
 
     init {
         addShutdownHook {
+            log.info("executing cleanup tasks")
+
             tasks.asSequence()
                     .sortedBy { -it.first }
                     .forEach {
                         executeSilent { it.second.invoke() }
                     }
+
+            internalTasks.asSequence()
+                    .sortedBy { -it.first }
+                    .forEach {
+                        executeSilent { it.second.invoke() }
+                    }
+
         }
     }
 
-    val tasks = mutableListOf<Pair<Int, () -> Unit>>()
-
     /**
      * Tasks with higher priorities execute first.
+     * Priority must be positive integer or zero.
      */
-    fun addWithPriority(priority: Int, task: () -> Unit) {
+    fun add(task: () -> Unit, priority: Int = 0) {
         condition(priority >= 0)
         tasks.add(priority to task)
     }
 
     /**
-     * Add task with no priority (priority is 0).
+     * Tasks with higher priorities execute first.
+     * Priority must be positive integer or zero.
      */
-    fun add(task: () -> Unit) {
-        tasks.add(0 to task)
+    @JvmStatic fun add(task: Runnable, priority: Int = 0) {
+        condition(priority >= 0)
+        tasks.add(priority to task.toClosure())
     }
 
     /**
-     * For internal use only.
+     * For internal usage, internal tasks will execute only after all user tasks.
      */
-    internal fun doLast(task: () -> Unit) {
-        tasks.add(-1 to task)
+    internal fun internalAdd(task: () -> Unit, priority: Int = 0) {
+        condition(priority >= 0)
+        internalTasks.add(priority to task)
     }
-
 }
-//
-//fun main(args: Array<String>) {
-// todo try to make all resources clean up on shutdown
-//    cleanupTasks.add(1, { println("task 1") })
-//    cleanupTasks.add(4, { println("task 3") })
-//    cleanupTasks.add(2, { println("task 2") })
-//    cleanupTasks.add(0, { println("task 0") })
-//    cleanupTasks.add(-1, { println("task -1") })
-//    cleanupTasks.add(1, { println("task 1") })
-//}
-
 

@@ -1,31 +1,19 @@
 package com.tars.util.net.socket;
 
 
-import com.tars.util.concurrent.RefCountTask;
+import org.slf4j.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.SocketAddress;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.net.*;
+import java.nio.channels.*;
+import java.util.*;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.subjects.*;
+import util.*;
 
-import static java.lang.Thread.currentThread;
-import static java.nio.channels.SelectionKey.OP_READ;
+import static java.lang.Thread.*;
+import static java.nio.channels.SelectionKey.*;
 
 /**
  * SocketHub provides interface to create socket client and server instances and interact with those using observable
@@ -129,7 +117,8 @@ public class SocketHub {
       this.handleHubError(cause);
     }
   };
-  private final RefCountTask eventLoopTask = new RefCountTask("socket-hub-event-loop", eventLoopRunnable);
+
+  private final RefCountTask eventLoopTask = cpu.refCountTask("socket-hub-event-loop", eventLoopRunnable);
 
   // interface
 
@@ -181,22 +170,16 @@ public class SocketHub {
   // lifecycle
 
   public SocketHub() {
-    log.debug("initializing");
+    log.info("init");
 
-    /**
-     * JVM wont interrupt daemon threads by default, thus we add a hook that will interrupt the event loop
-     * and await for its graceful termination.
-     */
-    Runtime.getRuntime().addShutdownHook(new Thread(this::release, "socket-hub-cleanup"));
-    log.info("initialized");
+    cleanupTasks.add(this::release, 1);
   }
 
   public void release() {
-    log.debug("scheduling stop for all clients and servers of the hub");
+    log.info("shutdown");
     activeClients.values().forEach(SocketClientImpl::stop);
     activeServers.values().forEach(SocketServer::stop);
     eventLoopTask.reset();
-    log.info("released");
   }
 
   // event loop logic

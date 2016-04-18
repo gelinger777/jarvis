@@ -1,9 +1,9 @@
 package rpc.server
 
-import global.addShutdownHook
 import global.logger
 import io.grpc.ServerBuilder
 import proto.CollectorGrpc
+import util.cleanupTasks
 import util.cpu
 
 class BitfinexServer(val port: Int, val config: Config) {
@@ -16,10 +16,11 @@ class BitfinexServer(val port: Int, val config: Config) {
             .build()
 
     init {
-        addShutdownHook {
-            log.info("shutting down bitfinex server")
+        log.info("init")
+        cleanupTasks.add({
+            log.info("shutdown")
             server.shutdown()
-        }
+        })
 
         // start server for the service
         server.start()

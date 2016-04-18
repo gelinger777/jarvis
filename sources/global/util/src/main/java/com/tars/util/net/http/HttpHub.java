@@ -1,19 +1,15 @@
 package com.tars.util.net.http;
 
-import util.Option;
+import org.apache.http.client.methods.*;
+import org.apache.http.impl.client.*;
+import org.apache.http.util.*;
+import org.slf4j.*;
 
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.*;
 
-import java.io.IOException;
+import util.*;
 
-import static com.tars.util.exceptions.ExceptionUtils.executeAndGetSilent;
-import static com.tars.util.exceptions.ExceptionUtils.wtf;
+import static com.tars.util.exceptions.ExceptionUtils.*;
 
 /**
  * HttpHub provides interface for interacting with http protocol.
@@ -25,20 +21,18 @@ public final class HttpHub {
 
   // lifecycle
 
-  public HttpHub(){
-    log.debug("initializing");
+  public HttpHub() {
+    log.info("init");
     hc = HttpClients.createDefault();
-    log.info("initialized");
   }
 
   public void release() {
-    log.debug("closing Http Client");
+    log.info("shutdown");
     try {
       hc.close();
     } catch (IOException e) {
       wtf(e);
     }
-    log.info("released");
   }
 
   // interface

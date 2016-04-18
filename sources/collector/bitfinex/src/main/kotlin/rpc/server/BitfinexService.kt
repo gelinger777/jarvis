@@ -9,10 +9,7 @@ import global.*
 import io.grpc.stub.StreamObserver
 import org.apache.http.client.methods.RequestBuilder.get
 import proto.*
-import util.cpu
-import util.heartBeat
-import util.mailer
-import util.net
+import util.*
 import util.net.http
 import java.util.concurrent.TimeUnit
 
@@ -26,10 +23,11 @@ internal class BitfinexService(val config: Config) : CollectorGrpc.Collector {
     val realtimeTradeChannels = mutableMapOf<Any, RealtimeTradeChannel>()
     val realtimeBookChannels = mutableMapOf<Any, RealtimeBookChannel>()
 
-    val recordingTradeChannels = mutableMapOf<Pair, StreamObserver<Trade>>()
+    val recordingTradeObservers = mutableMapOf<Pair, StreamObserver<Trade>>()
 
 
     init {
+        log.info("starting")
         websocketClient
                 .stream()
                 .observeOn(cpu.schedulers.io)
@@ -39,18 +37,19 @@ internal class BitfinexService(val config: Config) : CollectorGrpc.Collector {
                             handleMessage(it)
                         },
                         {
-                            log.error("unexpected exception", it)
+                            log.error("ws client got unexpected exception", it)
                             wtf(it)
                         },
-                        { log.info("completed") }
+                        {
+                            log.info("websocket client completed")
+                        }
                 )
 
-        addShutdownHook {
+        cleanupTasks.add({
             log.info("shutting down bitfinex websocket client")
             websocketClient.stop()
-        }
+        })
 
-        log.info("starting")
         websocketClient.start()
     }
 
@@ -85,24 +84,25 @@ internal class BitfinexService(val config: Config) : CollectorGrpc.Collector {
     }
 
     override fun streamTrades(pair: Pair, observer: StreamObserver<Trade>) {
-        log.info("starting trade stream : {}", pair.json());
-
         // get channel or create if necessary
         val channel = realtimeTradeChannels.computeIfAbsent(pair, {
+            log.info("starting trade stream : {}", pair.json());
+
             // send subscription request to bitfinex
             websocketClient.send("{\"event\": \"subscribe\",\"channel\": \"trades\",\"pair\": \"${pair.base.symbol}${pair.quote.symbol}\"}")
             // reserve a channel
             RealtimeTradeChannel(pair)
         })
+
         // register new observer
         channel.addObserver(observer)
     }
 
     override fun streamOrders(pair: Pair, observer: StreamObserver<Order>) {
-        log.info("starting orderbook stream : {}", pair.json());
-
         // get channel or create if necessary
         val channel = realtimeBookChannels.computeIfAbsent(pair, {
+            log.info("starting orderbook stream : {}", pair.json());
+
             // send subscription request to bitfinex
             websocketClient.send("{\"event\":\"subscribe\",\"channel\":\"book\",\"pair\":\"${pair.base.symbol}${pair.quote.symbol}\",\"prec\":\"R0\",\"len\":\"full\"}")
             // reserve a channel
@@ -117,12 +117,13 @@ internal class BitfinexService(val config: Config) : CollectorGrpc.Collector {
     }
 
     override fun startRecordingTrades(pair: Pair, observer: StreamObserver<ExecutionStatus>) {
-        val observer: StreamObserver<Trade> = object : StreamObserver<Trade> {
+        // create recording observable
+        val recordingObserver: StreamObserver<Trade> = object : StreamObserver<Trade> {
             val stream = EventStream.get(config.tradeDataPath(pair))
 
             init {
                 // adding this observable to registry
-                recordingTradeChannels[pair] = this
+                recordingTradeObservers[pair] = this
             }
 
             override fun onNext(trade: Trade) {
@@ -136,29 +137,34 @@ internal class BitfinexService(val config: Config) : CollectorGrpc.Collector {
                 // release chronicle resources
                 stream.close()
                 // cleaning up the registry
-                recordingTradeChannels.remove(pair)
+                recordingTradeObservers.remove(pair)
             }
 
             override fun onCompleted() {
                 // release chronicle resources
                 stream.close()
                 // cleaning up the registry
-                recordingTradeChannels.remove(pair)
+                recordingTradeObservers.remove(pair)
             }
         }
 
+        // subscribe for trade channel
+        streamTrades(pair, recordingObserver)
 
-        streamTrades(pair, observer)
+        // respond with successful execution
+        observer.onNext(success())
+        observer.onCompleted()
     }
 
     override fun stopRecordingTrades(pair: Pair, observer: StreamObserver<ExecutionStatus>) {
-        // if there is a recording
-        recordingTradeChannels.getOptional(pair).ifPresent {
-            // unsubscribe the recording observable from trade channel
+        // if there is a recording Observer
+        recordingTradeObservers.getOptional(pair).ifPresent {
+            // unsubscribe it from the channel
             (realtimeTradeChannels[pair] as RealtimeTradeChannel).removeObserver(it)
         }
 
-        // todo CONTINUE
+        observer.onNext(success())
+        observer.onCompleted()
     }
 
     override fun getOrderStreamInfo(pair: Pair, observer: StreamObserver<OrderStreamInfo>) {

@@ -3,6 +3,7 @@ package global
 import com.google.protobuf.GeneratedMessage
 import com.google.protobuf.util.JsonFormat
 import proto.Empty
+import proto.ExecutionStatus
 import proto.Pair
 import util.repo
 import java.util.regex.Pattern
@@ -12,6 +13,11 @@ import java.util.regex.Pattern
 fun empty(): Empty {
     return Empty.getDefaultInstance()
 }
+
+fun success(): ExecutionStatus {
+    return ExecutionStatus.newBuilder().setPlaceholder("success").build()
+}
+
 
 // Pair
 

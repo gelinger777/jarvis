@@ -2,7 +2,6 @@ package util
 
 
 import com.tars.util.exceptions.ExceptionUtils.wtf
-import global.addShutdownHook
 import kotlin.concurrent.thread
 
 class RefCountTask(val name: String, val task: () -> Unit, val terminationTimeout: Long = 10000) {
@@ -38,8 +37,24 @@ class RefCountTask(val name: String, val task: () -> Unit, val terminationTimeou
         toggle.decrement()
     }
 
+    fun reset() {
+        toggle.reset()
+    }
+
+    fun isAlive(): Boolean {
+        return Option.ofNullable(thread)
+                .filter { it.isAlive }
+                .isPresent()
+    }
+
+    fun isCurrentThread(): Boolean {
+        return Option.ofNullable(thread)
+                .filter { it == Thread.currentThread() }
+                .isPresent()
+    }
+
     fun stopOnShutdown(): RefCountTask {
-        addShutdownHook { toggle.reset() }
+        cleanupTasks.add({ this.reset() })
         return this
     }
 }

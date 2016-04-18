@@ -138,6 +138,12 @@ fun Throwable.stackTraceAsString(): String {
     return sw.toString()
 }
 
+// Runnable and ()->Unit
+
+fun Runnable.toClosure(): () -> Unit {
+    return { this.run() }
+}
+
 // todo remove after java 8 default method support
 
 fun <T> Consumer<T>.andThen(after: Consumer<T>): Consumer<T> {

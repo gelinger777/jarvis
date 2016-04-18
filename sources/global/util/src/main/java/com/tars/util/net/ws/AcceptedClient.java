@@ -1,22 +1,16 @@
 package com.tars.util.net.ws;
 
-import util.Option;
+import org.slf4j.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.*;
+import java.util.*;
 
-import java.io.IOException;
-import java.util.LinkedList;
-
-import javax.websocket.CloseReason;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler.Whole;
-import javax.websocket.Session;
+import javax.websocket.*;
+import javax.websocket.MessageHandler.*;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
-
+import rx.subjects.*;
+import util.*;
 
 
 class AcceptedClient extends Endpoint implements WebsocketClient {
@@ -24,7 +18,7 @@ class AcceptedClient extends Endpoint implements WebsocketClient {
   Logger log = LoggerFactory.getLogger(WebsocketClient.class);
 
   Server server;
-  Option<Session> session = Option.empty();
+  Option<Session> session = Option.<Session>empty();
   PublishSubject<String> messageStream = PublishSubject.create();
   LinkedList<String> pendingMessages = new LinkedList<>();
 
