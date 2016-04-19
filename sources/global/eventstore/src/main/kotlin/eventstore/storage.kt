@@ -1,11 +1,13 @@
 package eventstore
 
-import global.addShutdownHook
 import global.computeIfAbsent
+import global.logger
 import net.openhft.chronicle.Chronicle
 import net.openhft.chronicle.ChronicleQueueBuilder
+import util.cleanupTasks
 
 internal object storage {
+    val log by logger()
 
     val chronicles = mutableMapOf<String, Chronicle>()
 
@@ -19,7 +21,7 @@ internal object storage {
             val chronicle = ChronicleQueueBuilder.indexed(it).small().build()
 
             // register cleanup code
-            addShutdownHook { chronicle.close() }
+            cleanupTasks.add("chronicle:$path", { chronicle.close() })
 
             // return new instance
             chronicle

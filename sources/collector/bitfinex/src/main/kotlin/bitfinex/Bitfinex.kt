@@ -1,7 +1,6 @@
 package bitfinex
 
 import com.google.gson.JsonParser
-import com.tars.util.exceptions.ExceptionUtils.wtf
 import com.tars.util.validation.Validator.condition
 import common.GenericClient
 import global.*
@@ -9,7 +8,11 @@ import proto.Order
 import proto.Pair
 import proto.Trade
 import rx.Observable
-import util.*
+import util.cpu
+import util.exceptionUtils.wtf
+import util.heartBeat
+import util.mailer
+import util.net
 import java.util.concurrent.TimeUnit.MINUTES
 
 

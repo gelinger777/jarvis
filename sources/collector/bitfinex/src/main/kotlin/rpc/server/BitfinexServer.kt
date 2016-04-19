@@ -17,11 +17,7 @@ class BitfinexServer(val port: Int, val config: Config) {
 
     init {
         log.info("init")
-        cleanupTasks.add({
-            log.info("shutdown")
-            server.shutdown()
-        })
-
+        cleanupTasks.add("bitfinex-server", { server.shutdown() })
         // start server for the service
         server.start()
     }

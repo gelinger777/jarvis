@@ -2,6 +2,7 @@ package eventstore
 
 import global.logger
 import util.RefCountTask
+import util.cleanupTasks
 import java.lang.Thread.`yield`
 import java.lang.Thread.currentThread
 import java.util.concurrent.CopyOnWriteArraySet
@@ -13,6 +14,8 @@ internal object watchersEventLoop {
     val eventLoopTask = RefCountTask("chronicle-watcher-event-loop", {
         log.debug("event loop started")
 
+        cleanupTasks.add("watcher-event-loop", { this.release() }, 1)
+
         // while not interrupted
         while (!currentThread().isInterrupted) {
             activeWatchers.forEach { it.checkAndEmit() }
@@ -20,7 +23,7 @@ internal object watchersEventLoop {
         }
 
         log.debug("event loop completed")
-    }).stopOnShutdown()
+    })
 
     fun add(watcher: Watcher) {
         activeWatchers.add(watcher)
@@ -32,6 +35,11 @@ internal object watchersEventLoop {
         activeWatchers.remove(watcher)
         eventLoopTask.decrement()
         log.debug("stopped watching {}", watcher.path)
+    }
+
+    fun release() {
+        activeWatchers.clear()
+        eventLoopTask.reset()
     }
 
 }

@@ -1,9 +1,9 @@
 package util
 
-import com.tars.util.exceptions.ExceptionUtils.executeSilent
 import global.logger
 import global.toClosure
 import rx.schedulers.Schedulers.from
+import util.exceptionUtils.executeSilent
 import java.util.concurrent.Executors.newCachedThreadPool
 import java.util.concurrent.ForkJoinPool.commonPool
 import java.util.concurrent.TimeUnit
@@ -22,7 +22,7 @@ object cpu {
     init {
         log.info("init")
 
-        cleanupTasks.internalAdd({
+        cleanupTasks.internalAdd("cpu", {
             log.info("shutdown");
 
             // common pool doesn't need shutdown
@@ -32,7 +32,7 @@ object cpu {
 
             exceptionUtils.executeMandatory { executors.io.awaitTermination(1, TimeUnit.MINUTES) }
             exceptionUtils.executeMandatory { executors.fj.awaitQuiescence(1, TimeUnit.MINUTES) }
-        }, 1)
+        })
     }
 
 

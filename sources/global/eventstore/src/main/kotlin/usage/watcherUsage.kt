@@ -3,15 +3,19 @@ package usage
 import eventstore.storage
 import global.logger
 import rx.Observer
+import util.cleanupTasks
 import java.util.*
 
 fun main(args: Array<String>) {
 
-    // todo use temp folder
     val subscription = storage
             .getWatcher("/Users/vach/workspace/projects/jarvis/data/temp")
             .stream()
             .subscribe(printObserver())
+
+    readLine()
+
+    cleanupTasks.printExecutionInOrder()
 
     readLine()
 }

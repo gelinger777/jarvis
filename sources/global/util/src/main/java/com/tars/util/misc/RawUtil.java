@@ -12,7 +12,7 @@ import static com.tars.util.validation.Validator.notNull;
 /**
  * Provides utility methods to work with raw lists and maps.
  */
-// TODO make this json friendly
+@Deprecated
 @SuppressWarnings("unchecked")
 public class RawUtil {
 

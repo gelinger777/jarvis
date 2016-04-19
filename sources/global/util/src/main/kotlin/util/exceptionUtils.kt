@@ -1,10 +1,17 @@
 package util
 
 import global.logger
+import global.whatever
+import rx.subjects.PublishSubject
 
 /**
  * Utility class for exception handling and boilerplate elimination.
-
+ *
+ * All overloaded wtf() methods are logging the provided data (if any) to a file and kill the process, these
+ * represent use cases that shall never happen in production. This is following fail fast principle.
+ *
+ * P.S. WTF stands for (what a terrible failure)
+ *
  * note : logger with file appender must be configured for ExceptionUtils class.
  */
 object exceptionUtils {
@@ -14,58 +21,33 @@ object exceptionUtils {
      */
     private val log by logger("exceptions")
 
+    private val unrecoverableErrorStream = PublishSubject.create<Throwable>()
+
+    /**
+     * Register a listener for the unrecoverable errors.
+     */
+    fun onUnrecoverableFailure(listener: (Throwable) -> Unit) {
+        unrecoverableErrorStream.subscribe({
+            executeSilent { listener.invoke(it) }
+        })
+    }
+
     // wtf methods
 
-    /**
-     * All overloaded wtf() methods are logging the provided data (if any) to a file and kill the process, these
-     * represent use cases that shall never happen in production.
-
-     * P.S. WTF stands for (what a terrible failure)
-     */
-    fun <T> wtf(): T {
-        throw reportAndKill(WTFException())
+    fun wtf() {
+        reportAndKill(WTFException())
     }
 
-    /**
-     * All overloaded wtf() methods are logging the provided data (if any) to a file and kill the process, these
-     * represent use cases that shall never happen in production.
-
-     * P.S. WTF stands for (what a terrible failure)
-     */
-    fun <T> wtf(message: String): T {
-        throw reportAndKill(WTFException(message))
+    fun wtf(message: String) {
+        reportAndKill(WTFException(message))
     }
 
-    /**
-     * All overloaded wtf() methods are logging the provided data (if any) to a file and kill the process, these
-     * represent use cases that shall never happen in production.
-
-     * P.S. WTF stands for (what a terrible failure)
-     */
-    fun <T> wtf(cause: Throwable): T {
-        throw reportAndKill(WTFException(cause))
+    fun wtf(cause: Throwable) {
+        reportAndKill(WTFException(cause))
     }
 
-    /**
-     * All overloaded wtf() methods are logging the provided data (if any) to a file and kill the process, these
-     * represent use cases that shall never happen in production.
-
-     * P.S. WTF stands for (what a terrible failure)
-     */
-    fun <T> wtf(cause: Throwable, message: String): T {
-        throw reportAndKill(WTFException(message, cause))
-    }
-
-    // failure callbacks
-
-    private val failureCallbacks = mutableListOf<(Throwable) -> Unit>()
-
-    /**
-     * Sets callback to be executed when unrecoverable exception is about to kill the process. This can be used to notify
-     * about critical failure or for graceful shutdown.
-     */
-    @Synchronized fun onUnrecoverableFailure(task: (Throwable) -> Unit) {
-        failureCallbacks.add(task)
+    fun wtf(cause: Throwable, message: String) {
+        reportAndKill(WTFException(message, cause))
     }
 
     // logging to file
@@ -73,29 +55,20 @@ object exceptionUtils {
     /**
      * Logs an exception to general error log and returns without throwing it further.
      */
-    private fun report(cause: Throwable): Throwable {
-        log.warn("unexpected exception", cause)
+    fun report(cause: Throwable, message: String = "unexpected exception"): Throwable {
+        log.info(message, cause)
         return cause
     }
 
-    /**
-     * Logs an exception to general error log and returns without throwing it further.
-     */
-    private fun report(cause: Throwable, message: String): Throwable {
-        log.warn(message, cause)
-        return cause
-    }
+    private fun reportAndKill(cause: Throwable) {
+        // write log to a file
+        log.error("unrecoverable error", cause)
 
-    private @Synchronized fun reportAndKill(cause: Throwable): Throwable {
-        log.error("unrecoverable exception", cause)
-
-        // execute registered callbacks
-        failureCallbacks.forEach { it.invoke(cause) }
+        // acknowledge all the failure subscribers
+        unrecoverableErrorStream.onNext(cause);
 
         // kill process
         System.exit(-1)
-
-        return cause
     }
 
     // runnable execution exception handling
@@ -131,7 +104,7 @@ object exceptionUtils {
         try {
             block.invoke()
         } catch (cause: Throwable) {
-            throw reportAndKill(WTFException(cause))
+            reportAndKill(WTFException(cause))
         }
 
     }
@@ -140,6 +113,7 @@ object exceptionUtils {
 
     /**
      * Executes callable, wraps in Option, if any exception is thrown logs it and returns empty option.
+     * Use case : failure is an expected execution flow.
      */
     fun <T> executeAndGetSilent(callable: () -> T): Option<T> {
         try {
@@ -153,6 +127,7 @@ object exceptionUtils {
 
     /**
      * Executes callable, if callable returns null or any exception is thrown logs it, and rethrows.
+     * Use case : failure is not expected but not fatal for the application.
      */
     fun <T> executeAndGet(callable: () -> T): T {
         try {
@@ -171,6 +146,7 @@ object exceptionUtils {
     /**
      * Executes callable, if callable returns null or any exception is thrown logs it, executes callbacks if any, AND
      * KILLS THE PROCESS.
+     * Use case : failure is not expected and is fatal for the application.
      */
     fun <T> executeAndGetMandatory(callable: () -> T): T {
         try {
@@ -182,9 +158,8 @@ object exceptionUtils {
                 throw RuntimeException("callable returned null")
             }
         } catch (cause: Throwable) {
-            throw reportAndKill(WTFException(cause))
+            return whatever { reportAndKill(WTFException(cause)) }
         }
-
     }
 
     // marker class

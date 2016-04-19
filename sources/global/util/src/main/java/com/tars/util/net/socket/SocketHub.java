@@ -171,8 +171,6 @@ public class SocketHub {
 
   public SocketHub() {
     log.info("init");
-
-    cleanupTasks.add(this::release, 1);
   }
 
   public void release() {

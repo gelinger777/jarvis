@@ -15,6 +15,7 @@ import static com.tars.util.validation.Validator.*;
  *
  * note : logger with file appender must be configured for ExceptionUtils class.
  */
+@Deprecated
 public class ExceptionUtils {
 
   /**

@@ -1,6 +1,6 @@
 package bitfinex
 
-import com.tars.util.exceptions.ExceptionUtils.onUnrecoverableFailure
+import util.exceptionUtils.onUnrecoverableFailure
 import com.tars.util.net.messenger.Mailer
 import global.logger
 import global.stackTraceAsString
@@ -9,10 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.core.env.Environment
-import util.cpu
-import util.net
 import javax.annotation.PostConstruct
-import javax.annotation.PreDestroy
 
 @SpringBootApplication
 internal open class BitfinexContext {
@@ -36,9 +33,6 @@ internal open class BitfinexContext {
 
     @PostConstruct
     fun init() {
-        cpu.init()
-        net.init()
-
         // if in production email errors
         for (profile in environment!!.activeProfiles) {
             log.info("registering failure handler (production mode)")
@@ -47,11 +41,5 @@ internal open class BitfinexContext {
                 break
             }
         }
-    }
-
-    @PreDestroy
-    fun destroy() {
-        net.close()
-        cpu.close()
     }
 }

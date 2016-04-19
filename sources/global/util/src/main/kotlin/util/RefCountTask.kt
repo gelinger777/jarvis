@@ -52,9 +52,4 @@ class RefCountTask(val name: String, val task: () -> Unit, val terminationTimeou
                 .filter { it == Thread.currentThread() }
                 .isPresent()
     }
-
-    fun stopOnShutdown(): RefCountTask {
-        cleanupTasks.add({ this.reset() })
-        return this
-    }
 }

@@ -1,17 +1,12 @@
 package com.tars.util.storage;
 
 
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.ExcerptTailer;
+import net.openhft.chronicle.*;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
-import static com.tars.util.Util.absolutePathOf;
-import static com.tars.util.concurrent.ConcurrencyUtils.bearSleep;
+import static com.tars.util.concurrent.ConcurrencyUtils.*;
 
 
 final class TestChronicleConsole {
@@ -19,7 +14,7 @@ final class TestChronicleConsole {
   public static void main(String[] args) throws IOException {
 
     Chronicle chronicle = ChronicleQueueBuilder
-        .indexed(absolutePathOf("data/temp"))
+        .indexed("/Users/vach/workspace/projects/jarvis/data/temp")
         .small()
         .build();
 

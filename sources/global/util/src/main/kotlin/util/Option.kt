@@ -5,7 +5,9 @@ import java.util.function.Consumer
 @Suppress("UNCHECKED_CAST")
 class Option<T>(val value: T?) {
 
-    // interface
+    fun mutable(): MutableOption<T> {
+        return MutableOption.ofNullable(value)
+    }
 
     fun get(): T {
         return value ?: throw IllegalStateException("option is empty")
@@ -141,7 +143,7 @@ class Option<T>(val value: T?) {
         }
 
         @JvmStatic fun <T> of(value: T?): Option<T> {
-            if(value == null){
+            if (value == null) {
                 throw NullPointerException()
             }
             return Option(value)

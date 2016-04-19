@@ -1,8 +1,6 @@
 package rpc.server
 
 import com.google.gson.JsonParser
-import com.tars.util.exceptions.ExceptionUtils
-import com.tars.util.exceptions.ExceptionUtils.wtf
 import com.tars.util.storage.EventStream
 import com.tars.util.validation.Validator.condition
 import global.*
@@ -10,6 +8,7 @@ import io.grpc.stub.StreamObserver
 import org.apache.http.client.methods.RequestBuilder.get
 import proto.*
 import util.*
+import util.exceptionUtils.wtf
 import util.net.http
 import java.util.concurrent.TimeUnit
 
@@ -45,10 +44,7 @@ internal class BitfinexService(val config: Config) : CollectorGrpc.Collector {
                         }
                 )
 
-        cleanupTasks.add({
-            log.info("shutting down bitfinex websocket client")
-            websocketClient.stop()
-        })
+        cleanupTasks.add("bitfinex-websocket-client", { websocketClient.stop() })
 
         websocketClient.start()
     }
@@ -133,7 +129,7 @@ internal class BitfinexService(val config: Config) : CollectorGrpc.Collector {
 
             override fun onError(error: Throwable) {
                 // write the error
-                ExceptionUtils.report(error, "Recording was interrupted with error");
+                exceptionUtils.report(error, "trade|$pair recording was interrupted with error");
                 // release chronicle resources
                 stream.close()
                 // cleaning up the registry
@@ -309,7 +305,7 @@ internal class BitfinexService(val config: Config) : CollectorGrpc.Collector {
                 return
             }
 
-            wtf("none of the channel maps have anything for %s", channelId)
+            wtf("none of the channel maps have anything for $channelId")
         }
     }
 }
