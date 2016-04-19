@@ -49,7 +49,6 @@ class EventStreamImpl extends EventStream {
     return observe(from, to);
   }
 
-
   @Override
   public void append(byte[] data) {
     log.debug("appending to {}", path);

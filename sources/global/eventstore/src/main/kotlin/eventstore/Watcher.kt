@@ -5,6 +5,7 @@ import global.logger
 import readFrame
 import rx.Observable
 import rx.subjects.PublishSubject
+import util.cpu
 
 /**
  * All Watchers share an event loop to check if a chronicles has new values,
@@ -12,10 +13,10 @@ import rx.subjects.PublishSubject
  * if all subscribers unsubscribe watcher is no longer monitored.
  */
 internal class Watcher(val path: String) {
-    val log by logger()
-    val subject = PublishSubject.create<ByteArray>()
-    val chronicle = storage.getChronicle(path)
-    var tailer = chronicle.createTailer()
+    private val log by logger()
+    private val subject = PublishSubject.create<ByteArray>()
+    private val chronicle = storage.chronicle(path)
+    private var tailer = chronicle.createTailer()
 
     val toggle = RefCountToggle({
         log.debug("client subscribed")
@@ -35,6 +36,9 @@ internal class Watcher(val path: String) {
     val observable = subject
             .doOnSubscribe({ toggle.increment() })
             .doOnUnsubscribe({ toggle.decrement() })
+            .subscribeOn(cpu.schedulers.io)
+            .observeOn(cpu.schedulers.io)
+            .unsubscribeOn(cpu.schedulers.io)
 
     /**
      * Returns an Observable that when subscribed will stream any new data for the underlying queue.
@@ -43,8 +47,12 @@ internal class Watcher(val path: String) {
         return observable
     }
 
+    fun currentIndex(): Long {
+        return tailer.index()
+    }
 
-    fun checkAndEmit(): Boolean {
+
+    @Synchronized fun checkAndEmit(): Boolean {
         if (subject.hasCompleted()) return false
 
         try {

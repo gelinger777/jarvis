@@ -9,7 +9,7 @@ import java.util.*
 fun main(args: Array<String>) {
 
     val subscription = storage
-            .getWatcher("/Users/vach/workspace/projects/jarvis/data/temp")
+            .watcher("/Users/vach/workspace/projects/jarvis/data/temp")
             .stream()
             .subscribe(printObserver())
 

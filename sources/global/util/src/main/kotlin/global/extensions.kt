@@ -7,13 +7,41 @@ import io.grpc.stub.StreamObserver
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import rx.Observable
+import rx.Subscriber
 import rx.subjects.PublishSubject
 import util.Option
 import util.cpu
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.util.*
 import java.util.function.Consumer
 
+//
+
+fun consoleStream(): Observable<String> {
+    return Observable.create(object : Observable.OnSubscribe<String> {
+
+        override fun call(subscriber: Subscriber<in String>) {
+            if (subscriber.isUnsubscribed) {
+                return;
+            }
+
+            val scanner = Scanner(System.`in`);
+            var line = "";
+            while (!subscriber.isUnsubscribed) {
+                line = scanner.nextLine();
+
+                if (line != "close") {
+                    subscriber.onNext(line);
+                } else {
+                    break
+                }
+            }
+
+            subscriber.onCompleted();
+        }
+    })
+}
 
 // observable
 

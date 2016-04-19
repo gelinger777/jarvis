@@ -9,13 +9,13 @@ import util.cleanupTasks
 internal object storage {
     val log by logger()
 
-    val chronicles = mutableMapOf<String, Chronicle>()
+    private val chronicles = mutableMapOf<String, Chronicle>()
 
-    val watchers = mutableMapOf<String, Watcher>()
+    private val watchers = mutableMapOf<String, Watcher>()
 
-    val streams = mutableMapOf<String, EventStream>()
+    private val streams = mutableMapOf<String, EventStream>()
 
-    fun getChronicle(path: String): Chronicle {
+    internal fun chronicle(path: String): Chronicle {
         return chronicles.computeIfAbsent(path, {
             // create chronicle instance
             val chronicle = ChronicleQueueBuilder.indexed(it).small().build()
@@ -28,11 +28,11 @@ internal object storage {
         })
     }
 
-    fun getWatcher(path: String): Watcher {
+    internal fun watcher(path: String): Watcher {
         return watchers.computeIfAbsent(path, { Watcher(it) })
     }
 
-    fun getStream(path: String): EventStream {
+    fun eventStream(path: String): EventStream {
         return streams.computeIfAbsent(path, { EventStream(it) })
     }
 
