@@ -2,11 +2,11 @@ package eventstore
 
 import com.tars.util.validation.Validator.condition
 import global.logger
-import readFrame
+import eventstore.readFrame
 import rx.Observable
 import util.cpu
 import util.exceptionUtils.report
-import writeFrame
+import eventstore.writeFrame
 
 class EventStream(val path: String) {
     private val log by logger()
@@ -14,6 +14,10 @@ class EventStream(val path: String) {
     private val appender = chronicle.createAppender()
 
     // local data
+
+    fun lastIndex(): Long {
+        return chronicle.lastIndex()
+    }
 
     /**
      * Append a new event to the stream.
@@ -29,9 +33,7 @@ class EventStream(val path: String) {
         return observe(start, end)
     }
 
-
     // realtime data
-
 
     /**
      * Stream only realtime.
@@ -88,6 +90,7 @@ class EventStream(val path: String) {
                     subscriber.onCompleted()
 
                 }
+
                 // subscribe to realtime stream and let it complete
                 else {
                     log.debug("streaming realtime")
@@ -101,9 +104,12 @@ class EventStream(val path: String) {
                      */
                     synchronized(watcher, {
                         // make sure not to loose any elements before subscribing
-                        while (tailer.index() < watcher.currentIndex()) {
+                        while (tailer.nextIndex()) {
                             subscriber.onNext(readFrame(tailer))
                         }
+
+                        // make sure we are on the same index (synced state with watcher)
+                        condition(tailer.index() == chronicle.lastIndex())
 
                         // further subscribe to watcher
                         watcher.stream().subscribe(subscriber)

@@ -1,3 +1,5 @@
+package eventstore
+
 import net.openhft.chronicle.ExcerptAppender
 import net.openhft.chronicle.ExcerptTailer
 

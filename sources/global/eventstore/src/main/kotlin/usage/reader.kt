@@ -4,8 +4,12 @@ import com.tars.util.Util
 import eventstore.storage
 import global.logger
 import rx.Observer
+import java.nio.ByteBuffer
 
-fun main(args: Array<String>) {
+/**
+ * Use this to test eventstore.
+ */
+internal fun main(args: Array<String>) {
     val path = Util.absolutePathOf("data/temp")
 
     val stream = storage.eventStream(path)
@@ -14,7 +18,7 @@ fun main(args: Array<String>) {
 //        stream.write(toByteArray(value))
 //    }
 
-    val subscription = stream.streamRealtime().subscribe(
+    val subscription = stream.streamRealtime(99).subscribe(
             object : Observer<ByteArray> {
                 val log by logger("PrintObserver")
 
@@ -39,6 +43,6 @@ fun main(args: Array<String>) {
     readLine()
 }
 
-//fun printObserver(): Observer<ByteArray> {
-//    return
-//}
+internal fun fromByteArray(bytes: ByteArray): Int {
+    return ByteBuffer.wrap(bytes).int
+}

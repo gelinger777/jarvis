@@ -4,10 +4,12 @@ import com.tars.util.Util
 import eventstore.storage
 import global.consoleStream
 import util.cpu
+import java.nio.ByteBuffer
 
-@Volatile var flag = false
-
-fun main(args: Array<String>) {
+/**
+ * Use this to test eventstore.
+ */
+internal fun main(args: Array<String>) {
 
     val path = Util.absolutePathOf("data/temp")
 
@@ -24,4 +26,9 @@ fun main(args: Array<String>) {
             }
         }
     })
+
+}
+
+internal fun toByteArray(value: Int): ByteArray {
+    return ByteBuffer.allocate(4).putInt(value).array()
 }
