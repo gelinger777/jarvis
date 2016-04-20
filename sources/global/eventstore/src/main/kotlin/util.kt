@@ -10,7 +10,9 @@ internal fun readFrame(tailer: ExcerptTailer): ByteArray {
     return result
 }
 
-internal fun writeFrame(appender: ExcerptAppender, data: ByteArray) {
+internal fun writeFrame(appender: ExcerptAppender, data: ByteArray) : Long{
+    // current index we write to
+    val index = appender.index()
     // calculate total message size
     val msgSize = 4 + data.size
     appender.startExcerpt(msgSize.toLong())
@@ -19,4 +21,6 @@ internal fun writeFrame(appender: ExcerptAppender, data: ByteArray) {
     // write message content
     appender.write(data)
     appender.finish()
+
+    return index
 }

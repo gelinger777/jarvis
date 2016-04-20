@@ -11,7 +11,7 @@ fun main(args: Array<String>) {
 
     val eventStream = storage.eventStream(path)
 
-    eventStream.streamExisting().subscribe({ println(fromByteArray(it)) })
+//    eventStream.streamExisting().subscribe({ println(fromByteArray(it)) })
 
 
 }

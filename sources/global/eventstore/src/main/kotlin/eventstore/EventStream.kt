@@ -2,7 +2,6 @@ package eventstore
 
 import com.tars.util.validation.Validator.condition
 import global.logger
-import global.whatever
 import readFrame
 import rx.Observable
 import util.cpu
@@ -19,61 +18,33 @@ class EventStream(val path: String) {
     /**
      * Append a new event to the stream.
      */
-    fun write(event: ByteArray) {
-        synchronized(appender, { writeFrame(appender, event) })
+    fun write(event: ByteArray): Long {
+        synchronized(appender, { return writeFrame(appender, event) })
     }
 
     /**
-     * Stream all persisted data.
+     * Stream persisted data.
      */
-    fun streamExisting(): Observable<ByteArray> {
-        return observe()
+    fun stream(start: Long = -1, end: Long = -1): Observable<ByteArray> {
+        return observe(start, end)
     }
 
-    /**
-     * Stream portion of persisted data.
-     */
-    fun streamFromTo(start: Long, end: Long): Observable<ByteArray> {
-        return whatever {}
-    }
-
-
-    /**
-     * Stream persisted data from specified start.
-     */
-    fun streamFrom(start: Long): Observable<ByteArray> {
-        return whatever {}
-    }
-
-
-    /**
-     * Stream persisted data from beginning to specified end.
-     */
-    fun streamTo(end: Long): Observable<ByteArray> {
-        return whatever {}
-    }
 
     // realtime data
+
 
     /**
      * Stream only realtime.
      */
     fun streamRealtime(): Observable<ByteArray> {
-        return whatever {}
+        return storage.watcher(path).stream()
     }
 
     /**
-     * Stream all persisted then realtime.
+     * Stream persisted then realtime.
      */
-    fun streamRealtimeAll(): Observable<ByteArray> {
-        return whatever {}
-    }
-
-    /**
-     * Stream persisted data from specified start then realtime.
-     */
-    fun streamRealtimeFrom(): Observable<ByteArray> {
-        return whatever {}
+    fun streamRealtime(start: Long = -1): Observable<ByteArray> {
+        return observe(start, attachRealtime = true)
     }
 
 
@@ -101,22 +72,33 @@ class EventStream(val path: String) {
                 while (!subscriber.isUnsubscribed) {
 
                     if (tailer.nextIndex()) {
+                        // if there was upper limit and limit is reached finish
+                        if (hasEnd && tailer.index() > end) {
+                            break
+                        }
                         subscriber.onNext(readFrame(tailer))
+                        Thread.`yield`()
                     } else {
-                        break
-                    }
-
-                    // if there was upper limit and limit is reached finish
-                    if (hasEnd && tailer.index() > end) {
                         break
                     }
                 }
 
-                // start streaming from realtime stream
-                if (end == -1L && !subscriber.isUnsubscribed) {
+                // if has end we complete
+                if (hasEnd && !subscriber.isUnsubscribed) {
+                    subscriber.onCompleted()
+
+                }
+                // subscribe to realtime stream and let it complete
+                else {
                     log.debug("streaming realtime")
                     val watcher = storage.watcher(path)
 
+                    /**
+                     * We lock this watcher (which will block watcher-event-loop when it calls checkAndEmit on this watcher,
+                     * we synchronize our emissions to the point when we are subscribed to realtime stream, only after that
+                     * we let the lock go. This is necessary to guarantee we don't loose any items between streaming local
+                     * data and subscribing to realtime stream.
+                     */
                     synchronized(watcher, {
                         // make sure not to loose any elements before subscribing
                         while (tailer.index() < watcher.currentIndex()) {
@@ -126,9 +108,6 @@ class EventStream(val path: String) {
                         // further subscribe to watcher
                         watcher.stream().subscribe(subscriber)
                     })
-                } else {
-                    // acknowledge completion
-                    subscriber.onCompleted()
                 }
             } catch (cause: Throwable) {
                 // publish error

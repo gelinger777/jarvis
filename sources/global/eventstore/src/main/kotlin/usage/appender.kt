@@ -2,6 +2,8 @@ package usage
 
 import com.tars.util.Util
 import eventstore.storage
+import global.consoleStream
+import util.cpu
 
 @Volatile var flag = false
 
@@ -11,20 +13,15 @@ fun main(args: Array<String>) {
 
     val stream = storage.eventStream(path)
 
-    for (num in 0..10) {
-        stream.write(toByteArray(num))
-    }
 
-
-//
-//    consoleStream().subscribe({
-//        when (it) {
-//            "append some" -> {
-//                cpu.executors.io.submit {
-//
-//
-//                }
-//            }
-//        }
-//    })
+    consoleStream().subscribe({
+        when (it) {
+            "append" -> {
+                cpu.executors.io.submit {
+                    val index = stream.write(toByteArray(42))
+                    println("[$index] : 42")
+                }
+            }
+        }
+    })
 }

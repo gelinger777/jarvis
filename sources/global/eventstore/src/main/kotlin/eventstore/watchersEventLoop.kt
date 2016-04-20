@@ -14,7 +14,7 @@ internal object watchersEventLoop {
     val eventLoopTask = RefCountTask("chronicle-watcher-event-loop", {
         log.debug("event loop started")
 
-        cleanupTasks.add("watcher-event-loop", { this.release() }, 1)
+        cleanupTasks.add("chronicle-watcher-event-loop", { this.release() }, 1)
 
         // while not interrupted
         while (!currentThread().isInterrupted) {
@@ -22,6 +22,7 @@ internal object watchersEventLoop {
             `yield`()
         }
 
+        cleanupTasks.remove("chronicle-watcher-event-loop")
         log.debug("event loop completed")
     })
 
