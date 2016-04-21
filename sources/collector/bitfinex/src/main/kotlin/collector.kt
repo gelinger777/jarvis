@@ -1,7 +1,7 @@
 
 import bitfinex.Bitfinex
 import bitfinex.BitfinexContext
-import com.tars.util.storage.EventStream
+import eventstore.storage
 import global.batch
 import global.json
 import org.springframework.boot.SpringApplication
@@ -16,9 +16,9 @@ fun main(args: Array<String>) {
 
     val pair = repo.pair("BTC", "USD")
     val path = bitfinex.config.tradeDataPath(pair)
-    val stream = EventStream.get(path)
+    val stream = storage.eventStream(path)
 
-    stream.streamFromStart()
+    stream.streamRealtime()
             .map { Order.parseFrom(it) }
             .subscribe {
                 println("Order persisted ${it.json()}")
@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
             .batch()
             .subscribe { batch ->
                 for (data in batch) {
-                    stream.append(data)
+                    stream.write(data)
                 }
             }
 

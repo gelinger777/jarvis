@@ -22,7 +22,7 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static java.util.concurrent.ForkJoinPool.commonPool;
 import static rx.schedulers.Schedulers.from;
 
-
+@Deprecated
 public class ConcurrencyUtils {
 
   private static final Logger log = LoggerFactory.getLogger(ConcurrencyUtils.class);

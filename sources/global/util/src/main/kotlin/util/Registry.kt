@@ -1,8 +1,8 @@
 package eventstore
 
-import com.tars.util.common.RefCountHolder
 import global.computeIfAbsent
 import global.getOptional
+import util.RefCountHolder
 
 internal class Registry<K, V>(
         val supplierFactory: (K) -> (() -> V),

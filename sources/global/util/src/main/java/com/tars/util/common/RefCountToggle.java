@@ -3,6 +3,7 @@ package com.tars.util.common;
 import static com.tars.util.validation.Validator.condition;
 import static com.tars.util.validation.Validator.notNull;
 
+@Deprecated
 public class RefCountToggle {
 
   private final Runnable start;

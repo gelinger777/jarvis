@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import static com.tars.util.concurrent.ConcurrencyUtils.refCountTask;
 import static java.lang.Thread.currentThread;
 
+@Deprecated
 class HearBeatWatchdog {
 
   static final Logger log = LoggerFactory.getLogger(HearBeatWatchdog.class);

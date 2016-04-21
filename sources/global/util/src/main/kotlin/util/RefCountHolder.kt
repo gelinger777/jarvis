@@ -1,7 +1,5 @@
 package util
 
-import com.tars.util.common.RefCountToggle
-
 class RefCountHolder<T>(supplier: () -> T, finalizer: (T) -> Unit) {
 
     private val toggle: RefCountToggle

@@ -2,9 +2,10 @@ package sandbox
 
 
 import com.tars.util.Util.absolutePathOf
-import com.tars.util.concurrent.ConcurrencyUtils.bearSleep
 import net.openhft.chronicle.Chronicle
 import net.openhft.chronicle.ChronicleQueueBuilder
+import util.cpu
+import util.cpu.bearSleep
 import util.exceptionUtils.executeSilent
 import java.util.*
 

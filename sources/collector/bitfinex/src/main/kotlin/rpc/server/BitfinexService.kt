@@ -1,8 +1,8 @@
 package rpc.server
 
 import com.google.gson.JsonParser
-import com.tars.util.storage.EventStream
 import com.tars.util.validation.Validator.condition
+import eventstore.storage
 import global.*
 import io.grpc.stub.StreamObserver
 import org.apache.http.client.methods.RequestBuilder.get
@@ -115,7 +115,7 @@ internal class BitfinexService(val config: Config) : CollectorGrpc.Collector {
     override fun startRecordingTrades(pair: Pair, observer: StreamObserver<ExecutionStatus>) {
         // create recording observable
         val recordingObserver: StreamObserver<Trade> = object : StreamObserver<Trade> {
-            val stream = EventStream.get(config.tradeDataPath(pair))
+            val stream = storage.eventStream(config.tradeDataPath(pair))
 
             init {
                 // adding this observable to registry
@@ -124,21 +124,17 @@ internal class BitfinexService(val config: Config) : CollectorGrpc.Collector {
 
             override fun onNext(trade: Trade) {
                 // append to persistent event stream
-                stream.append(trade.toByteArray());
+                stream.write(trade.toByteArray());
             }
 
             override fun onError(error: Throwable) {
                 // write the error
                 exceptionUtils.report(error, "trade|$pair recording was interrupted with error");
-                // release chronicle resources
-                stream.close()
                 // cleaning up the registry
                 recordingTradeObservers.remove(pair)
             }
 
             override fun onCompleted() {
-                // release chronicle resources
-                stream.close()
                 // cleaning up the registry
                 recordingTradeObservers.remove(pair)
             }

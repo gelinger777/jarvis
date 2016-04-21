@@ -2,11 +2,9 @@ package eventstore
 
 import com.tars.util.validation.Validator.condition
 import global.logger
-import eventstore.readFrame
 import rx.Observable
 import util.cpu
 import util.exceptionUtils.report
-import eventstore.writeFrame
 
 class EventStream(val path: String) {
     private val log by logger()
@@ -48,6 +46,8 @@ class EventStream(val path: String) {
     fun streamRealtime(start: Long = -1): Observable<ByteArray> {
         return observe(start, attachRealtime = true)
     }
+
+    // todo support metadata
 
 
     private fun observe(start: Long = -1, end: Long = -1, attachRealtime: Boolean = false): Observable<ByteArray> {

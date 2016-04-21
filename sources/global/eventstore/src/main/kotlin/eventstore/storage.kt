@@ -6,13 +6,11 @@ import net.openhft.chronicle.Chronicle
 import net.openhft.chronicle.ChronicleQueueBuilder
 import util.cleanupTasks
 
-internal object storage {
+object storage {
     val log by logger()
 
     private val chronicles = mutableMapOf<String, Chronicle>()
-
     private val watchers = mutableMapOf<String, Watcher>()
-
     private val streams = mutableMapOf<String, EventStream>()
 
     internal fun chronicle(path: String): Chronicle {

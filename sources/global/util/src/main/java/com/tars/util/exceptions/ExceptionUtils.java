@@ -266,25 +266,3 @@ public class ExceptionUtils {
   }
 }
 
-/**
- * WTFException represents an unrecoverable error, a logical error that is not considered to ever happen in the system.
- */
-class WTFException extends RuntimeException {
-
-  WTFException() {
-    super();
-  }
-
-  WTFException(String message) {
-    super(message);
-  }
-
-  WTFException(String message, Throwable cause) {
-    super(message, cause);
-  }
-
-  WTFException(Throwable cause) {
-    super(cause);
-  }
-}
-
