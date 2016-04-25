@@ -1,8 +1,8 @@
 package bitfinex
 
 import com.tars.util.Util.absolutePathOf
-import global.folderName
 import proto.Pair
+import util.asFolderName
 import java.io.File.separator
 
 /**
@@ -18,11 +18,11 @@ internal data class Config(
 ) {
     fun tradeDataPath(pair: Pair): String {
         // ..\btc-usd\trades\data.*
-        return absolutePathOf(dataPath + separator + pair.folderName() + separator + "trades" + separator + "data")
+        return absolutePathOf(dataPath + separator + pair.asFolderName() + separator + "trades" + separator + "data")
     }
 
     fun bookDataPath(pair: Pair): String {
         // ..\btc-usd\book\data.*
-        return absolutePathOf(dataPath + separator + pair.folderName() + separator + "book" + separator + "data")
+        return absolutePathOf(dataPath + separator + pair.asFolderName() + separator + "book" + separator + "data")
     }
 }

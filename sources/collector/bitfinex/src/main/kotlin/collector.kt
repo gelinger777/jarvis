@@ -3,10 +3,10 @@ import bitfinex.Bitfinex
 import bitfinex.BitfinexContext
 import eventstore.storage
 import global.batch
-import global.json
 import org.springframework.boot.SpringApplication
 import proto.Order
-import util.repo
+import util.json
+import util.pair
 
 fun main(args: Array<String>) {
 
@@ -14,7 +14,7 @@ fun main(args: Array<String>) {
 
     val bitfinex = ctx.getBean(Bitfinex::class.java)
 
-    val pair = repo.pair("BTC", "USD")
+    val pair = pair("BTC", "USD")
     val path = bitfinex.config.tradeDataPath(pair)
     val stream = storage.eventStream(path)
 

@@ -3,11 +3,11 @@ package bitfinex;
 import com.google.gson.JsonArray
 import com.tars.util.validation.Validator.condition
 import proto.Order
+import proto.Order.Side.ASK
+import proto.Order.Side.BID
 import proto.Pair
-import proto.Side.ASK
-import proto.Side.BID
 import rx.subjects.PublishSubject
-import util.repo.order
+import util.order
 
 internal data class BookChannel(
         val name: String,
@@ -40,7 +40,7 @@ internal data class BookChannel(
                     volume = 0.0;
                 }
 
-                stream.onNext(order(side, price, volume, id))
+                stream.onNext(order(id, side, price, volume, 0)) // todo
             }
 
         } else if (element.isJsonPrimitive) {
@@ -62,7 +62,7 @@ internal data class BookChannel(
                     volume = 0.0;
                 }
 
-                stream.onNext(order(side, price, volume, id))
+                stream.onNext(order(id, side, price, volume, 0)) // todo
             } else {
                 // ensure it was heart beat
                 condition(primitive.isString && primitive.asString == "hb")

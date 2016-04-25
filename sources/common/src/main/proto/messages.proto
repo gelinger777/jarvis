@@ -3,57 +3,123 @@ option java_multiple_files = true;
 
 package proto;
 
-// services
+// services ============================================================================
 
+
+// Collector service provides interface to record and stream realtime
+// and historical data for a particular exchange, it only reads and records
+// publicly accessible data
 service Collector{
 
-    // getting info about collector service
+    rpc status(CollStatusReq) returns (CollStatusResp){}
+    rpc shutdown(CollShutdownReq) returns (CollShutdownResp){}
 
-    rpc accessibleMarketPairs(Empty) returns (Pairs){}
+    rpc streamTrades(StreamTradesReq) returns (stream Trade){}
+    rpc streamOrders(StreamOrdersReq) returns (stream Order){}
 
-    rpc getCurrentlyRecordingTradePairs(Empty) returns (Pairs){}
+    rpc recordTrades(RecordTradesReq) returns (RecordTradesResp){}
+    rpc recordOrders(RecordOrdersReq) returns (RecordOrdersResp){}
 
-    rpc getCurrentlyRecordingOrderPairs(Empty) returns (Pairs){}
-
-    rpc shutDown(Empty) returns (ExecutionStatus){}
-
-    // streaming realtime data
-
-    rpc streamTrades(Pair) returns (stream Trade){}
-
-    rpc streamOrders(Pair) returns (stream Order){}
-
-    // trade historical data
-
-    rpc getTradeStreamInfo(Pair) returns (TradeStreamInfo){}
-
-    rpc startRecordingTrades(Pair) returns (ExecutionStatus){}
-
-    rpc stopRecordingTrades(Pair) returns (ExecutionStatus){}
-
-    // orderbook historical data
-
-    rpc getOrderStreamInfo(Pair) returns (OrderStreamInfo){}
-
-    rpc startRecordingOrders(Pair) returns (ExecutionStatus){}
-
-    rpc stopRecordingOrders(Pair) returns (ExecutionStatus){}
-
-    // expose historical data trough chronicle TCP connection
-
-    rpc exposeHistoricalTradesData(Pair) returns (InetAddress){}
-
-    rpc closeHistoricalTradeData(Pair) returns (ExecutionStatus){}
-
-    rpc exposeHistoricalBookData(Pair) returns (InetAddress){}
-
-    rpc closeHistoricalBookData(Pair) returns (ExecutionStatus){}
-
+    rpc streamHistoricalTrades(StreamHistoricalTradesReq) returns (stream Trade){}
+    rpc streamHistoricalOrders(StreamHistoricalOrdersReq) returns (stream Order){}
 }
 
-// types
+// Controller service is providing interface to send commands to the particular exchange
+service Controller{
 
-message Empty {}
+    // information about service
+    rpc status(ContStatusReq) returns (ContStatusResp){}
+
+    // shuts down the service
+    rpc shutdown(ContShutdownReq) returns (ContShutdownResp){}
+
+    // puts or cancels orders
+    rpc order(OrderReq) returns (OrderResp){}
+}
+
+
+// request response types ===============================================================
+
+
+// collector service types
+
+message CollStatusReq{
+    enum Type {
+        ALL = 0;
+        ACCESSIBLE_MARKET_PAIRS = 1;
+        CURRENT_STREAMS = 2;
+        CURRENT_RECORDINGS = 3;
+    }
+    Type type = 1;
+}
+
+message CollStatusResp{
+    repeated Pair accessibleMarketPairs = 1;
+    repeated Pair activeOrderbookStreams = 2;
+    repeated Pair activeStreamTradess = 3;
+}
+
+message CollShutdownReq{
+    string reason = 1;
+}
+
+message CollShutdownResp{
+    bool success = 1;
+    string error = 2;
+}
+
+message StreamTradesReq{
+    Pair pair = 1;
+}
+
+
+message StreamOrdersReq{
+    Pair pair = 1;
+}
+
+
+message RecordTradesReq{
+    Pair pair = 1;
+}
+
+message RecordTradesResp{
+    bool success = 1;
+    string error = 2;
+}
+
+message RecordOrdersReq{
+    Pair pair = 1;
+}
+
+message RecordOrdersResp{
+    bool success = 1;
+    string error = 2;
+}
+
+message StreamHistoricalTradesReq{
+    Pair pair = 1;
+    int64 startIndex = 2;
+    int64 endIndex = 3;
+}
+
+message StreamHistoricalOrdersReq{
+    Pair pair = 1;
+    int64 startIndex = 2;
+    int64 endIndex = 3;
+}
+
+// controller service types
+
+message ContStatusReq{}
+message ContStatusResp{}
+message ContShutdownReq{}
+message ContShutdownResp{}
+message OrderReq{}
+message OrderResp{}
+
+
+// base types ==========================================================================
+
 
 message Currency {
     string symbol = 1;
@@ -64,47 +130,22 @@ message Pair {
     Currency quote = 2;
 }
 
-message Pairs {
-    repeated Pair pairs = 1;
-}
-
-enum Side {
-    BID = 0;
-    ASK = 1;
-}
-
 // Canceled orders shall have same order id but 0 price and 0 volume
 message Order {
-    double price = 1;
-    double volume = 2;
-    int64 id = 3;
-    Side side = 4;
-    int64 time = 5;
+    enum Side {
+        BID = 0;
+        ASK = 1;
+    }
+
+    int64 time = 1;
+    int64 id = 2;
+    double price = 3;
+    double volume = 4;
+    Side side = 5;
 }
 
 message Trade {
     int64 time = 1;
     double price = 2;
     double volume = 3;
-}
-
-//message ServiceInfo {
-//    string name = 1;
-//    map<string, string> properties = 2;
-//}
-
-message ExecutionStatus {
-    string placeholder = 1;
-}
-
-message TradeStreamInfo {
-    string placeholder = 1;
-}
-
-message OrderStreamInfo {
-    string placeholder = 1;
-}
-
-message InetAddress{
-    string placeholder = 1;
 }

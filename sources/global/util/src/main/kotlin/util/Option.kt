@@ -48,7 +48,7 @@ class Option<T>(val value: T?) {
         return this
     }
 
-    fun ifNotPresentTakeCompute(supplier: () -> T): Option<T> {
+    fun ifNotPresentCompute(supplier: () -> T): Option<T> {
         if (value == null) {
             return Option(supplier.invoke())
         }

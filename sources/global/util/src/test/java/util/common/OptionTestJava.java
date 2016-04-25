@@ -86,7 +86,7 @@ public class OptionTestJava {
   @Test
   public void testOrElseGet() {
     Option.empty()
-        .ifNotPresentTakeCompute(() -> "value")
+        .ifNotPresentCompute(() -> "value")
         .ifPresent((value) -> {
           Assert.assertEquals(value, "value");
         })

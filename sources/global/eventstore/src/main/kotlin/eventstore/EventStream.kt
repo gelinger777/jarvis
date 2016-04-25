@@ -49,7 +49,6 @@ class EventStream(val path: String) {
 
     // todo support metadata
 
-
     private fun observe(start: Long = -1, end: Long = -1, attachRealtime: Boolean = false): Observable<ByteArray> {
         // let the mess start!
         return Observable.create<ByteArray> { subscriber ->
@@ -62,7 +61,7 @@ class EventStream(val path: String) {
                 log.debug("streaming existing data")
 
                 if (hasStart) {
-                    condition(start >= 0) // todo test
+                    condition(start >= 0)
                     tailer.index(start - 1)
                 }
 

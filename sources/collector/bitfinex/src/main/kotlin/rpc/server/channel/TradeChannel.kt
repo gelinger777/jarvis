@@ -1,18 +1,18 @@
-package rpc.server
+package rpc.server.channel
 
 import com.google.gson.JsonArray
 import io.grpc.stub.StreamObserver
 import proto.Pair
 import proto.Trade
+import rpc.server.asTradeKey
 
 /**
  * Represents realtime data channel, many observers can subscribe for the channel.
  */
-internal data class RealtimeTradeChannel(
+internal data class TradeChannel(
         val pair: Pair,
-        val name: String = "TRADE|BITFINEX|${pair.base.symbol}|${pair.quote.symbol}",
-        val observers: MutableSet<StreamObserver<Trade>> = mutableSetOf(),
-        var id: Int = 0
+        val name: String = pair.asTradeKey(),
+        val observers: MutableSet<StreamObserver<Trade>> = mutableSetOf()
 ) {
     fun addObserver(observer: StreamObserver<Trade>) {
         observers.add(observer)

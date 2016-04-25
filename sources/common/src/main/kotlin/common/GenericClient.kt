@@ -24,6 +24,7 @@ interface GenericClient {
     fun activeTradeStreams(): Set<Pair>
 
     fun closeTradeStream(pair: Pair)
+
     // trading streams
 
     fun streamBook(pair: Pair): Observable<Order>

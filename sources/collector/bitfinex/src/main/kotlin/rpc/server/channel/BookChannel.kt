@@ -1,22 +1,22 @@
-package rpc.server;
+package rpc.server.channel;
 
 import com.google.gson.JsonArray
 import com.tars.util.validation.Validator.condition
 import io.grpc.stub.StreamObserver
 import proto.Order
+import proto.Order.Side.ASK
+import proto.Order.Side.BID
 import proto.Pair
-import proto.Side.ASK
-import proto.Side.BID
-import util.repo.order
+import rpc.server.asBookKey
+import util.order
 
 /**
  * Represents realtime data channel, many observers can subscribe for the channel.
  */
-internal data class RealtimeBookChannel(
+internal data class BookChannel(
         val pair: Pair,
-        val name: String = "BOOK|BITFINEX|${pair.base.symbol}|${pair.quote.symbol}",
-        val observers: MutableSet<StreamObserver<Order>> = mutableSetOf(),
-        var id: Int = 0
+        val name: String = pair.asBookKey(),
+        val observers: MutableSet<StreamObserver<Order>> = mutableSetOf()
 ) {
 
     fun addObserver(observer: StreamObserver<Order>) {
@@ -57,7 +57,7 @@ internal data class RealtimeBookChannel(
                     volume = 0.0;
                 }
 
-                val order = order(side, price, volume, id)
+                val order = order(id, side, price, volume, 0) // todo
 
                 observers.forEach { it.onNext(order) }
             }
@@ -81,7 +81,7 @@ internal data class RealtimeBookChannel(
                     volume = 0.0;
                 }
 
-                val order = order(side, price, volume, id)
+                val order = order(id, side, price, volume, 0) // todo
                 observers.forEach { it.onNext(order) }
             } else {
                 // ensure it was heart beat

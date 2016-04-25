@@ -57,7 +57,7 @@ class OptionTest {
     fun testIfNotPresentTakeSupplier() {
         assertEquals(
                 Option.Companion.of("val"),
-                Option.Companion.empty<String>().ifNotPresentTakeCompute { "val" }
+                Option.Companion.empty<String>().ifNotPresentCompute { "val" }
         )
     }
 
