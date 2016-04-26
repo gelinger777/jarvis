@@ -1,9 +1,9 @@
 package com.tars.common;
 
-import proto.Currency;
-import proto.Order;
-import proto.Pair;
-import proto.Trade;
+import proto.common.Currency;
+import proto.common.Order;
+import proto.common.Pair;
+import proto.common.Trade;
 
 import static java.lang.String.format;
 

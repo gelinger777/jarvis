@@ -16,8 +16,14 @@ include ":eventstore"
 project(':eventstore').projectDir = "$rootDir/sources/global/eventstore" as File
 
 
-// collectors
+
+include ":bitfinex-client"
+project(':bitfinex-client').projectDir = "$rootDir/sources/client/bitfinex" as File
 
 
-include ":bitfinex"
-project(':bitfinex').projectDir = "$rootDir/sources/collector/bitfinex" as File
+include ":bitfinex-collector-client"
+project(':bitfinex-collector-client').projectDir = "$rootDir/sources/collector/bitfinex/client" as File
+
+
+include ":bitfinex-collector-server"
+project(':bitfinex-collector-server').projectDir = "$rootDir/sources/collector/bitfinex/server" as File

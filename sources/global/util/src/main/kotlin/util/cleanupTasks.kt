@@ -83,19 +83,19 @@ object cleanupTasks {
     }
 }
 
-fun main(args: Array<String>) {
-    cleanupTasks.add("task 1", {}, 1)
-    cleanupTasks.add("task 2", {}, 2)
-    cleanupTasks.add("task 3", {}, 3)
-    cleanupTasks.add("task 3.1", {}, 3)
-    cleanupTasks.add("task 3.2", {}, 3)
-    cleanupTasks.add("task 4", {}, 4)
-    cleanupTasks.add("task 4", {}, 4)
-    cleanupTasks.add("task", {}, 4)
-
-    if(net.http != null && net.socket != null){
-        cleanupTasks.printExecutionInOrder()
-    }
-
-    exceptionUtils.wtf()
-}
+//fun main(args: Array<String>) {
+//    cleanupTasks.add("task 1", {}, 1)
+//    cleanupTasks.add("task 2", {}, 2)
+//    cleanupTasks.add("task 3", {}, 3)
+//    cleanupTasks.add("task 3.1", {}, 3)
+//    cleanupTasks.add("task 3.2", {}, 3)
+//    cleanupTasks.add("task 4", {}, 4)
+//    cleanupTasks.add("task 4", {}, 4)
+//    cleanupTasks.add("task", {}, 4)
+//
+//    if(net.http != null && net.socket != null){
+//        cleanupTasks.printExecutionInOrder()
+//    }
+//
+//    exceptionUtils.wtf()
+//}

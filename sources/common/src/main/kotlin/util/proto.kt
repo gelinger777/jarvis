@@ -4,7 +4,7 @@ import com.google.protobuf.GeneratedMessage
 import com.google.protobuf.util.JsonFormat
 import com.tars.util.validation.Validator
 import io.grpc.stub.StreamObserver
-import proto.*
+import proto.common.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Pattern
 
@@ -91,12 +91,17 @@ private object repo {
 
 // services ============================================================================
 
+// request
+
 fun requestStreamTrades(pair: Pair): StreamTradesReq {
     return StreamTradesReq.newBuilder().setPair(pair).build()
 }
+
 fun requestStreamOrders(pair: Pair): StreamOrdersReq {
     return StreamOrdersReq.newBuilder().setPair(pair).build()
 }
+
+// response
 
 fun respondCollStatus(observer: StreamObserver<CollStatusResp>, accessiblePairs: List<Pair>) {
     observer.onNext(CollStatusResp.newBuilder().addAllAccessibleMarketPairs(accessiblePairs).build());
@@ -110,5 +115,10 @@ fun respondCollShutdown(observer: StreamObserver<CollShutdownResp>, success: Boo
 
 fun respondRecordTrades(observer: StreamObserver<RecordTradesResp>, success: Boolean) {
     observer.onNext(RecordTradesResp.newBuilder().setSuccess(success).build());
+    observer.onCompleted()
+}
+
+fun respondRecordOrders(observer: StreamObserver<RecordOrdersResp>, success: Boolean) {
+    observer.onNext(RecordOrdersResp.newBuilder().setSuccess(success).build());
     observer.onCompleted()
 }

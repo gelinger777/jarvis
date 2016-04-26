@@ -1,7 +1,7 @@
 package com.tars.common;
 
-import proto.Currency;
-import proto.Pair;
+import proto.common.Currency;
+import proto.common.Pair;
 
 import static com.tars.util.validation.Validator.allNotNullOrEmpty;
 import static com.tars.util.validation.Validator.areUpperCase;

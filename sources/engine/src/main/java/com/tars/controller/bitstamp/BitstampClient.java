@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import proto.Order;
-import proto.Pair;
-import proto.Trade;
+import proto.common.Order;
+import proto.common.Pair;
+import proto.common.Trade;
 import rx.Observable;
 
 import static com.tars.util.exceptions.ExceptionUtils.notImplemented;

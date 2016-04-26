@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import proto.Pair;
-import proto.Trade;
+import proto.common.Pair;
+import proto.common.Trade;
 
 import static com.tars.common.Util.pair;
 

@@ -5,9 +5,9 @@ import com.google.gson.JsonParser;
 
 import com.tars.util.exceptions.ExceptionUtils;
 
-import proto.Order;
-import proto.Side;
-import proto.Trade;
+import proto.common.Order;
+import proto.common.Side;
+import proto.common.Trade;
 
 import static com.tars.controller.bitstamp.BitstampClient.log;
 

@@ -1,6 +1,6 @@
 package common
 
-import proto.*
+import proto.common.*
 import rx.Observable
 
 /**

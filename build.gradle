@@ -20,6 +20,7 @@ buildscript {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'kotlin'
+    apply plugin: 'com.google.protobuf'
 
     group = "jarvis" // we don't need the domain
 
@@ -76,89 +77,6 @@ subprojects {
     configurations.all.collect {
         it.exclude group: 'commons-logging'
         it.exclude group: 'ch.qos.logback'
-    }
-
-    sourceSets {
-        main {
-            java {
-                srcDirs 'src/main/java'
-            }
-            kotlin {
-                srcDirs 'src/main/kotlin'
-            }
-        }
-        test {
-            java {
-                srcDirs 'src/test/java'
-            }
-            kotlin {
-                srcDirs 'src/test/kotlin'
-            }
-        }
-    }
-
-    task 'create-dirs' << {
-        description = 'Initializes directory structure according to source sets'
-        sourceSets.all { set ->
-            set.allSource.srcDirs.each { it.mkdirs() }
-        }
-    }
-
-}
-
-// Util =========================================================================================
-
-project(":util") {
-
-    description = "[lib] Global utilities for java/kotlin development (not jarvis specific)."
-
-    // For now we push all dependencies to global project (will split them later)
-    dependencies {
-        // email
-        compile 'net.sargue:mailgun:1.0.0'
-
-        // http
-        compile 'org.apache.httpcomponents:httpclient:4.5.1'
-        compile 'org.apache.httpcomponents:fluent-hc:4.5.1'
-        compile 'org.apache.httpcomponents:httpasyncclient:4.0'
-
-        // websocket
-        compile 'javax.websocket:javax.websocket-api:1.0'
-        compile 'org.eclipse.jetty.websocket:javax-websocket-client-impl:9.2.7.v20150116'
-        compile 'org.eclipse.jetty.websocket:javax-websocket-server-impl:9.2.7.v20150116'
-
-        // wamp
-        compile 'org.javassist:javassist:3.20.0-GA'
-        compile 'ws.wamp.jawampa:jawampa-netty:0.4.1'
-
-        // pusher
-        compile 'com.pusher:pusher-java-client:1.0.0'
-    }
-}
-
-// Event Store ==================================================================================
-
-project(":eventstore") {
-
-    description = "[lib] Event Store persistence."
-
-    dependencies {
-        compile project(":util")
-
-        // chronicle
-        compile 'net.openhft:chronicle:3.6.0'
-    }
-}
-
-// Common =======================================================================================
-
-project(":common") {
-    apply plugin: 'com.google.protobuf'
-
-    description = "[lib] Common jarvis codebase shared across multiple modules."
-
-    dependencies {
-        compile project(":util")
     }
 
     protobuf {
@@ -229,6 +147,71 @@ project(":common") {
             }
         }
     }
+
+    task 'create-dirs' << {
+        description = 'Initializes directory structure according to source sets'
+        sourceSets.all { set ->
+            set.allSource.srcDirs.each { it.mkdirs() }
+        }
+    }
+
+}
+
+// Util =========================================================================================
+
+project(":util") {
+
+    description = "[lib] Global utilities for java/kotlin development (not jarvis specific)."
+
+    // For now we push all dependencies to global project (will split them later)
+    dependencies {
+        // email
+        compile 'net.sargue:mailgun:1.0.0'
+
+        // http
+        compile 'org.apache.httpcomponents:httpclient:4.5.1'
+        compile 'org.apache.httpcomponents:fluent-hc:4.5.1'
+        compile 'org.apache.httpcomponents:httpasyncclient:4.0'
+
+        // websocket
+        compile 'javax.websocket:javax.websocket-api:1.0'
+        compile 'org.eclipse.jetty.websocket:javax-websocket-client-impl:9.2.7.v20150116'
+        compile 'org.eclipse.jetty.websocket:javax-websocket-server-impl:9.2.7.v20150116'
+
+        // wamp
+        compile 'org.javassist:javassist:3.20.0-GA'
+        compile 'ws.wamp.jawampa:jawampa-netty:0.4.1'
+
+        // pusher
+        compile 'com.pusher:pusher-java-client:1.0.0'
+    }
+}
+
+// Event Store ==================================================================================
+
+project(":eventstore") {
+
+    description = "[lib] Event Store persistence."
+
+    dependencies {
+        compile project(":util")
+
+        // chronicle
+        compile 'net.openhft:chronicle:3.6.0'
+    }
+}
+
+// Common =======================================================================================
+
+project(":common") {
+
+    description = "[lib] Common jarvis codebase shared across multiple modules."
+
+    dependencies {
+        compile project(":util")
+    }
+
+
 }
 
 // Engine =======================================================================================
@@ -249,10 +232,36 @@ project(":engine") {
 
 // Bitfinex =====================================================================================
 
-project(":bitfinex") {
+project(":bitfinex-client") {
     apply plugin: 'spring-boot'
 
-    description = "[app] Bitfinex Collector service collects and stores historical data for trades and orders."
+    description = "[lib] Bitfinex client library to work with bitfinex exchange."
+    version = "0.1"
+
+    dependencies {
+        compile project(":common")
+        compile project(":eventstore")
+    }
+
+}
+
+project(":bitfinex-collector-client") {
+    apply plugin: 'spring-boot'
+
+    description = "[lib] Bitfinex collector client library allows to connect and work with collector service."
+    version = "0.1"
+
+    dependencies {
+        compile project(":common")
+        compile project(":eventstore")
+    }
+
+}
+
+project(":bitfinex-collector-server") {
+    apply plugin: 'spring-boot'
+
+    description = "[app] Bitfinex collector server microservice collects trade and orderbook data to a persistent store."
     version = "0.1"
 
     dependencies {

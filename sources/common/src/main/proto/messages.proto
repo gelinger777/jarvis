@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_multiple_files = true;
 
-package proto;
+package proto.common;
 
 // services ============================================================================
 
@@ -57,6 +57,12 @@ message CollStatusResp{
     repeated Pair accessibleMarketPairs = 1;
     repeated Pair activeOrderbookStreams = 2;
     repeated Pair activeStreamTradess = 3;
+}
+
+message StreamStatus{
+    int64 startTime = 1;
+    int64 lastUpdate = 2;
+    int64 count = 3;
 }
 
 message CollShutdownReq{
