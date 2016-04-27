@@ -16,13 +16,4 @@ internal data class Config(
         var book: MutableMap<String, Int> = mutableMapOf<String, Int>()
 ) {
 
-    fun tradeDataPath(pair: Pair): String {
-        // ..\btc-usd\trades\data.*
-        return dataPath + separator + pair.asFolderName() + separator + "trades" + separator + "data"
-    }
-
-    fun bookDataPath(pair: Pair): String {
-        // ..\btc-usd\book\data.*
-        return dataPath + separator + pair.asFolderName() + separator + "book" + separator + "data"
-    }
 }

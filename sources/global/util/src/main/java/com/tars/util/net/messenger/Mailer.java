@@ -11,7 +11,7 @@ import static com.tars.util.validation.Validator.condition;
 
 public class Mailer {
 
-  private static final Logger log = LoggerFactory.getLogger(Mailer.class);
+  private static final Logger log = LoggerFactory.getLogger("mailer");
 
   private static final Configuration configuration = new Configuration()
       .domain("sandboxbfb47b35ceda4ea7b6da990203cb3351.mailgun.org")

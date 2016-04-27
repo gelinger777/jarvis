@@ -8,7 +8,7 @@ import static com.tars.util.exceptions.ExceptionUtils.*;
 
 public final class WebsocketHub {
 
-  private static final Logger log = LoggerFactory.getLogger(WebsocketHub.class);
+  private static final Logger log = LoggerFactory.getLogger("websocket");
 
   // servers (have their own connected clients)
   private Map<String, WebsocketServer> servers = new HashMap<>();

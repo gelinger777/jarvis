@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 
 object heartBeat {
-    private val log by logger()
+    private val log by logger("heartbeat")
     private val registry = ConcurrentHashMap<String, Pulse>()
     private val watchDogTask = RefCountTask("heartbeat-watchdog", {
         log.info("heartbeat watchdog started")
@@ -19,7 +19,12 @@ object heartBeat {
             for (pulse in registry.values) {
                 log.trace("checking : {}", pulse.name)
                 // filter those who violated the timeout
-                if (System.currentTimeMillis() - pulse.lastBeat.get() < pulse.timeout) {
+                if ((System.currentTimeMillis() - pulse.lastBeat.get()) > pulse.timeout) {
+                    println(System.currentTimeMillis())
+                    println(pulse.lastBeat.get())
+                    println(pulse.timeout)
+
+
                     // schedule the callback execution
                     log.warn("heartbeat violation : {}", pulse.name)
                     io.execute(pulse.callback)
@@ -61,10 +66,10 @@ object heartBeat {
         val pulse = registry[name] ?: throw IllegalArgumentException("no heartbeat is registered under [$name]")
         pulse.lastBeat.set(System.currentTimeMillis())
 
-        log.debug("beat on : $name")
+        log.info("beat on : $name")
     }
 
-    private data class Pulse(val name: String, val timeout: Long, val callback: () -> Unit, var lastBeat: AtomicLong = AtomicLong(System.currentTimeMillis()))
+    data class Pulse(val name: String, val timeout: Long, val callback: () -> Unit, var lastBeat: AtomicLong = AtomicLong(System.currentTimeMillis()))
 }
 
 

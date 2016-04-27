@@ -16,7 +16,6 @@ import java.io.StringWriter
 import java.util.*
 import java.util.function.Consumer
 
-//
 
 fun consoleStream(): Observable<String> {
     return Observable.create(object : Observable.OnSubscribe<String> {
@@ -71,6 +70,14 @@ fun <T> PublishSubject<T>.asGrpcObserver(): StreamObserver<T> {
             subject.onCompleted()
         }
     }
+}
+
+fun <T> StreamObserver<T>.subscribe(source: Observable<T>) {
+    source.subscribe(
+            { this.onNext(it) },
+            { this.onError(it) },
+            { this.onCompleted() }
+    )
 }
 
 // logger

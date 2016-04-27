@@ -18,7 +18,7 @@ class IndependentClient extends Endpoint implements WebsocketClient {
   Logger log = LoggerFactory.getLogger(WebsocketClient.class);
 
   URI address;
-  Option<Session> session = Option.<Session>empty();
+  MutableOption<Session> session = MutableOption.empty();
   PublishSubject<String> subject = PublishSubject.create();
   LinkedList<String> pending = new LinkedList<>();
 

@@ -7,7 +7,7 @@ import util.exceptionUtils.executeSilent
 
 
 object cleanupTasks {
-    val log by logger()
+    val log by logger("maid")
     val tasks = mutableMapOf<String, Pair<Int, () -> Unit>>()
     internal val internalTasks = mutableMapOf<String, Pair<Int, () -> Unit>>()
 

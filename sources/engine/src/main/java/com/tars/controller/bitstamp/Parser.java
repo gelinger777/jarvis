@@ -1,15 +1,12 @@
 package com.tars.controller.bitstamp;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
-import com.tars.util.exceptions.ExceptionUtils;
+import com.tars.util.exceptions.*;
 
-import proto.common.Order;
-import proto.common.Side;
-import proto.common.Trade;
+import proto.common.*;
 
-import static com.tars.controller.bitstamp.BitstampClient.log;
+import static com.tars.controller.bitstamp.BitstampClient.*;
 
 /**
  * Converts bitstamp json messages to generic messages
@@ -116,7 +113,7 @@ class Parser {
     return Order.newBuilder()
         .setPrice(json.get("price").getAsDouble())
         .setVolume(json.get("amount").getAsDouble())
-        .setSide((json.get("type").getAsInt() == 0) ? Side.BID : Side.ASK)
+        .setSide((json.get("type").getAsInt() == 0) ? Order.Side.BID : Order.Side.ASK)
 //        .setId(json.get("id").getAsLong())
 //        .setMetadata("bitstamp")
         .build();

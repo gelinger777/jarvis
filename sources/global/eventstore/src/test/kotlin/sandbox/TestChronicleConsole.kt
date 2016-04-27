@@ -5,7 +5,7 @@ import com.tars.util.Util.absolutePathOf
 import net.openhft.chronicle.Chronicle
 import net.openhft.chronicle.ChronicleQueueBuilder
 import util.cpu
-import util.cpu.bearSleep
+import util.cpu.sleep
 import util.exceptionUtils.executeSilent
 import java.util.*
 
@@ -74,7 +74,7 @@ private fun startThread() {
             val length = bytes.size
             flag = true
             while (flag) {
-                bearSleep(1000)
+                sleep(1000)
                 appender.startExcerpt(100)
                 appender.writeInt(length)
                 appender.write(bytes)

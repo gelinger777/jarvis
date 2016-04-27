@@ -5,6 +5,7 @@ import com.tars.util.validation.Validator.condition
 import proto.common.Order
 import proto.common.Order.Side.ASK
 import proto.common.Order.Side.BID
+import util.heartBeat
 import util.order
 
 /**
@@ -16,6 +17,8 @@ internal class BookChannel : BroadCoastingChannel<Order> {
     }
 
     override fun parse(array: JsonArray) {
+        heartBeat.beat(name)
+
         // either heartbeat or single order
         val element = array.get(1)
 
@@ -40,9 +43,8 @@ internal class BookChannel : BroadCoastingChannel<Order> {
                     volume = 0.0;
                 }
 
-                val order = order(id, side, price, volume, 0) // todo
-
-                observers.forEach { it.onNext(order) }
+                val order = order(id, side, price, volume)
+                subject.onNext(order)
             }
 
         } else if (element.isJsonPrimitive) {
@@ -64,13 +66,12 @@ internal class BookChannel : BroadCoastingChannel<Order> {
                     volume = 0.0;
                 }
 
-                val order = order(id, side, price, volume, 0) // todo
-                observers.forEach { it.onNext(order) }
+                val order = order(id, side, price, volume)
+                subject.onNext(order)
             } else {
                 // ensure it was heart beat
                 condition(primitive.isString && primitive.asString == "hb")
             }
-
         }
     }
 }

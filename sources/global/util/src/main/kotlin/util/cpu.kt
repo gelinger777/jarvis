@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 object cpu {
 
-    val log by logger()
+    val log by logger("cpu")
 
     private val threadFactory = { runnable: Runnable ->
         val thread = Thread(runnable)
@@ -60,11 +60,11 @@ object cpu {
 
     // sleep
 
-    @JvmStatic fun bearSleep(millis: Long) {
+    @JvmStatic fun sleep(millis: Long) {
         executeSilent { TimeUnit.MILLISECONDS.sleep(millis) }
     }
 
-    @JvmStatic fun bearSleep(value: Long, unit: TimeUnit) {
+    @JvmStatic fun sleep(value: Long, unit: TimeUnit) {
         executeSilent { unit.sleep(value) }
     }
 }

@@ -41,7 +41,7 @@ fun String.asPair(): Pair {
 
     return pair(
             base = matcher.group(1),
-            quote = matcher.group(3)
+            quote = matcher.group(2)
     )
 }
 
@@ -54,7 +54,7 @@ fun Pair.asFolderName(): String {
 }
 
 fun Pair.asKey(): String {
-    return "${this.base}|${this.quote}"
+    return "${this.base.symbol}|${this.quote.symbol}"
 }
 
 fun trade(price: Double, volume: Double, time: Long): Trade {
@@ -66,7 +66,7 @@ fun trade(price: Double, volume: Double, time: Long): Trade {
 }
 
 
-fun order(id: Long = 0, side: Order.Side, price: Double, volume: Double, time: Long): Order {
+fun order(id: Long = 0, side: Order.Side, price: Double, volume: Double, time: Long = System.currentTimeMillis()): Order {
     Validator.condition(time > 0)
     return Order.newBuilder()
             .setId(id)

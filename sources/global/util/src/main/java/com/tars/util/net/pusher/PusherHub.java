@@ -1,24 +1,21 @@
 package com.tars.util.net.pusher;
 
 
-import com.pusher.client.Pusher;
-import com.pusher.client.channel.Channel;
-import com.pusher.client.channel.SubscriptionEventListener;
-import util.Option;
+import com.pusher.client.*;
+import com.pusher.client.channel.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.subjects.*;
+import util.*;
 
 
 public class PusherHub {
 
-  private static final Logger log = LoggerFactory.getLogger(PusherHub.class);
+  private static final Logger log = LoggerFactory.getLogger("pusher");
 
   private static final Map<String, PusherWrapper> pushers = new HashMap<>();
 

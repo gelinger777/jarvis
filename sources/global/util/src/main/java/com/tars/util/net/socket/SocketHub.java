@@ -23,7 +23,7 @@ import static java.nio.channels.SelectionKey.*;
  */
 public class SocketHub {
 
-  private static final Logger log = LoggerFactory.getLogger(SocketHub.class);
+  private static final Logger log = LoggerFactory.getLogger("socket");
 
   private volatile Selector selector;
   private volatile boolean hasScheduledTasks;
