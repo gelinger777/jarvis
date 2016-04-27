@@ -4,23 +4,25 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
 internal open class BitfinexContext {
-//    val log by logger()
+//    val log by logger("spring-context")
 //
 //    @Autowired
 //    var environment: Environment? = null
 //
 //    @Bean
 //    @ConfigurationProperties(prefix = "bitfinex")
-//    open fun config(): Config {
-//        return Config()
+//    open fun config(): BitfinexConfig {
+//        return BitfinexConfig()
 //    }
 //
-//    @Bean(initMethod = "start", destroyMethod = "stop")
-//    open fun bitfinex(config: Config): Bitfinex {
+//    @Bean
+//    open fun bitfinex(config: BitfinexConfig): Bitfinex {
 //        return Bitfinex(config)
 //    }
 //
-//    // lifecycle
+//    @Bean fun bitfinexServer(bitfinex: Bitfinex): Server {
+//        return BitfinexService(bitfinex)
+//    }
 //
 //    @PostConstruct
 //    fun init() {
@@ -28,7 +30,7 @@ internal open class BitfinexContext {
 //        for (profile in environment!!.activeProfiles) {
 //            log.info("registering failure handler (production mode)")
 //            if (profile == "prod") {
-//                onUnrecoverableFailure { throwable -> Mailer.alert("unrecoverable error", throwable.stackTraceAsString()) }
+//                exceptionUtils.onUnrecoverableFailure { throwable -> Mailer.alert("unrecoverable error", throwable.stackTraceAsString()) }
 //                break
 //            }
 //        }

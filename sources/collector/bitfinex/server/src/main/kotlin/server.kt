@@ -1,10 +1,8 @@
-
-
 fun main(args: Array<String>) {
 
-    //    val ctx = SpringApplication.run(BitfinexContext::class.java, *args)
-    //
-    //    val bitfinex = ctx.getBean(Bitfinex::class.java)
+
+
+
     //
     //    val pair = pair("BTC", "USD")
     //    val path = bitfinex.config.tradeDataPath(pair)

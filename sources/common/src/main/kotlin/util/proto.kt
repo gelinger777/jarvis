@@ -108,11 +108,6 @@ fun respondCollStatus(observer: StreamObserver<CollStatusResp>, accessiblePairs:
     observer.onCompleted()
 }
 
-fun respondCollShutdown(observer: StreamObserver<CollShutdownResp>, success: Boolean) {
-    observer.onNext(CollShutdownResp.newBuilder().setSuccess(success).build());
-    observer.onCompleted()
-}
-
 fun respondRecordTrades(observer: StreamObserver<RecordTradesResp>, success: Boolean) {
     observer.onNext(RecordTradesResp.newBuilder().setSuccess(success).build());
     observer.onCompleted()

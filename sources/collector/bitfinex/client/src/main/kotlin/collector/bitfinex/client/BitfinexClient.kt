@@ -22,10 +22,6 @@ class BitfinexClient(val host: String, val port: Int) : GenericCollector {
         return blockingStub.status(request)
     }
 
-    override fun shutdown(request: CollShutdownReq): CollShutdownResp {
-        return blockingStub.shutdown(request)
-    }
-
     override fun streamTrades(request: StreamTradesReq): Observable<Trade> {
         val subject = PublishSubject.create<Trade>()
         asyncStub.streamTrades(request, subject.asGrpcObserver())

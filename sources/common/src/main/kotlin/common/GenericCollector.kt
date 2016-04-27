@@ -12,8 +12,6 @@ interface GenericCollector {
 
     fun status(request: CollStatusReq): CollStatusResp
 
-    fun shutdown(request: CollShutdownReq): CollShutdownResp
-
     fun streamTrades(request: StreamTradesReq): Observable<Trade>
 
     fun streamOrders(request: StreamOrdersReq) : Observable<Order>

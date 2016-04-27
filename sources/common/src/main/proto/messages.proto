@@ -12,7 +12,6 @@ package proto.common;
 service Collector{
 
     rpc status(CollStatusReq) returns (CollStatusResp){}
-    rpc shutdown(CollShutdownReq) returns (CollShutdownResp){}
 
     rpc streamTrades(StreamTradesReq) returns (stream Trade){}
     rpc streamOrders(StreamOrdersReq) returns (stream Order){}
@@ -29,9 +28,6 @@ service Controller{
 
     // information about service
     rpc status(ContStatusReq) returns (ContStatusResp){}
-
-    // shuts down the service
-    rpc shutdown(ContShutdownReq) returns (ContShutdownResp){}
 
     // puts or cancels orders
     rpc order(OrderReq) returns (OrderResp){}
@@ -63,15 +59,6 @@ message StreamStatus{
     int64 startTime = 1;
     int64 lastUpdate = 2;
     int64 count = 3;
-}
-
-message CollShutdownReq{
-    string reason = 1;
-}
-
-message CollShutdownResp{
-    bool success = 1;
-    string error = 2;
 }
 
 message StreamTradesReq{
@@ -118,8 +105,6 @@ message StreamHistoricalOrdersReq{
 
 message ContStatusReq{}
 message ContStatusResp{}
-message ContShutdownReq{}
-message ContShutdownResp{}
 message OrderReq{}
 message OrderResp{}
 

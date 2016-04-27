@@ -50,7 +50,7 @@ subprojects {
         compile 'io.grpc:grpc-all:0.13.2'
 
         // rx java
-        compile 'io.reactivex:rxjava:1.0.14'
+        compile 'io.reactivex:rxjava:1.1.3'
 
         // java 8 stream utils
         compile 'one.util:streamex:0.5.5'
@@ -65,9 +65,10 @@ subprojects {
         compile 'org.apache.commons:commons-io:1.3.2'
 
         // logging
-        compile('org.slf4j:slf4j-api:1.7.13') { force = true }
-        compile('org.slf4j:slf4j-log4j12:1.7.13') { force = true }
-        compile('org.slf4j:jcl-over-slf4j:1.7.13') { force = true }
+        compile('org.slf4j:slf4j-api:1.7.19') { force = true }
+        compile('org.slf4j:slf4j-log4j12:1.7.19') { force = true }
+        compile('org.slf4j:jcl-over-slf4j:1.7.19') { force = true }
+        compile('org.slf4j:jul-to-slf4j:1.7.21') { force = true }
         runtime('log4j:log4j:1.2.17') { force = true }
 
         // test
@@ -266,7 +267,8 @@ project(":bitfinex-collector-client") {
 project(":bitfinex-collector-server") {
     apply plugin: 'spring-boot'
 
-    description = "[app] Bitfinex collector server microservice collects trade and orderbook data to a persistent store."
+    description =
+            "[app] Bitfinex collector server microservice collects trade and orderbook data to a persistent store."
     version = "0.1"
 
     dependencies {
