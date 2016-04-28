@@ -2,30 +2,29 @@ package collector.bitfinex.server
 
 import bitfinex.Bitfinex
 import collector.bitfinex.server.recorder.RecordingObserver
-import eventstore.storage
+import common.util.asFolderName
+import common.util.respondCollInfo
+import common.util.respondRecordOrders
+import common.util.respondRecordTrades
+import io.grpc.stub.StreamObserver
+import proto.common.*
 import util.global.computeIfAbsent
 import util.global.logger
 import util.global.subscribe
-import io.grpc.stub.StreamObserver
-import proto.common.*
-import common.util.asFolderName
-import common.util.respondCollStatus
-import common.util.respondRecordOrders
-import common.util.respondRecordTrades
 import java.io.File
 
-internal class BitfinexService(val bitfinex : Bitfinex) : CollectorGrpc.Collector {
+internal class BitfinexService(val bitfinex: Bitfinex) : CollectorGrpc.Collector {
     val log by logger("bitfinex-collector-server")
 
     val recorders = mutableMapOf<String, Any>()
 
 
-    override fun status(request: CollStatusReq, observer: StreamObserver<CollStatusResp>) {
+    override fun info(request: CollInfoReq, observer: StreamObserver<CollInfoResp>) {
         log.debug("getting accessible market pairs")
 
         val supportedPairs = bitfinex.symbols()
 
-        respondCollStatus(observer, supportedPairs)
+        respondCollInfo(observer, supportedPairs)
     }
 
     override fun streamTrades(request: StreamTradesReq, observer: StreamObserver<Trade>) {
@@ -40,9 +39,7 @@ internal class BitfinexService(val bitfinex : Bitfinex) : CollectorGrpc.Collecto
         val path = tradeDataPath(request.pair)
 
         recorders.computeIfAbsent(path, {
-            val recordingObserver = RecordingObserver<Trade>(it)
-            recordingObserver.subscribe(bitfinex.streamTrades(request.pair))
-            recordingObserver
+            RecordingObserver<Trade>(it).apply { this.subscribe(bitfinex.streamTrades(request.pair)) }
         })
 
         respondRecordTrades(observer, success = true)
@@ -53,9 +50,7 @@ internal class BitfinexService(val bitfinex : Bitfinex) : CollectorGrpc.Collecto
         val path = tradeDataPath(request.pair)
 
         recorders.computeIfAbsent(path, {
-            val recordingObserver = RecordingObserver<Order>(it)
-            recordingObserver.subscribe(bitfinex.streamOrders(request.pair))
-            recordingObserver
+            RecordingObserver<Order>(it).apply { this.subscribe(bitfinex.streamOrders(request.pair)) }
         })
 
         respondRecordOrders(observer, success = true)
@@ -63,25 +58,25 @@ internal class BitfinexService(val bitfinex : Bitfinex) : CollectorGrpc.Collecto
 
 
     override fun streamHistoricalTrades(request: StreamHistoricalTradesReq, observer: StreamObserver<Trade>) {
-        val path = tradeDataPath(request.pair)
-        val stream = storage.eventStream(path)
-
-        val dataStream = stream
-                .stream(request.startIndex, request.endIndex)
-                .map { Trade.parseFrom(it) } // note : unnecessary serialization
-
-        observer.subscribe(dataStream)
+        //        val path = tradeDataPath(request.pair)
+        //        val stream = storage.eventStream(path)
+        //
+        //        val dataStream = stream
+        //                .stream(request.startIndex, request.endIndex)
+        //                .map { Trade.parseFrom(it) } // note : unnecessary serialization
+        //
+        //        observer.subscribe(dataStream)
     }
 
     override fun streamHistoricalOrders(request: StreamHistoricalOrdersReq, observer: StreamObserver<Order>) {
-        val path = ordersDataPath(request.pair)
-        val stream = storage.eventStream(path)
-
-        val dataStream = stream
-                .stream(request.startIndex, request.endIndex)
-                .map { Order.parseFrom(it) } // note : unnecessary serialization
-
-        observer.subscribe(dataStream)
+        //        val path = ordersDataPath(request.pair)
+        //        val stream = storage.eventStream(path)
+        //
+        //        val dataStream = stream
+        //                .stream(request.startIndex, request.endIndex)
+        //                .map { Order.parseFrom(it) } // note : unnecessary serialization
+        //
+        //        observer.subscribe(dataStream)
     }
 
 

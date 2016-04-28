@@ -7,9 +7,9 @@ import com.tars.util.net.ws.WebsocketHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.tars.util.exceptions.ExceptionUtils.notImplemented;
-import static com.tars.util.exceptions.ExceptionUtils.onUnrecoverableFailure;
-import static com.tars.util.validation.Validator.condition;
+import static util.global.ExceptionHandlingKt.*;
+import static util.global.FunctionsKt.*;
+import static util.global.ValidationKt.*;
 
 /**
  * Instantiates essential components for communication over network.
@@ -32,7 +32,7 @@ public class NetworkUtils {
     httpHub = new HttpHub();
     wsHub = new WebsocketHub();
 
-    onUnrecoverableFailure(throwable -> close());
+    onUnrecoverableFailure(consumer(throwable -> close()));
     isInitialized = true;
     log.info("initialized");
   }

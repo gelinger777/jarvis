@@ -1,4 +1,4 @@
-package collector.bitfinex.server.channel
+package bitfinex.channel
 
 import com.google.gson.JsonArray
 import rx.Observable

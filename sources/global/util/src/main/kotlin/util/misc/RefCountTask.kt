@@ -1,7 +1,8 @@
-package util
+package util.misc
 
 
-import com.tars.util.exceptions.ExceptionUtils.wtf
+import util.Option
+import util.global.wtf
 import kotlin.concurrent.thread
 
 class RefCountTask(val name: String, val task: () -> Unit, val terminationTimeout: Long = 10000) {

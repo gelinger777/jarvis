@@ -213,7 +213,7 @@ project(":eventstore-client") {
     description = "[lib] Event Store GRPC client."
 
     dependencies {
-        compile project(":util")
+        compile project(":common")
     }
 }
 
@@ -222,7 +222,7 @@ project(":eventstore-server") {
     description = "[app] Event Store server."
 
     dependencies {
-        compile project(":util")
+        compile project(":common")
         compile project(":eventstore-client")
 
         // chronicle

@@ -11,7 +11,7 @@ package proto.common;
 // publicly accessible data
 service Collector{
 
-    rpc status(CollStatusReq) returns (CollStatusResp){} // todo change to info
+    rpc info(CollInfoReq) returns (CollInfoResp){}
 
     rpc streamTrades(StreamTradesReq) returns (stream Trade){}
     rpc streamOrders(StreamOrdersReq) returns (stream Order){}
@@ -27,7 +27,7 @@ service Collector{
 service Controller{
 
     // information about service
-    rpc status(ContStatusReq) returns (ContStatusResp){} // todo change to info
+    rpc info(ContInfoReq) returns (ContInfoResp){} // todo change to info
 
     // puts or cancels orders
     rpc order(OrderReq) returns (OrderResp){}
@@ -39,7 +39,7 @@ service Controller{
 
 // collector service types
 
-message CollStatusReq{
+message CollInfoReq{
     enum Type {
         ALL = 0;
         ACCESSIBLE_MARKET_PAIRS = 1;
@@ -49,16 +49,10 @@ message CollStatusReq{
     Type type = 1;
 }
 
-message CollStatusResp{
+message CollInfoResp{
     repeated Pair accessibleMarketPairs = 1;
     repeated Pair activeOrderbookStreams = 2;
     repeated Pair activeStreamTradess = 3;
-}
-
-message StreamStatus{
-    int64 startTime = 1;
-    int64 lastUpdate = 2;
-    int64 count = 3;
 }
 
 message StreamTradesReq{
@@ -103,8 +97,8 @@ message StreamHistoricalOrdersReq{
 
 // controller service types
 
-message ContStatusReq{}
-message ContStatusResp{}
+message ContInfoReq{}
+message ContInfoResp{}
 message OrderReq{}
 message OrderResp{}
 

@@ -1,9 +1,11 @@
 package util
 
+import rx.schedulers.Schedulers.from
+import util.global.executeMandatory
+import util.global.executeSilent
 import util.global.logger
 import util.global.toClosure
-import rx.schedulers.Schedulers.from
-import util.exceptionUtils.executeSilent
+import util.misc.RefCountTask
 import java.util.concurrent.Executors.newCachedThreadPool
 import java.util.concurrent.ForkJoinPool.commonPool
 import java.util.concurrent.TimeUnit
@@ -30,8 +32,8 @@ object cpu {
 
             log.debug("waiting for pools to shut down")
 
-            exceptionUtils.executeMandatory { executors.io.awaitTermination(1, TimeUnit.MINUTES) }
-            exceptionUtils.executeMandatory { executors.fj.awaitQuiescence(1, TimeUnit.MINUTES) }
+            executeMandatory { executors.io.awaitTermination(1, TimeUnit.MINUTES) }
+            executeMandatory { executors.fj.awaitQuiescence(1, TimeUnit.MINUTES) }
         })
     }
 

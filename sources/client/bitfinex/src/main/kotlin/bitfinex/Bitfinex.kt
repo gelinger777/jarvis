@@ -1,22 +1,20 @@
 package bitfinex
 
+import bitfinex.channel.BookChannel
+import bitfinex.channel.BroadCoastingChannel
+import bitfinex.channel.TradeChannel
 import collector.bitfinex.server.BitfinexConfig
-import collector.bitfinex.server.channel.BookChannel
-import collector.bitfinex.server.channel.BroadCoastingChannel
-import collector.bitfinex.server.channel.TradeChannel
 import com.google.gson.JsonParser
-import com.tars.util.validation.Validator.condition
-import common.asKey
-import common.asPair
-import common.json
-import util.global.*
+import common.util.asKey
+import common.util.asPair
+import common.util.json
 import org.apache.http.client.methods.RequestBuilder.get
 import proto.common.Order
 import proto.common.Pair
 import proto.common.Trade
 import rx.Observable
 import util.*
-import util.exceptionUtils.wtf
+import util.global.*
 import util.net.http
 import java.util.concurrent.TimeUnit
 

@@ -8,7 +8,7 @@ import rx.Observable.Operator;
 import rx.Scheduler;
 import rx.Subscriber;
 
-import static com.tars.util.validation.Validator.condition;
+import static util.global.ValidationKt.*;
 import static java.util.Collections.unmodifiableList;
 
 /**

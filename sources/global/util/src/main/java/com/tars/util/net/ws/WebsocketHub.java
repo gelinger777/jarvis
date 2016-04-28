@@ -1,11 +1,13 @@
 package com.tars.util.net.ws;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import static com.tars.util.exceptions.ExceptionUtils.*;
-
+import static util.global.ExceptionHandlingKt.executeSilent;
+import static util.global.FunctionsKt.runnable;
 public final class WebsocketHub {
 
   private static final Logger log = LoggerFactory.getLogger("websocket");
@@ -32,11 +34,11 @@ public final class WebsocketHub {
     log.debug("shutdown");
     if (!clients.isEmpty()) {
       log.debug("shutting down all websocket clients");
-      clients.values().forEach(client -> executeSilent(client::stop));
+      clients.values().forEach(client -> executeSilent(runnable(client::stop)));
     }
     if (!servers.isEmpty()) {
       log.debug("shutting down all websocket servers");
-      servers.values().forEach(server -> executeSilent(server::stop));
+      servers.values().forEach(server -> executeSilent(runnable(server::stop)));
     }
   }
 }

@@ -1,10 +1,9 @@
 package util
 
-import com.tars.util.validation.Validator.condition
+import util.global.condition
+import util.global.executeSilent
 import util.global.logger
 import util.global.toClosure
-import util.exceptionUtils.executeSilent
-
 
 object cleanupTasks {
     val log by logger("maid")
@@ -54,7 +53,7 @@ object cleanupTasks {
     }
 
 
-    @Synchronized fun remove(key:String):Boolean{
+    @Synchronized fun remove(key: String): Boolean {
         return tasks.remove(key) != null
     }
 
@@ -82,20 +81,3 @@ object cleanupTasks {
                 }
     }
 }
-
-//fun main(args: Array<String>) {
-//    cleanupTasks.add("task 1", {}, 1)
-//    cleanupTasks.add("task 2", {}, 2)
-//    cleanupTasks.add("task 3", {}, 3)
-//    cleanupTasks.add("task 3.1", {}, 3)
-//    cleanupTasks.add("task 3.2", {}, 3)
-//    cleanupTasks.add("task 4", {}, 4)
-//    cleanupTasks.add("task 4", {}, 4)
-//    cleanupTasks.add("task", {}, 4)
-//
-//    if(net.http != null && net.socket != null){
-//        cleanupTasks.printExecutionInOrder()
-//    }
-//
-//    exceptionUtils.wtf()
-//}

@@ -32,7 +32,7 @@ internal object storage {
     }
 
     private fun toAbsolutePath(relative: String): String {
-        return appConfig.storageRoot + relative
+        return config.path + relative
     }
 
 }

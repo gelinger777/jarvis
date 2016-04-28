@@ -1,12 +1,13 @@
-package collector.bitfinex.server.channel;
+package bitfinex.channel;
 
+import bitfinex.channel.BroadCoastingChannel
 import com.google.gson.JsonArray
-import com.tars.util.validation.Validator.condition
+import common.util.order
 import proto.common.Order
 import proto.common.Order.Side.ASK
 import proto.common.Order.Side.BID
+import util.global.condition
 import util.heartBeat
-import common.order
 
 /**
  * Represents realtime data channel, many observers can subscribe for the channel.

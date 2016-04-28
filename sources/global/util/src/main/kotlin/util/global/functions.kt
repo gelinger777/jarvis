@@ -1,5 +1,7 @@
 package util.global
 
+import java.util.function.Consumer
+
 //fun addShutdownHook(closure: () -> Unit) {
 //    Runtime.getRuntime().addShutdownHook(Thread(closure))
 //}
@@ -15,4 +17,16 @@ package util.global
 fun <T> whatever(block: () -> Unit): T {
     block.invoke()
     throw IllegalStateException()
+}
+
+fun <T> notImplemented(): T {
+    return whatever { wtf() }
+}
+
+fun <T> consumer(consumer: Consumer<T>): (T) -> Unit {
+    return { value: T -> consumer.accept(value) }
+}
+
+fun runnable(runnable: Runnable): () -> Unit {
+    return { runnable.run() }
 }

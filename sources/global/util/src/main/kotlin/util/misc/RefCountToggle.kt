@@ -1,4 +1,4 @@
-package util
+package util.misc
 
 class RefCountToggle(private val start: () -> Unit, private val stop: () -> Unit) {
 

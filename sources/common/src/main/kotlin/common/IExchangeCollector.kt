@@ -10,7 +10,7 @@ import rx.Observable
  */
 interface IExchangeCollector {
 
-    fun status(request: CollStatusReq): CollStatusResp
+    fun info(request: CollInfoReq): CollInfoResp
 
     fun streamTrades(request: StreamTradesReq): Observable<Trade>
 

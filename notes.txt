@@ -1,3 +1,7 @@
 following environment variables must be specified for any execution
 
 -Ddata.path="folder for data" -Dlogs.path="folder for logs"
+
+
+
+EventStoreServer vm arg

@@ -1,9 +1,9 @@
-package collector.bitfinex.server.channel
+package bitfinex.channel
 
 import com.google.gson.JsonArray
+import common.util.trade
 import proto.common.Trade
 import util.heartBeat
-import common.trade
 
 /**
  * Represents realtime data channel, many observers can subscribe for the channel.

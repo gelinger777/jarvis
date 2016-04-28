@@ -12,12 +12,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import static com.tars.util.exceptions.ExceptionUtils.reportAndThrow;
-import static com.tars.util.exceptions.ExceptionUtils.wtf;
-import static com.tars.util.validation.Validator.condition;
-import static com.tars.util.validation.Validator.notNullOrEmpty;
 import static org.apache.commons.io.IOUtils.toByteArray;
-
+import static util.global.ExceptionHandlingKt.wtf;
+import static util.global.ValidationKt.condition;
+import static util.global.ValidationKt.notNullOrEmpty;
 /**
  * Immutable zip representation.
  */
@@ -162,7 +160,7 @@ public class Zip {
         zos.finish();
         return new Zip(baos.toByteArray());
       } catch (IOException cause) {
-        return reportAndThrow(cause);
+        throw new IllegalStateException(cause);
       }
     }
 

@@ -2,9 +2,9 @@ package common.util
 
 import com.google.protobuf.GeneratedMessage
 import com.google.protobuf.util.JsonFormat
-import com.tars.util.validation.Validator
 import io.grpc.stub.StreamObserver
 import proto.common.*
+import util.global.condition
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Pattern
 
@@ -67,7 +67,7 @@ fun trade(price: Double, volume: Double, time: Long): Trade {
 
 
 fun order(id: Long = 0, side: Order.Side, price: Double, volume: Double, time: Long = System.currentTimeMillis()): Order {
-    Validator.condition(time > 0)
+    condition(time > 0)
     return Order.newBuilder()
             .setId(id)
             .setTime(time)
@@ -83,6 +83,14 @@ fun order(id: Long = 0, side: Order.Side, price: Double, volume: Double, time: L
 fun GeneratedMessage.json(): String {
     return JsonFormat.printer().print(this).replace(Regex("[ |\\n]+"), " ")
 }
+
+///**
+// * Fill builder values from json.
+// */
+//fun <T : GeneratedMessage.Builder<out GeneratedMessage.Builder<*>>?> GeneratedMessage.Builder<T>.fromJson(json: String): GeneratedMessage.Builder<T> {
+//    JsonFormat.parser().merge(json, this)
+//    return this
+//}
 
 private object repo {
     val currencies = ConcurrentHashMap<String, Currency>()
@@ -103,8 +111,8 @@ fun requestStreamOrders(pair: Pair): StreamOrdersReq {
 
 // response
 
-fun respondCollStatus(observer: StreamObserver<CollStatusResp>, accessiblePairs: List<Pair>) {
-    observer.onNext(CollStatusResp.newBuilder().addAllAccessibleMarketPairs(accessiblePairs).build());
+fun respondCollInfo(observer: StreamObserver<CollInfoResp>, accessiblePairs: List<Pair>) {
+    observer.onNext(CollInfoResp.newBuilder().addAllAccessibleMarketPairs(accessiblePairs).build());
     observer.onCompleted()
 }
 

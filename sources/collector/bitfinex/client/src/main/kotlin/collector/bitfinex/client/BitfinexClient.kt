@@ -1,12 +1,12 @@
 package collector.bitfinex.client
 
 import common.IExchangeCollector
-import util.global.asGrpcObserver
 import io.grpc.ManagedChannelBuilder
 import proto.common.*
 import rx.Observable
 import rx.subjects.PublishSubject
 import util.cpu
+import util.global.asGrpcObserver
 
 class BitfinexClient(val host: String, val port: Int) : IExchangeCollector {
     private val channel = ManagedChannelBuilder
@@ -18,8 +18,8 @@ class BitfinexClient(val host: String, val port: Int) : IExchangeCollector {
     private val blockingStub = CollectorGrpc.newBlockingStub(channel)
 
 
-    override fun status(request: CollStatusReq): CollStatusResp {
-        return blockingStub.status(request)
+    override fun info(request: CollInfoReq): CollInfoResp {
+        return blockingStub.info(request)
     }
 
     override fun streamTrades(request: StreamTradesReq): Observable<Trade> {

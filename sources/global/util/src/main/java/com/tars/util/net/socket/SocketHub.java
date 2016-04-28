@@ -11,6 +11,7 @@ import java.util.*;
 import rx.Observable;
 import rx.subjects.*;
 import util.*;
+import util.misc.RefCountTask;
 
 import static java.lang.Thread.*;
 import static java.nio.channels.SelectionKey.*;

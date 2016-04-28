@@ -1,11 +1,11 @@
 package eventstore.server
 
 import com.google.protobuf.ByteString
-import com.tars.util.validation.Validator.condition
-import com.tars.util.validation.Validator.notNullOrEmpty
 import io.grpc.stub.StreamObserver
 import proto.eventstore.*
 import util.MutableOption
+import util.global.condition
+import util.global.notNullOrEmpty
 import util.global.subscribe
 
 class EventStoreService(val rootPath: String) : EventStoreGrpc.EventStore {

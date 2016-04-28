@@ -1,12 +1,12 @@
 package eventstore.server
 
-import com.tars.util.validation.Validator.condition
 import net.openhft.chronicle.ChronicleQueueBuilder
 import rx.Observable
 import rx.subjects.PublishSubject
 import util.cpu
-import util.exceptionUtils.report
+import util.global.condition
 import util.global.logger
+import util.global.report
 
 internal class EventStream(val path: String) {
     private val log by logger()

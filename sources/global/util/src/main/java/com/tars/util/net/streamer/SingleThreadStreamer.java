@@ -1,8 +1,6 @@
 package com.tars.util.net.streamer;
 
 
-import com.tars.util.concurrent.ConcurrencyUtils.Executors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +8,12 @@ import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
+import util.cpu.executors;
 
-import static com.tars.util.concurrent.ConcurrencyUtils.bearSleep;
-import static com.tars.util.exceptions.ExceptionUtils.executeAndGetSilent;
-import static com.tars.util.validation.Validator.condition;
-import static com.tars.util.validation.Validator.notNull;
+import static util.cpu.sleep;
+import static util.global.ExceptionHandlingKt.executeAndGetSilent;
+import static util.global.ValidationKt.condition;
+import static util.global.ValidationKt.notNull;
 
 /**
  * Streamer will keep executing provided callable and emit values trough observable until its stopped. It is using
@@ -61,7 +60,7 @@ public class SingleThreadStreamer<T> {
 
     streaming = true;
 
-    Executors.io().submit(() -> {
+    executors.INSTANCE.getIo().submit(() -> {
       while (isStreaming()) {
         log.trace("executing");
         executeAndGetSilent(callable)
@@ -70,7 +69,7 @@ public class SingleThreadStreamer<T> {
 
         if (delay > 0) {
           log.trace("sleeping");
-          bearSleep(delay);
+          sleep(delay);
         }
       }
     });
