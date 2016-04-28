@@ -1,0 +1,44 @@
+syntax = "proto3";
+option java_multiple_files = true;
+
+package proto.eventstore;
+
+service EventStore{
+
+    rpc info(InfoReq) returns (InfoResp){}
+
+    rpc write(stream WriteReq) returns (stream WriteResp){}
+
+    rpc read(ReadReq) returns (stream ReadResp){}
+}
+
+message InfoReq{
+    string changeMe = 1; // todo
+}
+
+message InfoResp{
+    string changeMe = 1; // todo
+}
+
+message WriteReq{
+    string path = 1; // send this only with first request
+    int64 dataId = 2;
+    bytes data = 3;
+}
+
+message WriteResp{
+    bool success = 1;
+    int64 dataId = 2;
+    string error = 3;
+}
+
+message ReadReq{
+    string path = 1;
+    int64 start = 2;
+    int64 end = 3;
+    bool keepStreaming = 4;
+}
+
+message ReadResp{
+    bytes data = 1;
+}

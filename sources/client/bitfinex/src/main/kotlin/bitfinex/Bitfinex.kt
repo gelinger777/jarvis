@@ -6,7 +6,10 @@ import collector.bitfinex.server.channel.BroadCoastingChannel
 import collector.bitfinex.server.channel.TradeChannel
 import com.google.gson.JsonParser
 import com.tars.util.validation.Validator.condition
-import global.*
+import common.asKey
+import common.asPair
+import common.json
+import util.global.*
 import org.apache.http.client.methods.RequestBuilder.get
 import proto.common.Order
 import proto.common.Pair

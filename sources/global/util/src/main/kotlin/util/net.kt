@@ -3,7 +3,7 @@ package util
 import com.tars.util.net.http.HttpHub
 import com.tars.util.net.socket.SocketHub
 import com.tars.util.net.ws.WebsocketHub
-import global.logger
+import util.global.logger
 
 object net {
     private val log by logger()

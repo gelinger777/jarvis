@@ -1,14 +1,14 @@
 package collector.bitfinex.client
 
-import common.GenericCollector
-import global.asGrpcObserver
+import common.IExchangeCollector
+import util.global.asGrpcObserver
 import io.grpc.ManagedChannelBuilder
 import proto.common.*
 import rx.Observable
 import rx.subjects.PublishSubject
 import util.cpu
 
-class BitfinexClient(val host: String, val port: Int) : GenericCollector {
+class BitfinexClient(val host: String, val port: Int) : IExchangeCollector {
     private val channel = ManagedChannelBuilder
             .forAddress(host, port)
             .executor(cpu.executors.io)

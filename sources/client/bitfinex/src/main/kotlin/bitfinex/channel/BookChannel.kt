@@ -6,7 +6,7 @@ import proto.common.Order
 import proto.common.Order.Side.ASK
 import proto.common.Order.Side.BID
 import util.heartBeat
-import util.order
+import common.order
 
 /**
  * Represents realtime data channel, many observers can subscribe for the channel.

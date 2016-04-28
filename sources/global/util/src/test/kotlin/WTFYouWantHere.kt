@@ -1,6 +1,6 @@
-import global.getOptional
-import global.logger
+
 import util.Option
+import util.global.getOptional
 
 
 fun main(args: Array<String>) {

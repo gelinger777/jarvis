@@ -169,7 +169,7 @@ subprojects {
 
 project(":util") {
 
-    description = "[lib] Global utilities for java/kotlin development (not jarvis specific)."
+    description = "[lib] Global utilities for java/kotlin development (nothing jarvis specific)."
 
     // For now we push all dependencies to global project (will split them later)
     dependencies {
@@ -195,20 +195,6 @@ project(":util") {
     }
 }
 
-// Event Store ==================================================================================
-
-project(":eventstore") {
-
-    description = "[lib] Event Store persistence."
-
-    dependencies {
-        compile project(":util")
-
-        // chronicle
-        compile 'net.openhft:chronicle:3.6.0'
-    }
-}
-
 // Common =======================================================================================
 
 project(":common") {
@@ -218,8 +204,42 @@ project(":common") {
     dependencies {
         compile project(":util")
     }
+}
 
+// Event Store ==================================================================================
 
+project(":eventstore-client") {
+
+    description = "[lib] Event Store GRPC client."
+
+    dependencies {
+        compile project(":util")
+    }
+}
+
+project(":eventstore-server") {
+
+    description = "[app] Event Store server."
+
+    dependencies {
+        compile project(":util")
+        compile project(":eventstore-client")
+
+        // chronicle
+        compile 'net.openhft:chronicle:3.6.0'
+    }
+}
+
+// Indexer ======================================================================================
+
+project(":indexer") {
+
+    description = "[app] Indexes collected data for querying."
+
+    dependencies {
+        compile project(":common")
+        compile project(":eventstore-client")
+    }
 }
 
 // Engine =======================================================================================
@@ -228,7 +248,6 @@ project(":engine") {
     apply plugin: 'spring-boot'
 
     description = "[app] Uses collector services to get realtime exchange data to generate trade signals."
-    version = "0.1"
 
     dependencies {
         compile project(":common")
@@ -244,7 +263,6 @@ project(":bitfinex-client") {
     apply plugin: 'spring-boot'
 
     description = "[lib] Bitfinex client library to work with bitfinex exchange."
-    version = "0.1"
 
     dependencies {
         compile project(":common")
@@ -256,7 +274,6 @@ project(":bitfinex-collector-client") {
     apply plugin: 'spring-boot'
 
     description = "[lib] Bitfinex collector client library allows to connect and work with collector service."
-    version = "0.1"
 
     dependencies {
         compile project(":common")
@@ -267,20 +284,17 @@ project(":bitfinex-collector-client") {
 project(":bitfinex-collector-server") {
     apply plugin: 'spring-boot'
 
-    description =
-            "[app] Bitfinex collector server microservice collects trade and orderbook data to a persistent store."
-    version = "0.1"
+    description = "[app] Bitfinex collector server collects trade and orderbook data to a persistent store."
 
     dependencies {
         compile project(":bitfinex-client")
-        compile project(":eventstore")
+        compile project(":eventstore-client")
 
         compile 'org.springframework.boot:spring-boot-starter'
         compile 'org.springframework.boot:spring-boot-starter-log4j'
     }
 
 }
-
 
 task wrapper(type: Wrapper) {
     description = 'Regenerates the Gradle wrapper script'

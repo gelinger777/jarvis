@@ -1,7 +1,7 @@
 package util
 
 import com.tars.util.validation.Validator.condition
-import global.logger
+import util.global.logger
 import util.cpu.executors.io
 import java.lang.Thread.currentThread
 import java.util.concurrent.ConcurrentHashMap

@@ -1,7 +1,7 @@
 package util
 
-import global.logger
-import global.toClosure
+import util.global.logger
+import util.global.toClosure
 import rx.schedulers.Schedulers.from
 import util.exceptionUtils.executeSilent
 import java.util.concurrent.Executors.newCachedThreadPool

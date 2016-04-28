@@ -1,6 +1,6 @@
 package util
 
-import global.logger
+import util.global.logger
 import net.sargue.mailgun.Configuration
 import net.sargue.mailgun.MailBuilder
 

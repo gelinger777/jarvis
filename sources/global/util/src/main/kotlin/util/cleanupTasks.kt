@@ -1,8 +1,8 @@
 package util
 
 import com.tars.util.validation.Validator.condition
-import global.logger
-import global.toClosure
+import util.global.logger
+import util.global.toClosure
 import util.exceptionUtils.executeSilent
 
 

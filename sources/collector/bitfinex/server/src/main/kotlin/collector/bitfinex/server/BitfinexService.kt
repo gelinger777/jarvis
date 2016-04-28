@@ -3,15 +3,15 @@ package collector.bitfinex.server
 import bitfinex.Bitfinex
 import collector.bitfinex.server.recorder.RecordingObserver
 import eventstore.storage
-import global.computeIfAbsent
-import global.logger
-import global.subscribe
+import util.global.computeIfAbsent
+import util.global.logger
+import util.global.subscribe
 import io.grpc.stub.StreamObserver
 import proto.common.*
-import util.asFolderName
-import util.respondCollStatus
-import util.respondRecordOrders
-import util.respondRecordTrades
+import common.util.asFolderName
+import common.util.respondCollStatus
+import common.util.respondRecordOrders
+import common.util.respondRecordTrades
 import java.io.File
 
 internal class BitfinexService(val bitfinex : Bitfinex) : CollectorGrpc.Collector {

@@ -1,0 +1,142 @@
+syntax = "proto3";
+option java_multiple_files = true;
+
+package proto.common;
+
+// services ============================================================================
+
+
+// Collector service provides interface to record and stream realtime
+// and historical data for a particular exchange, it only reads and records
+// publicly accessible data
+service Collector{
+
+    rpc status(CollStatusReq) returns (CollStatusResp){} // todo change to info
+
+    rpc streamTrades(StreamTradesReq) returns (stream Trade){}
+    rpc streamOrders(StreamOrdersReq) returns (stream Order){}
+
+    rpc recordTrades(RecordTradesReq) returns (RecordTradesResp){}
+    rpc recordOrders(RecordOrdersReq) returns (RecordOrdersResp){}
+
+    rpc streamHistoricalTrades(StreamHistoricalTradesReq) returns (stream Trade){}
+    rpc streamHistoricalOrders(StreamHistoricalOrdersReq) returns (stream Order){}
+}
+
+// Controller service is providing interface to send commands to the particular exchange
+service Controller{
+
+    // information about service
+    rpc status(ContStatusReq) returns (ContStatusResp){} // todo change to info
+
+    // puts or cancels orders
+    rpc order(OrderReq) returns (OrderResp){}
+}
+
+
+// request response types ===============================================================
+
+
+// collector service types
+
+message CollStatusReq{
+    enum Type {
+        ALL = 0;
+        ACCESSIBLE_MARKET_PAIRS = 1;
+        CURRENT_STREAMS = 2;
+        CURRENT_RECORDINGS = 3;
+    }
+    Type type = 1;
+}
+
+message CollStatusResp{
+    repeated Pair accessibleMarketPairs = 1;
+    repeated Pair activeOrderbookStreams = 2;
+    repeated Pair activeStreamTradess = 3;
+}
+
+message StreamStatus{
+    int64 startTime = 1;
+    int64 lastUpdate = 2;
+    int64 count = 3;
+}
+
+message StreamTradesReq{
+    Pair pair = 1;
+}
+
+
+message StreamOrdersReq{
+    Pair pair = 1;
+}
+
+
+message RecordTradesReq{
+    Pair pair = 1;
+}
+
+message RecordTradesResp{
+    bool success = 1;
+    string error = 2;
+}
+
+message RecordOrdersReq{
+    Pair pair = 1;
+}
+
+message RecordOrdersResp{
+    bool success = 1;
+    string error = 2;
+}
+
+message StreamHistoricalTradesReq{
+    Pair pair = 1;
+    int64 startIndex = 2;
+    int64 endIndex = 3;
+}
+
+message StreamHistoricalOrdersReq{
+    Pair pair = 1;
+    int64 startIndex = 2;
+    int64 endIndex = 3;
+}
+
+// controller service types
+
+message ContStatusReq{}
+message ContStatusResp{}
+message OrderReq{}
+message OrderResp{}
+
+
+// base types ==========================================================================
+
+
+message Currency {
+    string symbol = 1;
+}
+
+message Pair {
+    Currency base = 1;
+    Currency quote = 2;
+}
+
+// Canceled orders shall have same order id but 0 price and 0 volume
+message Order {
+    enum Side {
+        BID = 0;
+        ASK = 1;
+    }
+
+    int64 time = 1;
+    int64 id = 2;
+    double price = 3;
+    double volume = 4;
+    Side side = 5;
+}
+
+message Trade {
+    int64 time = 1;
+    double price = 2;
+    double volume = 3;
+}

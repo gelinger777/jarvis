@@ -12,9 +12,16 @@ project(':engine').projectDir = "$rootDir/sources/engine" as File
 include ":util"
 project(':util').projectDir = "$rootDir/sources/global/util" as File
 
-include ":eventstore"
-project(':eventstore').projectDir = "$rootDir/sources/global/eventstore" as File
+include ":eventstore-client"
+project(':eventstore-client').projectDir = "$rootDir/sources/global/eventstore/client" as File
 
+
+include ":eventstore-server"
+project(':eventstore-server').projectDir = "$rootDir/sources/global/eventstore/server" as File
+
+
+include ":indexer"
+project(':indexer').projectDir = "$rootDir/sources/indexer" as File
 
 
 include ":bitfinex-client"
@@ -27,3 +34,4 @@ project(':bitfinex-collector-client').projectDir = "$rootDir/sources/collector/b
 
 include ":bitfinex-collector-server"
 project(':bitfinex-collector-server').projectDir = "$rootDir/sources/collector/bitfinex/server" as File
+

@@ -1,7 +1,7 @@
 package bitfinex
 
 import collector.bitfinex.server.BitfinexConfig
-import util.json
+import common.json
 
 fun main(args: Array<String>) {
 

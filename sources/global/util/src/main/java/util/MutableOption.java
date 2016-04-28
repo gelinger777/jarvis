@@ -106,7 +106,7 @@ public final class MutableOption<T> {
   /**
    * If value is not present use provided one.
    */
-  public <U> MutableOption<U> ifNotPresentTake(Supplier<U> supplier) {
+  public <U> MutableOption<U> ifNotPresentCompute(Supplier<U> supplier) {
     if (value == null) {
       value = requireNonNull(supplier.get());
     }

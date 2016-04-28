@@ -1,0 +1,4 @@
+package common
+
+interface IExchangeClient {
+}

@@ -1,8 +1,8 @@
 package util
 
-import global.logger
-import global.whatever
 import rx.subjects.PublishSubject
+import util.global.logger
+import util.global.whatever
 
 /**
  * Utility class for exception handling and boilerplate elimination.

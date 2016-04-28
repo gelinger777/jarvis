@@ -3,8 +3,8 @@ package bitfinex
 import collector.bitfinex.server.BitfinexConfig
 import org.junit.Test
 import util.cpu
-import util.json
-import util.pair
+import common.json
+import common.pair
 import java.util.concurrent.TimeUnit.MINUTES
 
 class BitfinexTest {
