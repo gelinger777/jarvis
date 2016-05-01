@@ -7,6 +7,7 @@ import io.grpc.stub.StreamObserver
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import rx.Observable
+import rx.Scheduler
 import rx.Subscriber
 import rx.subjects.PublishSubject
 import util.Option
@@ -47,8 +48,33 @@ fun consoleStream(): Observable<String> {
 /**
  * Apply BatchPerSubscriber to observable.
  */
-fun <T> Observable<T>.batch(): Observable<Collection<T>> {
-    return this.lift(BatchPerSubscriber<T>(cpu.schedulers.io))
+fun <T> Observable<T>.batch(scheduler: Scheduler = cpu.schedulers.io): Observable<Collection<T>> {
+    return this.lift(BatchPerSubscriber<T>(scheduler))
+}
+
+/**
+ * Unpack batch.
+ */
+fun <T> Observable<out Collection<T>>.unpack(): Observable<T> {
+    return this.lift(Observable.Operator { subscriber ->
+        object : Subscriber<Collection<T>>() {
+            override fun onCompleted() {
+                subscriber.onCompleted()
+            }
+
+            override fun onError(e: Throwable) {
+                subscriber.onError(e)
+            }
+
+            override fun onNext(ts: Collection<T>) {
+                for (t in ts) {
+                    if (!subscriber.isUnsubscribed) {
+                        subscriber.onNext(t)
+                    }
+                }
+            }
+        }
+    })
 }
 
 /**
@@ -80,6 +106,11 @@ fun <T> StreamObserver<T>.subscribe(source: Observable<T>) {
     )
 }
 
+fun <T> StreamObserver<T>.complete(lastValue: T) {
+    this.onNext(lastValue)
+    this.onCompleted()
+}
+
 // logger
 
 /**
@@ -94,6 +125,10 @@ fun <R : Any> R.logger(): Lazy<Logger> {
  */
 fun <R : Any> R.logger(name: String): Lazy<Logger> {
     return lazy { LoggerFactory.getLogger(name) }
+}
+
+fun logger(name: String): Logger {
+    return LoggerFactory.getLogger(name)
 }
 
 // mutable map

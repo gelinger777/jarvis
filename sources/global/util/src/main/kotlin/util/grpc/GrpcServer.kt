@@ -1,10 +1,10 @@
 package util.grpc
 
-import util.global.logger
 import io.grpc.ServerBuilder
 import io.grpc.ServerServiceDefinition
 import util.cleanupTasks
 import util.cpu
+import util.global.logger
 
 class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
     val log by logger()
@@ -15,11 +15,12 @@ class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
             .executor(cpu.executors.io)
             .build()
 
-    fun start() {
+    fun start(): GrpcServer {
         log.info("starting a ${service.name} server on $port")
 
         server.start()
         cleanupTasks.add("server:$port", { server.shutdown() })
+        return this
     }
 
     fun stop() {
@@ -27,5 +28,15 @@ class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
 
         cleanupTasks.remove("server:$port")
         server.shutdown()
+    }
+
+    fun blockForTermination() {
+        log.info("awaiting for termination of ${service.name}")
+        if (server != null) {
+            try {
+                server.awaitTermination()
+            } catch (ignored: InterruptedException) {
+            }
+        }
     }
 }

@@ -82,6 +82,13 @@ fun report(cause: Throwable, message: String = "unexpected exception"): Throwabl
     return cause
 }
 
+/**
+ * Logs to general error log.
+ */
+fun report(message: String) {
+    exceptionUtils.log.info(message)
+}
+
 private fun reportAndKill(cause: Throwable) {
     // write log to a file
     exceptionUtils.log.error("unrecoverable error", cause)

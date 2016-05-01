@@ -20,10 +20,6 @@ include ":eventstore-server"
 project(':eventstore-server').projectDir = "$rootDir/sources/global/eventstore/server" as File
 
 
-include ":indexer"
-project(':indexer').projectDir = "$rootDir/sources/indexer" as File
-
-
 include ":bitfinex-client"
 project(':bitfinex-client').projectDir = "$rootDir/sources/client/bitfinex" as File
 

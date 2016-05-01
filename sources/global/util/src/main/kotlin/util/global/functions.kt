@@ -1,5 +1,9 @@
 package util.global
 
+import com.google.protobuf.Message
+import com.google.protobuf.util.JsonFormat
+import org.apache.commons.io.FileUtils
+import java.io.File
 import java.util.function.Consumer
 
 //fun addShutdownHook(closure: () -> Unit) {
@@ -14,13 +18,13 @@ import java.util.function.Consumer
  * Will execute a block of code and throw a runtime exception.
  * This is only placeholder for required return values.
  */
-fun <T> whatever(block: () -> Unit): T {
+internal fun <T> whatever(block: () -> Unit): T {
     block.invoke()
-    throw IllegalStateException()
+    throw IllegalStateException("")
 }
 
 fun <T> notImplemented(): T {
-    return whatever { wtf() }
+    return whatever { wtf("not implemented") }
 }
 
 fun <T> consumer(consumer: Consumer<T>): (T) -> Unit {
@@ -29,4 +33,23 @@ fun <T> consumer(consumer: Consumer<T>): (T) -> Unit {
 
 fun runnable(runnable: Runnable): () -> Unit {
     return { runnable.run() }
+}
+
+fun <T : Message.Builder> T.readFromFS(): T {
+    return this.apply {
+        executeMandatory {
+            val log = util.global.logger("util.global")
+
+            log.info("getting location of configuration")
+            val path = System.getProperty("config")
+
+            condition(notNullOrEmpty(path), "system property was not provided")
+
+            log.info("reading configuration from file system")
+            val json = FileUtils.readFileToString(File(path))
+
+            log.info("merging configuration")
+            JsonFormat.parser().merge(json, this)
+        }
+    }
 }

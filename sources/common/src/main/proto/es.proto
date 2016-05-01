@@ -7,9 +7,11 @@ service EventStore{
 
     rpc info(InfoReq) returns (InfoResp){}
 
-    rpc write(stream WriteReq) returns (stream WriteResp){}
+    rpc write(WriteReq) returns (WriteResp){}
 
     rpc read(ReadReq) returns (stream ReadResp){}
+
+    rpc delete(DelReq) returns (DelResp){}
 }
 
 message InfoReq{
@@ -21,15 +23,13 @@ message InfoResp{
 }
 
 message WriteReq{
-    string path = 1; // send this only with first request
-    int64 dataId = 2;
-    bytes data = 3;
+    string path = 1;
+    repeated bytes data = 2;
 }
 
 message WriteResp{
     bool success = 1;
-    int64 dataId = 2;
-    string error = 3;
+    string error = 2;
 }
 
 message ReadReq{
@@ -40,5 +40,18 @@ message ReadReq{
 }
 
 message ReadResp{
-    bytes data = 1;
+    repeated bytes data = 1;
+}
+
+message DelReq{
+    string changeMe = 1; // todo
+}
+
+message DelResp{
+    string changeMe = 1; // todo
+}
+
+message EventStoreConfig{
+    string path = 1;
+    int32 port = 2;
 }

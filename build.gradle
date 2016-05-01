@@ -20,7 +20,6 @@ buildscript {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'kotlin'
-    apply plugin: 'com.google.protobuf'
 
     apply plugin: 'idea'
 
@@ -87,75 +86,6 @@ subprojects {
         it.exclude group: 'ch.qos.logback'
     }
 
-    protobuf {
-        generatedFilesBaseDir = "${projectDir}/src/gen"
-
-        plugins {
-            grpc {
-                artifact = 'io.grpc:protoc-gen-grpc-java:0.13.2'
-            }
-        }
-
-        protoc {
-            artifact = "com.google.protobuf:protoc:3.0.0-beta-2"
-        }
-
-        generateProtoTasks {
-            all().each { task ->
-                task.plugins {
-                    grpc {}
-                }
-
-                if (task.name.equals("generateProto")) {
-                    task.outputs.upToDateWhen {
-                        new File(generatedFilesBaseDir).exists()
-                    }
-                }
-            }
-
-            compileJava.dependsOn(generateProto)
-            compileKotlin.dependsOn(generateProto)
-
-
-            task deleteGeneratedProto << {
-                delete generatedFilesBaseDir
-            }
-
-            task recompileProto {}
-
-            recompileProto.dependsOn(deleteGeneratedProto)
-            recompileProto.dependsOn(generateProto)
-
-            clean.dependsOn(deleteGeneratedProto)
-        }
-
-    }
-
-    sourceSets {
-        main {
-            proto {
-                srcDir 'src/main/proto'
-            }
-            java {
-                srcDirs 'src/main/java', 'src/gen/main/java', 'src/gen/main/grpc'
-            }
-            kotlin {
-                srcDirs 'src/main/kotlin'
-            }
-        }
-        test {
-            proto {
-                srcDir 'src/test/proto'
-            }
-            java {
-                srcDirs 'src/test/java', 'src/gen/test/java', 'src/gen/test/grpc'
-            }
-            kotlin {
-                srcDirs 'src/test/kotlin'
-            }
-        }
-    }
-
     task 'create-dirs' << {
         description = 'Initializes directory structure according to source sets'
         sourceSets.all { set ->
@@ -198,11 +128,75 @@ project(":util") {
 // Common =======================================================================================
 
 project(":common") {
+    apply plugin: 'com.google.protobuf'
+
 
     description = "[lib] Common jarvis codebase shared across multiple modules."
 
     dependencies {
         compile project(":util")
+    }
+
+    protobuf {
+        generatedFilesBaseDir = "${projectDir}/src/gen"
+
+        plugins {
+            grpc {
+                artifact = 'io.grpc:protoc-gen-grpc-java:0.13.2'
+            }
+        }
+
+        protoc {
+            artifact = "com.google.protobuf:protoc:3.0.0-beta-2"
+        }
+
+        generateProtoTasks {
+            all().each { task ->
+                task.plugins {
+                    grpc {}
+                }
+
+                if (task.name.equals("generateProto")) {
+                    task.outputs.upToDateWhen {
+                        new File(generatedFilesBaseDir).exists()
+                    }
+                }
+            }
+
+            compileJava.dependsOn(generateProto)
+            compileKotlin.dependsOn(generateProto)
+
+            task deleteGeneratedProto << {
+                delete generatedFilesBaseDir
+            }
+
+            task recompileProto {}
+
+            recompileProto.dependsOn(deleteGeneratedProto)
+            recompileProto.dependsOn(generateProto)
+
+            clean.dependsOn(deleteGeneratedProto)
+        }
+
+    }
+
+    sourceSets {
+        main {
+            proto {
+                srcDir 'src/main/proto'
+            }
+            java {
+                srcDirs 'src/main/java', 'src/gen/main/java', 'src/gen/main/grpc'
+            }
+        }
+        test {
+            proto {
+                srcDir 'src/test/proto'
+            }
+            java {
+                srcDirs 'src/test/java', 'src/gen/test/java', 'src/gen/test/grpc'
+            }
+        }
     }
 }
 
@@ -223,22 +217,9 @@ project(":eventstore-server") {
 
     dependencies {
         compile project(":common")
-        compile project(":eventstore-client")
 
         // chronicle
         compile 'net.openhft:chronicle:3.6.0'
-    }
-}
-
-// Indexer ======================================================================================
-
-project(":indexer") {
-
-    description = "[app] Indexes collected data for querying."
-
-    dependencies {
-        compile project(":common")
-        compile project(":eventstore-client")
     }
 }
 
