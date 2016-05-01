@@ -2,8 +2,11 @@ package util.global
 
 // extension convenience functions
 
+import com.google.protobuf.Message
+import com.google.protobuf.util.JsonFormat
 import com.tars.util.misc.BatchPerSubscriber
 import io.grpc.stub.StreamObserver
+import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import rx.Observable
@@ -12,6 +15,7 @@ import rx.Subscriber
 import rx.subjects.PublishSubject
 import util.Option
 import util.cpu
+import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
@@ -219,6 +223,28 @@ fun <T> Consumer<T>.andThen(after: Consumer<T>): Consumer<T> {
         override fun accept(t: T) {
             this.accept(t)
             after.accept(t)
+        }
+    }
+}
+
+// protobuf
+
+
+fun <T : Message.Builder> T.readFromFS(): T {
+    return this.apply {
+        executeMandatory {
+            val log = util.global.logger("util.global")
+
+            log.info("getting location of configuration")
+            val path = System.getProperty("config")
+
+            condition(notNullOrEmpty(path), "system property was not provided")
+
+            log.info("reading configuration from file system")
+            val json = FileUtils.readFileToString(File(path))
+
+            log.info("merging configuration")
+            JsonFormat.parser().merge(json, this)
         }
     }
 }

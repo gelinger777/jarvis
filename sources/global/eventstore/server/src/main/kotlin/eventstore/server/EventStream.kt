@@ -9,6 +9,7 @@ import util.cpu
 import util.global.condition
 import util.global.logger
 import util.global.report
+import util.global.wtf
 
 internal class EventStream(val name: String, val path: String) {
     private val log by logger("server-event-stream")
@@ -39,7 +40,7 @@ internal class EventStream(val name: String, val path: String) {
 
     fun writeBatch(events: List<ByteArray>) {
         // info : memory footprint can be optimized if we don't create byte[] and use buffers
-        log.debug("writing batch of size ${events.size} to $name")
+        log.debug("$name : writing batch of size ${events.size}")
         synchronized(appender, {
 
             events.forEach {
@@ -56,22 +57,17 @@ internal class EventStream(val name: String, val path: String) {
     }
 
     fun observe(start: Long, end: Long, realtime: Boolean): Observable<ByteArray> {
-        log.debug("streaming from $name")
         return Observable.create<ByteArray> { subscriber ->
             var tailer = chronicle.createTailer()
 
             try {
-
-
                 val startSpecified = start != -1L
                 val endSpecified = end != -1L
 
                 val useExisting = startSpecified || !realtime
 
-
-
                 if (useExisting) {
-                    log.debug("streaming existing data")
+                    log.debug("$name : streaming existing data")
 
                     if (startSpecified) {
                         condition(start >= 0)
@@ -100,7 +96,7 @@ internal class EventStream(val name: String, val path: String) {
 
                 if (realtime) {
 
-                    log.debug("streaming realtime")
+                    log.debug("$name : streaming realtime")
                     synchronized(appender, {
 
                         if (useExisting) {

@@ -19,3 +19,6 @@ build/
 # custom stuff
 gen/
 data/
+logs/
+bin/
+lib/

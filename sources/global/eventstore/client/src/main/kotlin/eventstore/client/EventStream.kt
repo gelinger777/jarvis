@@ -38,11 +38,11 @@ class EventStream(val path: String, val client: EventStoreClient) {
                     }
 
                     override fun onError(error: Throwable) {
-                        throw UnsupportedOperationException()
+                        wtf(error)
                     }
 
                     override fun onCompleted() {
-                        throw UnsupportedOperationException()
+                        wtf()
                     }
                 })
     }
@@ -51,9 +51,6 @@ class EventStream(val path: String, val client: EventStoreClient) {
         writeStream.onNext(data)
     }
 
-    /**
-     * Return batched data stream.
-     */
     fun observe(start: Long = -1, end: Long = -1, realtime: Boolean = false): Observable<ByteArray> {
         val observer = PublishSubject.create<ReadResp>()
 

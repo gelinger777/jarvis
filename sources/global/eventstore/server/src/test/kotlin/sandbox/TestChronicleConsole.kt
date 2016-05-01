@@ -27,7 +27,7 @@
 //
 //var sink: Chronicle? = null
 //
-//fun main(args: Array<String>) {
+//fun eventstore.server.main(args: Array<String>) {
 //
 //    val scanner = Scanner(System.`in`)
 //    var keepTaking = true

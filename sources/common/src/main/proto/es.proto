@@ -15,11 +15,17 @@ service EventStore{
 }
 
 message InfoReq{
-    string changeMe = 1; // todo
+    string path = 1; // leave blank for all streams
 }
 
 message InfoResp{
-    string changeMe = 1; // todo
+    repeated StreamInfo streams = 1;
+}
+
+message StreamInfo{
+    string path = 1;
+    int64 size = 2;
+    int64 length = 3;
 }
 
 message WriteReq{
@@ -44,11 +50,11 @@ message ReadResp{
 }
 
 message DelReq{
-    string changeMe = 1; // todo
+    string changeMe = 1;
 }
 
 message DelResp{
-    string changeMe = 1; // todo
+    string changeMe = 1;
 }
 
 message EventStoreConfig{

@@ -27,7 +27,7 @@ service Collector{
 service Controller{
 
     // information about service
-    rpc info(ContInfoReq) returns (ContInfoResp){} // todo change to info
+    rpc info(ContInfoReq) returns (ContInfoResp){}
 
     // puts or cancels orders
     rpc order(OrderReq) returns (OrderResp){}

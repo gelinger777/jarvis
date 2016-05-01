@@ -1,3 +1,5 @@
+package eventstore
+
 import eventstore.server.EventStore
 import proto.eventstore.EventStoreGrpc
 import util.grpc.GrpcServer
