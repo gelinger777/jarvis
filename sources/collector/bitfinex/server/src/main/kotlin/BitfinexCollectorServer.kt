@@ -1,6 +1,20 @@
+import common.util.json
+import proto.bitfinex.BitfinexCollectorConfig
+import util.global.readFromFS
+
 fun main(args: Array<String>) {
 
 
+    //    val config = BitfinexCollectorConfig
+    //            .newBuilder()
+    //            .readFromFS("bitfinexCollectorConfig").build()
+
+
+    BitfinexCollectorConfig.newBuilder()
+            .readFromFS("bitfinexCollectorConfig")
+            .build()
+            .json(pretty = true)
+            .apply { println(this) }
 
 
     //

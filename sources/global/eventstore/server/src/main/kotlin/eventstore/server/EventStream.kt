@@ -9,7 +9,6 @@ import util.cpu
 import util.global.condition
 import util.global.logger
 import util.global.report
-import util.global.wtf
 
 internal class EventStream(val name: String, val path: String) {
     private val log by logger("server-event-stream")
@@ -118,9 +117,8 @@ internal class EventStream(val name: String, val path: String) {
                     subscriber.onCompleted()
                 }
             } catch (cause: Throwable) {
-                // publish error
                 report(cause)
-                subscriber.onError(cause)
+                subscriber.onCompleted()
             } finally {
                 // release allocated resource
                 tailer.close()

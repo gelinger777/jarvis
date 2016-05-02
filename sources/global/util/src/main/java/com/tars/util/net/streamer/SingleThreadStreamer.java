@@ -11,7 +11,7 @@ import rx.subjects.PublishSubject;
 import util.cpu.executors;
 
 import static util.cpu.sleep;
-import static util.global.ExceptionHandlingKt.executeAndGetSilent;
+import static util.global.ExceptionsKt.executeAndGetSilent;
 import static util.global.ValidationKt.condition;
 import static util.global.ValidationKt.notNull;
 
@@ -30,7 +30,7 @@ public class SingleThreadStreamer<T> {
   private int delay = 0;
 
   public SingleThreadStreamer(Callable<T> callable) {
-    condition(notNull(callable));
+    condition(notNull(callable), "condition failure");
     this.callable = callable;
     this.subject = PublishSubject.create();
     this.streaming = false;
@@ -38,7 +38,7 @@ public class SingleThreadStreamer<T> {
 
   public SingleThreadStreamer(Callable<T> callable, int delay) {
     this(callable);
-    condition(delay > 0);
+    condition(delay > 0, "condition failure");
     this.delay = delay;
   }
 

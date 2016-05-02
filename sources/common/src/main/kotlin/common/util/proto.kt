@@ -80,17 +80,14 @@ fun order(id: Long = 0, side: Order.Side, price: Double, volume: Double, time: L
 /**
  * Convert to single line json representation
  */
-fun GeneratedMessage.json(): String {
-    return JsonFormat.printer().print(this).replace(Regex("[ |\\n]+"), " ")
-}
+fun GeneratedMessage.json(pretty: Boolean = false): String {
+    val json = JsonFormat.printer().print(this)
 
-///**
-// * Fill builder values from json.
-// */
-//fun <T : GeneratedMessage.Builder<out GeneratedMessage.Builder<*>>?> GeneratedMessage.Builder<T>.fromJson(json: String): GeneratedMessage.Builder<T> {
-//    JsonFormat.parser().merge(json, this)
-//    return this
-//}
+    if (!pretty) {
+        return json.replace(Regex("[ |\\n]+"), " ")
+    }
+    return json
+}
 
 private object repo {
     val currencies = ConcurrentHashMap<String, Currency>()

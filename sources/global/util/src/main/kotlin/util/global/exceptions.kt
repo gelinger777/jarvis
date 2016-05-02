@@ -1,44 +1,25 @@
 package util.global
 
-import rx.subjects.PublishSubject
 import util.Option
+import util.app
 import java.util.concurrent.Callable
 
+
 /**
- * Utility class for exception handling and boilerplate elimination.
- *
- * All overloaded wtf() methods are logging the provided data (if any) to a file and kill the process, these
- * represent use cases that shall never happen in production. This is following fail fast principle.
- *
- * P.S. WTF stands for (what a terrible failure)
- *
- * note : logger with file appender must be configured for ExceptionUtils class.
+ * WTFException represents an unrecoverable error, a logical error that is not considered to ever happen in the system.
  */
-private object exceptionUtils {
+internal class WTFException : RuntimeException {
 
-    /**
-     * Appropriate file appender shall be defined in logging configuration file.
-     */
-    val log by logger("exceptions")
+    constructor() : super() {
+    }
 
-    val unrecoverableErrorStream = PublishSubject.create<Throwable>()
+    constructor(message: String) : super(message) {
+    }
 
-    /**
-     * WTFException represents an unrecoverable error, a logical error that is not considered to ever happen in the system.
-     */
-    class WTFException : RuntimeException {
+    constructor(message: String, cause: Throwable) : super(message, cause) {
+    }
 
-        constructor() : super() {
-        }
-
-        constructor(message: String) : super(message) {
-        }
-
-        constructor(message: String, cause: Throwable) : super(message, cause) {
-        }
-
-        constructor(cause: Throwable) : super(cause) {
-        }
+    constructor(cause: Throwable) : super(cause) {
     }
 }
 
@@ -47,29 +28,33 @@ private object exceptionUtils {
  * Register a listener for the unrecoverable errors.
  */
 fun onUnrecoverableFailure(listener: (Throwable) -> Unit) {
-    exceptionUtils.unrecoverableErrorStream.subscribe({
+    app.unrecoverableErrors.subscribe({
         executeSilent { listener.invoke(it) }
     })
 }
 
-
+fun onReportedFailure(listener: (Throwable) -> Unit) {
+    app.reportedErrors.subscribe({
+        executeSilent { listener.invoke(it) }
+    })
+}
 
 // wtf methods
 
 fun wtf() {
-    reportAndKill(exceptionUtils.WTFException())
+    reportAndKill(WTFException())
 }
 
 fun wtf(message: String) {
-    reportAndKill(exceptionUtils.WTFException(message))
+    reportAndKill(WTFException(message))
 }
 
 fun wtf(cause: Throwable) {
-    reportAndKill(exceptionUtils.WTFException(cause))
+    reportAndKill(WTFException(cause))
 }
 
 fun wtf(cause: Throwable, message: String) {
-    reportAndKill(exceptionUtils.WTFException(message, cause))
+    reportAndKill(WTFException(message, cause))
 }
 
 // logging to file
@@ -78,23 +63,23 @@ fun wtf(cause: Throwable, message: String) {
  * Logs an exception to general error log and returns without throwing it further.
  */
 fun report(cause: Throwable, message: String = "unexpected exception"): Throwable {
-    exceptionUtils.log.info(message, cause)
+    app.reportedErrors.onNext(cause)
     return cause
 }
 
 /**
- * Logs to general error log.
+ * Logs an exception to general error log and returns without throwing it further.
  */
-fun report(message: String) {
-    exceptionUtils.log.info(message)
+fun report(message: String): Throwable {
+    return report(RuntimeException(message), message)
 }
 
 private fun reportAndKill(cause: Throwable) {
     // write log to a file
-    exceptionUtils.log.error("unrecoverable error", cause)
+    app.exceptionLogger.error("unrecoverable error", cause)
 
     // acknowledge all the failure subscribers
-    exceptionUtils.unrecoverableErrorStream.onNext(cause);
+    app.unrecoverableErrors.onNext(cause);
 
     // kill process (let the cleanup tasks run)
     System.exit(-1)
@@ -133,7 +118,7 @@ fun executeMandatory(block: () -> Unit) {
     try {
         block.invoke()
     } catch (cause: Throwable) {
-        reportAndKill(exceptionUtils.WTFException(cause))
+        reportAndKill(WTFException(cause))
     }
 
 }
@@ -183,6 +168,6 @@ fun <T> executeAndGetMandatory(callable: Callable<T>): T {
             throw RuntimeException("callable returned null")
         }
     } catch (cause: Throwable) {
-        return whatever { reportAndKill(exceptionUtils.WTFException(cause)) }
+        return whatever { reportAndKill(WTFException(cause)) }
     }
 }

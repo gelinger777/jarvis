@@ -13,9 +13,10 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import static org.apache.commons.io.IOUtils.toByteArray;
-import static util.global.ExceptionHandlingKt.wtf;
+import static util.global.ExceptionsKt.wtf;
 import static util.global.ValidationKt.condition;
 import static util.global.ValidationKt.notNullOrEmpty;
+
 /**
  * Immutable zip representation.
  */
@@ -108,7 +109,7 @@ public class Zip {
     }
 
     public Builder addEntry(String name, byte[] bytes) {
-      condition(notNullOrEmpty(name) && !entries.containsKey(name));
+      condition(notNullOrEmpty(name) && !entries.containsKey(name), "entry '" + name + "' already exists");
       entries.put(name, bytes);
       return this;
     }
@@ -202,7 +203,6 @@ public class Zip {
     }
 
     private String relativeName(String rootPath, String filePath) {
-      condition(!filePath.startsWith(rootPath));
       return filePath.substring(rootPath.length() + 1, filePath.length());
     }
   }

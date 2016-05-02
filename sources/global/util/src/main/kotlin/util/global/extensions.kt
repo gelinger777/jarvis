@@ -230,17 +230,17 @@ fun <T> Consumer<T>.andThen(after: Consumer<T>): Consumer<T> {
 // protobuf
 
 
-fun <T : Message.Builder> T.readFromFS(): T {
+fun <T : Message.Builder> T.readFromFS(propertyName : String): T {
     return this.apply {
         executeMandatory {
-            val log = util.global.logger("util.global")
+            val log = util.global.logger("application")
 
-            log.info("getting location of configuration")
-            val path = System.getProperty("config")
+            log.info("getting location of configuration : $propertyName")
+            val path = System.getProperty(propertyName)
 
-            condition(notNullOrEmpty(path), "system property was not provided")
+            condition(notNullOrEmpty(path), "property was not provided")
 
-            log.info("reading configuration from file system")
+            log.info("reading configuration from : $path")
             val json = FileUtils.readFileToString(File(path))
 
             log.info("merging configuration")

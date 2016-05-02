@@ -8,7 +8,7 @@ import util.global.*
 internal object EventStore : EventStoreGrpc.EventStore {
     val log by logger("event-store-server")
 
-    val conf = readConfiguration();
+    val conf = readConfiguration("eventStoreConfig");
     val streams = mutableMapOf<String, EventStream>()
 
     override fun info(request: InfoReq?, responseObserver: StreamObserver<InfoResp>?) {
@@ -24,8 +24,8 @@ internal object EventStore : EventStoreGrpc.EventStore {
             val source = es.observe(request.start, request.end, request.keepStreaming)
                     .map { it.toByteString() }
                     .batch()
-                    .doOnNext { log.debug("sending batch of size ${it.size}") }
                     .map { it.toReadResponse() }
+                    .doOnNext { log.debug("sending batch of size ${it.dataCount}")}
 
             // subscribe to the stream
             observer.subscribe(source)
@@ -66,9 +66,9 @@ internal object EventStore : EventStoreGrpc.EventStore {
 
     // stuff
 
-    private fun readConfiguration(): EventStoreConfig {
+    private fun readConfiguration(propertyName: String): EventStoreConfig {
         log.info("reading the configuration")
-        return EventStoreConfig.newBuilder().readFromFS().build();
+        return EventStoreConfig.newBuilder().readFromFS(propertyName).build();
     }
 
     private fun toAbsolutePath(relative: String): String {

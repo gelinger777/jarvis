@@ -7,7 +7,7 @@ import com.tars.util.net.ws.WebsocketHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static util.global.ExceptionHandlingKt.*;
+import static util.global.ExceptionsKt.*;
 import static util.global.FunctionsKt.*;
 import static util.global.ValidationKt.*;
 

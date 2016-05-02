@@ -1,0 +1,20 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_outer_classname = "ProtobufBitfinex";
+
+package proto.bitfinex;
+
+import "common.proto";
+
+
+message BitfinexConfig{
+    string websocketConnectionURL = 1;
+    string publicKey = 2;
+    string privateKey = 3;
+}
+
+message BitfinexCollectorConfig{
+    int32 port = 1;
+    repeated proto.common.Pair pairs = 2;
+    BitfinexConfig bitfinexConfig = 3;
+}

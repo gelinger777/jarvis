@@ -12,8 +12,8 @@ import java.io.IOException;
 
 import util.Option;
 
-import static util.global.ExceptionHandlingKt.executeAndGetSilent;
-import static util.global.ExceptionHandlingKt.wtf;
+import static util.global.ExceptionsKt.executeAndGetSilent;
+import static util.global.ExceptionsKt.wtf;
 
 
 

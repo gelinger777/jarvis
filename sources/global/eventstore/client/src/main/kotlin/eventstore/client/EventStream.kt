@@ -38,11 +38,10 @@ class EventStream(val path: String, val client: EventStoreClient) {
                     }
 
                     override fun onError(error: Throwable) {
-                        wtf(error)
+                        report(error)
                     }
 
                     override fun onCompleted() {
-                        wtf()
                     }
                 })
     }

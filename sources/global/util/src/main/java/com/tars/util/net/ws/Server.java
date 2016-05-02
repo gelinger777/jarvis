@@ -15,7 +15,7 @@ import javax.websocket.server.ServerEndpointConfig.Configurator;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static util.global.ExceptionHandlingKt.wtf;
+import static util.global.ExceptionsKt.wtf;
 
 class Server implements WebsocketServer {
 

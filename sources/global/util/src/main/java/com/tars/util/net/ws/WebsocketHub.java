@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static util.global.ExceptionHandlingKt.executeSilent;
+import static util.global.ExceptionsKt.executeSilent;
 import static util.global.FunctionsKt.runnable;
 public final class WebsocketHub {
 

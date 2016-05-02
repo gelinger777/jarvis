@@ -6,12 +6,12 @@ buildscript {
         mavenLocal()
         maven { url 'http://clojars.org/repo' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-        maven { url 'http://repo.spring.io/plugins-release' }
+//        maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.1-2"
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.6'
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.3.3.RELEASE'
+//        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.3.3.RELEASE'
     }
 }
 
@@ -93,6 +93,20 @@ subprojects {
         }
     }
 
+    ext{
+
+        /**
+         * Set jvm args for application.
+         */
+        configureApp = {
+            project.applicationDefaultJvmArgs = [
+                    '-DeventStoreConfig=/Users/vach/workspace/jarvis/dist/config/event-store.json',
+                    '-DbitfinexCollectorConfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
+                    '-DlogsPath=/Users/vach/workspace/jarvis/dist/logs',
+                    '-Dprofile=dev'
+            ]
+        }
+    }
 }
 
 // Util =========================================================================================
@@ -215,7 +229,6 @@ project(":eventstore-server") {
     apply plugin: 'application'
 
     mainClassName = "eventstore.EventStoreServerKt"
-    applicationDefaultJvmArgs = ['-Dconfig=/Users/vach/workspace/jarvis/dist/config/event-store.json','-Dlogs.path=/Users/vach/workspace/jarvis/dist/logs']
 
     description = "[app] Event Store server."
 
@@ -226,29 +239,24 @@ project(":eventstore-server") {
         compile 'net.openhft:chronicle:3.6.0'
     }
 
+    configureApp()
+
     installDist.destinationDir=rootProject.file("dist/${project.name}")
 }
 
 // Engine =======================================================================================
 
 project(":engine") {
-    apply plugin: 'spring-boot'
-
     description = "[app] Uses collector services to get realtime exchange data to generate trade signals."
 
     dependencies {
         compile project(":common")
-
-        compile 'org.springframework.boot:spring-boot-starter'
-        compile 'org.springframework.boot:spring-boot-starter-log4j'
     }
 }
 
 // Bitfinex =====================================================================================
 
 project(":bitfinex-client") {
-    apply plugin: 'spring-boot'
-
     description = "[lib] Bitfinex client library to work with bitfinex exchange."
 
     dependencies {
@@ -258,7 +266,6 @@ project(":bitfinex-client") {
 }
 
 project(":bitfinex-collector-client") {
-    apply plugin: 'spring-boot'
 
     description = "[lib] Bitfinex collector client library allows to connect and work with collector service."
 
@@ -269,16 +276,11 @@ project(":bitfinex-collector-client") {
 }
 
 project(":bitfinex-collector-server") {
-    apply plugin: 'spring-boot'
-
     description = "[app] Bitfinex collector server collects trade and orderbook data to a persistent store."
 
     dependencies {
         compile project(":bitfinex-client")
         compile project(":eventstore-client")
-
-        compile 'org.springframework.boot:spring-boot-starter'
-        compile 'org.springframework.boot:spring-boot-starter-log4j'
     }
 
 }
