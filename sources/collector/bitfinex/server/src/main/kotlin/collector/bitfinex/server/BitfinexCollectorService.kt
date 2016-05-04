@@ -1,0 +1,108 @@
+package collector.bitfinex.server
+
+import bitfinex.Bitfinex
+import collector.bitfinex.server.recorder.RecordingObserver
+import common.util.asFolderName
+import common.util.respondCollInfo
+import common.util.respondRecordOrders
+import common.util.respondRecordTrades
+import eventstore.client.EventStoreClient
+import io.grpc.stub.StreamObserver
+import proto.bitfinex.BitfinexCollectorConfig
+import proto.common.*
+import util.global.computeIfAbsent
+import util.global.logger
+import util.global.subscribe
+import java.io.File
+
+internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val bitfinex: Bitfinex, val eventStore: EventStoreClient) : CollectorGrpc.Collector {
+    val log by logger("bitfinex-collector-server")
+
+    val recorders = mutableMapOf<String, Any>()
+
+    init {
+        config.pairsList.forEach {
+            recordTradesOf(it)
+            recordOrdersOf(it)
+        }
+    }
+
+    override fun info(request: CollInfoReq, observer: StreamObserver<CollInfoResp>) {
+        log.debug("getting accessible market pairs")
+
+        val supportedPairs = bitfinex.symbols()
+
+        respondCollInfo(observer, supportedPairs)
+    }
+
+    override fun streamTrades(request: StreamTradesReq, observer: StreamObserver<Trade>) {
+        observer.subscribe(bitfinex.streamTrades(request.pair))
+    }
+
+    override fun streamOrders(request: StreamOrdersReq, observer: StreamObserver<Order>) {
+        observer.subscribe(bitfinex.streamOrders(request.pair))
+    }
+
+    override fun recordTrades(request: RecordTradesReq, observer: StreamObserver<RecordTradesResp>) {
+        recordTradesOf(request.pair)
+        respondRecordTrades(observer, success = true)
+    }
+
+    override fun recordOrders(request: RecordOrdersReq, observer: StreamObserver<RecordOrdersResp>) {
+        recordOrdersOf(request.pair)
+        respondRecordOrders(observer, success = true)
+    }
+
+
+    override fun streamHistoricalTrades(request: StreamHistoricalTradesReq, observer: StreamObserver<Trade>) {
+        val path = request.pair.asTradeDataPath()
+        val stream = eventStore.getStream(path)
+
+        val dataStream = stream
+                .observe(request.startIndex, request.endIndex)
+                .map { Trade.parseFrom(it) } // note : unnecessary serialization
+
+        observer.subscribe(dataStream)
+    }
+
+    override fun streamHistoricalOrders(request: StreamHistoricalOrdersReq, observer: StreamObserver<Order>) {
+        val path = request.pair.asOrdersDataPath()
+        val stream = eventStore.getStream(path)
+
+        val dataStream = stream
+                .observe(request.startIndex, request.endIndex)
+                .map { Order.parseFrom(it) } // note : unnecessary serialization
+
+        observer.subscribe(dataStream)
+    }
+
+    // stuff
+
+    private fun recordTradesOf(pair: Pair) {
+        val path = pair.asTradeDataPath()
+
+        recorders.computeIfAbsent(path, {
+            RecordingObserver<Trade>(it, eventStore).apply { this.subscribe(bitfinex.streamTrades(pair)) }
+        })
+    }
+
+    private fun recordOrdersOf(pair: Pair) {
+        val path = pair.asOrdersDataPath()
+
+        recorders.computeIfAbsent(path, {
+            RecordingObserver<Order>(it, eventStore).apply { this.subscribe(bitfinex.streamOrders(pair)) }
+        })
+    }
+
+
+    private fun Pair.asTradeDataPath(): String {
+        // btc-usd\trades\data.*
+        return this.asFolderName() + File.separator + "trades" + File.separator + "data"
+    }
+
+    private fun Pair.asOrdersDataPath(): String {
+        // btc-usd\book\data.*
+        return this.asFolderName() + File.separator + "orders" + File.separator + "data"
+    }
+}
+

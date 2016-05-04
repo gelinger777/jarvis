@@ -3,6 +3,7 @@ package common.util
 import com.google.protobuf.GeneratedMessage
 import com.google.protobuf.util.JsonFormat
 import io.grpc.stub.StreamObserver
+import proto.bitfinex.BitfinexConfig
 import proto.common.*
 import util.global.condition
 import java.util.concurrent.ConcurrentHashMap
@@ -95,6 +96,22 @@ private object repo {
 }
 
 // services ============================================================================
+
+
+fun address(host: String, port: Int): ServiceAddress {
+    return ServiceAddress.newBuilder()
+            .setHost(host)
+            .setPort(port)
+            .build()
+}
+
+fun bitfinexConfig(websocketConnectionURL: String, publicKey: String, privateKey: String): BitfinexConfig {
+    return BitfinexConfig.newBuilder()
+            .setWebsocketConnectionURL(websocketConnectionURL)
+            .setPublicKey(publicKey)
+            .setPrivateKey(privateKey)
+            .build()
+}
 
 // request
 

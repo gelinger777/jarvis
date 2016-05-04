@@ -136,3 +136,8 @@ message Trade {
     double price = 2;
     double volume = 3;
 }
+
+message ServiceAddress{
+    string host = 1;
+    int32 port = 2;
+}

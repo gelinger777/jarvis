@@ -1,94 +1,26 @@
-import common.util.json
+import bitfinex.Bitfinex
+import collector.bitfinex.server.BitfinexCollectorService
+import eventstore.client.EventStoreClient
 import proto.bitfinex.BitfinexCollectorConfig
+import proto.common.CollectorGrpc
+import util.app
 import util.global.readFromFS
+import util.grpc.GrpcServer
 
 fun main(args: Array<String>) {
-
-
-    //    val config = BitfinexCollectorConfig
-    //            .newBuilder()
-    //            .readFromFS("bitfinexCollectorConfig").build()
-
-
-    BitfinexCollectorConfig.newBuilder()
+    app.log.info("starting BitfinexCollectorServer")
+    val config = BitfinexCollectorConfig.newBuilder()
             .readFromFS("bitfinexCollectorConfig")
             .build()
-            .json(pretty = true)
-            .apply { println(this) }
 
+    app.log.info("instantiating BitfinexClient")
+    val bitfinex = Bitfinex(config.bitfinexConfig)
 
-    //
-    //    val pair = pair("BTC", "USD")
-    //    val path = bitfinex.config.tradeDataPath(pair)
-    //    val stream = storage.eventStream(path)
-    //
-    //    stream.streamRealtime()
-    //            .map { Order.parseFrom(it) }
-    //            .subscribe {
-    //                println("Order persisted ${it.json()}")
-    //            }
-    //
-    //    bitfinex.streamBook(pair)
-    //            .map { it.toByteArray() }
-    //            .batch()
-    //            .subscribe { batch ->
-    //                for (data in batch) {
-    //                    stream.write(data)
-    //                }
-    //            }
+    app.log.info("instantiating EventStoreClient")
+    val eventStore = EventStoreClient(config.eventStoreConfig)
 
-    //    val config = bitfinex.config
-    //
-    //    log.info("starting trade streams")
-    //
-    //    config.trade.asSequence().forEach {
-    //        val symbol = it.key
-    //        val port = it.value
-    //
-    //        val pair = Util.pair(symbol)
-    //        val path = bitfinex.config.tradeDataPath(pair)
-    //
-    //        val stream = EventStream.get(path, port)
-    //
-    //        bitfinex.streamTrades(pair)
-    //                .map { it.toByteArray() }
-    //                .batch()
-    //                .subscribe { batch ->
-    //                    println("trade batch ${batch.size}")
-    //
-    //                    for (data in batch) {
-    //                        stream.append(data)
-    //                    }
-    //                }
-    //    }
-    //
-    //    log.info("starting book streams")
-    //
-    //    config.book.asSequence().forEach {
-    //        val symbol = it.key
-    //        val port = it.value
-    //
-    //        val pair = Util.pair(symbol)
-    //        val path = bitfinex.config.bookDataPath(pair)
-    //
-    //        val stream = EventStream.get(path, port)
-    //
-    //        bitfinex.streamOrderbook(pair)
-    //                .map { it.toByteArray() }
-    //                .batch()
-    //                .subscribe { batch ->
-    //                    println("book batch ${batch.size}")
-    //
-    //                    for (data in batch) {
-    //                        stream.append(data)
-    //                    }
-    //                }
-    //    }
-
-    //    log.info("enter to stop")
-
-    //    readLine()
-    //
-    //    // release resources and shut down
-    //    ctx.close()
+    app.log.info("starting grpc service")
+    val bitfinexService = BitfinexCollectorService(config, bitfinex, eventStore)
+    val grpcServer = GrpcServer(config.port, CollectorGrpc.bindService(bitfinexService))
+    grpcServer.start().blockForTermination()
 }

@@ -1,10 +1,11 @@
 package util
 
+import rx.Observable
 import rx.subjects.PublishSubject
 import util.global.*
 
 object app {
-    val log by logger("app")
+    val log by logger("application")
     val exceptionLogger by logger("exceptions")
 
     internal val unrecoverableErrors = PublishSubject.create<Throwable>()
@@ -54,6 +55,14 @@ object app {
             }
 
         }
+    }
+
+    fun reportedErrors() : Observable<Throwable>{
+        return reportedErrors;
+    }
+
+    fun unrecoverableErrors() : Observable<Throwable>{
+        return unrecoverableErrors;
     }
 
 }

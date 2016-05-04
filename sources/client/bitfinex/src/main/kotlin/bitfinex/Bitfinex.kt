@@ -3,12 +3,12 @@ package bitfinex
 import bitfinex.channel.BookChannel
 import bitfinex.channel.BroadCoastingChannel
 import bitfinex.channel.TradeChannel
-import collector.bitfinex.server.BitfinexConfig
 import com.google.gson.JsonParser
 import common.util.asKey
 import common.util.asPair
 import common.util.json
 import org.apache.http.client.methods.RequestBuilder.get
+import proto.bitfinex.BitfinexConfig
 import proto.common.Order
 import proto.common.Pair
 import proto.common.Trade

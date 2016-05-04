@@ -1,17 +1,16 @@
 
+import common.util.address
 import eventstore.client.EventStoreClient
 import util.cpu
 import java.util.concurrent.atomic.AtomicInteger
 
 fun main(args: Array<String>) {
-    val esc = EventStoreClient("localhost", 9151)
-
+    val esc = EventStoreClient(address("localhost", 9151))
 
     val es = esc.getStream("demo/test")
 
 
     val count = AtomicInteger()
-    //    es.write("hello".toByteArray())
 
 
     es.observe(start = 90, realtime = true)

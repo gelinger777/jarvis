@@ -8,9 +8,10 @@ import rx.subjects.PublishSubject
 import util.cpu
 import util.global.asGrpcObserver
 
-class BitfinexClient(val host: String, val port: Int) : IExchangeCollector {
+class BitfinexCollectorClient(val address: ServiceAddress) : IExchangeCollector {
     private val channel = ManagedChannelBuilder
-            .forAddress(host, port)
+            .forAddress(address.host, address.port)
+            .usePlaintext(true)
             .executor(cpu.executors.io)
             .build()
 
@@ -29,9 +30,8 @@ class BitfinexClient(val host: String, val port: Int) : IExchangeCollector {
     }
 
     override fun streamOrders(request: StreamOrdersReq): Observable<Order> {
-        val subject = PublishSubject.create<Order>()
-        asyncStub.streamOrders(request, subject.asGrpcObserver())
-        return subject
+        return PublishSubject.create<Order>()
+                .apply { asyncStub.streamOrders(request, this.asGrpcObserver()) }
     }
 
     override fun recordTrades(request: RecordTradesReq): RecordTradesResp {

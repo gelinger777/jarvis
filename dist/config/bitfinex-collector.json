@@ -3,10 +3,10 @@
   "pairs": [
     {
       "base": {
-        "symbol": "btc"
+        "symbol": "BTC"
       },
       "quote": {
-        "symbol": "usd"
+        "symbol": "USD"
       }
     }
   ],
@@ -14,5 +14,9 @@
     "websocketConnectionURL": "wss://api2.bitfinex.com:3000/ws",
     "publicKey": "8SOAdEL7gPLgB0zz7KiqdOqmIHMw5vfgRnVlFbytfKa",
     "privateKey": "a9pZv0zDvprfK0PvUF7wKZGzeU16m06ZvM7CHQRfncY"
+  },
+  "eventStoreConfig": {
+    "host": "localhost",
+    "port": 9151
   }
 }
