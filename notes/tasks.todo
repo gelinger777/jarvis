@@ -1,0 +1,38 @@
+
+ data collection: 
+
+  ☐ event store service
+    ✔ initial prototype  @done (16-05-02 00:12)
+    ✔ testing @done (16-05-02 00:12)
+    ☐ tune logging
+    ☐ heartbeat
+    ☐ alerts
+  ☐ collectors
+    ✔ bitfinex @done (16-05-03 19:22)
+    ☐ bitstamp
+  ☐ deployment
+    ☐ gradle application plugin
+    ☐ aws ec2 / elb
+
+
+analysis:
+
+ ☐ realtime indicators
+   ☐ MACD
+   ☐ Force Index
+   ☐ ...
+ ☐ visualization
+   ☐ java fx / webview / tradingveiw library
+ ☐ supervised machine learning
+
+backtesting:
+
+ ☐ risk management
+ ☐ performance management
+ 
+live trading: 
+
+ ☐ one week demo trading
+ ☐ one month staging
+ ☐ production
+ 
