@@ -2,10 +2,7 @@ package collector.bitfinex.server
 
 import bitfinex.Bitfinex
 import collector.bitfinex.server.recorder.RecordingObserver
-import common.util.asFolderName
-import common.util.respondCollInfo
-import common.util.respondRecordOrders
-import common.util.respondRecordTrades
+import common.util.*
 import eventstore.client.EventStoreClient
 import io.grpc.stub.StreamObserver
 import proto.bitfinex.BitfinexCollectorConfig
@@ -79,6 +76,7 @@ internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val
     // stuff
 
     private fun recordTradesOf(pair: Pair) {
+        log.info("recording trades of ${pair.json()}")
         val path = pair.asTradeDataPath()
 
         recorders.computeIfAbsent(path, {
@@ -87,6 +85,7 @@ internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val
     }
 
     private fun recordOrdersOf(pair: Pair) {
+        log.info("recording orders of ${pair.json()}")
         val path = pair.asOrdersDataPath()
 
         recorders.computeIfAbsent(path, {

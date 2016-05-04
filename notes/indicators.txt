@@ -1,0 +1,116 @@
+// indicators
+    
+    indicator.coinTracker{
+        This indicator is capable to do various different analysis on actual blockchain.
+
+        1. finds and tracks wallets which hold significant amount of cryptocoins and have been idle for years, as soon as some transaction happens from those wallets this indicator shows that...
+
+        2. tracks wallets with high rate of transactions
+    }
+
+    indicator.coinFlow{
+        This indicator tracks a set of wallets how much coins are moved in or out.
+    }
+
+    indicator.coinBuzz{
+        This indicator tracks a set of wallets how much coins are moved in or out.
+    }
+
+    indicator.sleepAwake{
+        Simply compare prices with a fixed time delay, or fixed trade quantity...
+    }
+
+    indicator.forceIndex{
+        The FI is calculated by multiplying the difference between the last and previous closing prices by the volume of the commodity, yielding a momentum scaled by the volume.
+    }
+
+    indicator.adx{
+        https://en.wikipedia.org/wiki/Average_directional_movement_index
+    }
+
+    indicator.coincube{
+        use a coincube account behaviour to track decisions that their system is making for its customers, a trading bot can simply replicate
+        this behaviour and as a result we get their entire development effort for free...
+
+        requires dedicated event stream for source
+    }
+
+    indicator.userOpinion{
+        this is a manually entered indicator, based on news and different rumors user may describe overall mood about market (value is in range -1, 1)
+        if an operator has good insight in trading market, then strategies that use supervized learning can give more weight to this indicator over time
+    }
+
+    indicator.whaleDetector{
+        Monitors events for huge orders, trades, cancelations. Measures bull and bear powers in realtime.
+    }
+    
+    indicator.storm{
+        Tracks the market volatility, with this indicator you can tell if market is calm or volatile...
+    }
+    
+    indicator.googleTrends{
+        Data from google trends correlates with trading volumes. Operator can create many instances of indicator with different keywords,
+        like target currencies used in the market, or industries that have correlation with current market...
+
+        requires dedicate event stream as a source
+    }
+    
+    indicator.shazam {
+        Shazam uses pattern recognition algorithms for songs, basically by smoothing sound waves into uniquely identifiable pattern which is used to determine the song. The same approach might be useful for detecting trading charts, as this algorithm is capable to detect entire song with just small portion of sample...
+    }
+
+    indicator.coorelation {
+        this indicator can compare two streams for coorelation, can be configured for different offsets etc...
+    }
+
+    indicator.codeForce {
+        this indicator tracks git activity of the project, for example one can track bitcoins git repository. This indicator shows how active the repository is...
+
+        requires dedicated event stream as a source
+    }
+
+// low frequency trading
+
+    strategy.lft.trendCatcher{
+        uses trend following approach to make objections about long term trend
+    }
+
+    strategy.lft.coinCube{
+        use the coincube trading sequence, and replicate on other markets. this bot primarily uses indicator.coincube as a source...
+    }
+
+// medium frequency trading
+
+    strategy.mft.jarvis{    
+        this is general purpose strategy which uses decision making trees and supervised learning to make them.
+        operator can compose different combinations of indicators and give them for this strategy to study... if combination of indicators makes sence decision making tree will adapt and learn how to make profitable decisions based on indicator value...
+    }
+
+    strategy.mft.wallBraker {
+        uses orderbook depth, and whenever a volume wall is about to break dumps the equity. 
+        walls are detected by relative volume, so if we trust more equity to this strategy the bigger is the wall treshold to cause this strategy to act.
+    }
+
+    strategy.mft.patternCatcher{
+        uses pattern recognition to issue orders (e.g. something like indicator.shazam or similar pattern recognition techniques)
+    }
+
+    strategy.mft.waveCatcher{
+        uses moving averages on multiple time frames simultaneously to detect trend reversals,
+        uses price movement speed and/or acceleration indicators to catch waves
+    }
+
+// high frequency trading
+
+    strategy.hft.maker {
+        market making strategy applicable to all exchanges with market maker friendly pricing (todo : try doing this on many exchanges coordinated)
+    }
+    
+    strategy.hft.crossExchangeArbitrage{
+        Using same markets on multiple exchanges to perform statistical arbitrage,
+        avoiding moving funds.
+    }
+    
+    strategy.hft.crossMarketArbitrage{
+        Using multiple markets of different exchanges to compose chain of trades that will make profitable outcome (e.g. 3 async trades on 3 different exchanges A -> B, B -> C, C -> A ). Only uses cripto currencies as those have minimal overhead when moving funds.
+    }

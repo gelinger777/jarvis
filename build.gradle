@@ -96,11 +96,11 @@ subprojects {
         /**
          * Set jvm args for application.
          */
-        configureApp = {
+        configureAppEnvVariables = {
             project.applicationDefaultJvmArgs = [
-                    '-DeventStoreConfig=/Users/vach/workspace/jarvis/dist/config/event-store.json',
-                    '-DbitfinexCollectorConfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
-                    '-DlogsPath=/Users/vach/workspace/jarvis/dist/logs',
+                    '-DeventStoreConfig=/Users/vach/workspace/jarvis/artifacts/config/event-store.json',
+                    '-DbitfinexCollectorConfig=/Users/vach/workspace/jarvis/artifacts/config/bitfinex-collector.json',
+                    '-DlogsPath=/Users/vach/workspace/jarvis/artifacts/logs',
                     '-Dprofile=dev'
             ]
         }
@@ -226,7 +226,9 @@ project(":eventstore-client") {
 project(":eventstore-server") {
     apply plugin: 'application'
 
-    mainClassName = "eventstore.EventStoreServerKt"
+    mainClassName = "eventstore.RunEventStoreServerKt"
+    configureAppEnvVariables()
+    installDist.destinationDir=rootProject.file("artifacts/app/${project.name}")
 
     description = "[app] Event Store server."
 
@@ -237,9 +239,7 @@ project(":eventstore-server") {
         compile 'net.openhft:chronicle:3.6.0'
     }
 
-    configureApp()
 
-    installDist.destinationDir=rootProject.file("dist/${project.name}")
 }
 
 // Engine =======================================================================================
@@ -274,6 +274,11 @@ project(":bitfinex-collector-client") {
 }
 
 project(":bitfinex-collector-server") {
+    apply plugin: 'application'
+    mainClassName = "collector.bitfinex.RunBitfinexCollectorServerKt"
+    configureAppEnvVariables()
+    installDist.destinationDir=rootProject.file("artifacts/app/${project.name}")
+
     description = "[app] Bitfinex collector server collects trade and orderbook data to a persistent store."
 
     dependencies {
@@ -290,3 +295,8 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
 }
 
+task cleanOutput(){
+    delete "${projectDir}/artifacts/app"
+    delete "${projectDir}/artifacts/logs"
+    delete "${projectDir}/artifacts/data"
+}

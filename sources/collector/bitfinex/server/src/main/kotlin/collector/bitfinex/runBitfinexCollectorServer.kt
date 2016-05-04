@@ -1,3 +1,5 @@
+package collector.bitfinex
+
 import bitfinex.Bitfinex
 import collector.bitfinex.server.BitfinexCollectorService
 import eventstore.client.EventStoreClient

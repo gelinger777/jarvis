@@ -1,14 +1,13 @@
 
  data collection: 
 
-  ☐ event store service
+  ✔ event store service @done (16-05-04 22:54)
     ✔ initial prototype  @done (16-05-02 00:12)
     ✔ testing @done (16-05-02 00:12)
-    ☐ tune logging
-    ☐ heartbeat
-    ☐ alerts
   ☐ collectors
-    ✔ bitfinex @done (16-05-03 19:22)
+    ☐ bitfinex
+      ☐ tune logging and allerts
+      ☐ separate logging locations for different apps
     ☐ bitstamp
   ☐ deployment
     ☐ gradle application plugin

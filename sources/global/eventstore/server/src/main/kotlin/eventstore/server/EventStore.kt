@@ -11,7 +11,7 @@ internal object EventStore : EventStoreGrpc.EventStore {
     val conf = readConfiguration("eventStoreConfig");
     val streams = mutableMapOf<String, EventStream>()
 
-    override fun info(request: InfoReq?, responseObserver: StreamObserver<InfoResp>?) {
+    override fun info(request: InfoReq, responseObserver: StreamObserver<InfoResp>) {
         throw UnsupportedOperationException() // todo
     }
 
@@ -60,7 +60,7 @@ internal object EventStore : EventStoreGrpc.EventStore {
         )
     }
 
-    override fun delete(request: DelReq?, responseObserver: StreamObserver<DelResp>?) {
+    override fun delete(request: DelReq, responseObserver: StreamObserver<DelResp>) {
         throw UnsupportedOperationException() // todo
     }
 

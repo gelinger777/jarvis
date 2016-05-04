@@ -2,6 +2,7 @@ package bitfinex
 
 import common.util.bitfinexConfig
 import common.util.json
+import common.util.pair
 
 fun main(args: Array<String>) {
 
@@ -15,5 +16,7 @@ fun main(args: Array<String>) {
 
     bitfinex.symbols().forEach { println(it.json()) }
 
+    bitfinex.streamOrders(pair("BTC","USD"))
 
+    readLine()
 }
