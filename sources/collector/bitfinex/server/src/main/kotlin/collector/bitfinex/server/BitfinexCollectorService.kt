@@ -18,8 +18,11 @@ internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val
     val recorders = mutableMapOf<String, Any>()
 
     init {
-        config.pairsList.forEach {
+        log.debug("initiating collection by config")
+        config.tradesList.forEach {
             recordTradesOf(it)
+        }
+        config.ordersList.forEach {
             recordOrdersOf(it)
         }
     }

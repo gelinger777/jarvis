@@ -73,7 +73,7 @@ subprojects {
         testCompile 'junit:junit:4.12'
     }
 
-    // For cache invalidation
+    // for cache invalidation
     configurations.all {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
@@ -88,21 +88,6 @@ subprojects {
         description = 'Initializes directory structure according to source sets'
         sourceSets.all { set ->
             set.allSource.srcDirs.each { it.mkdirs() }
-        }
-    }
-
-    ext{
-
-        /**
-         * Set jvm args for application.
-         */
-        configureAppEnvVariables = {
-            project.applicationDefaultJvmArgs = [
-                    '-DeventStoreConfig=/Users/vach/workspace/jarvis/artifacts/config/event-store.json',
-                    '-DbitfinexCollectorConfig=/Users/vach/workspace/jarvis/artifacts/config/bitfinex-collector.json',
-                    '-DlogsPath=/Users/vach/workspace/jarvis/artifacts/logs',
-                    '-Dprofile=dev'
-            ]
         }
     }
 }
@@ -227,8 +212,14 @@ project(":eventstore-server") {
     apply plugin: 'application'
 
     mainClassName = "eventstore.RunEventStoreServerKt"
-    configureAppEnvVariables()
-    installDist.destinationDir=rootProject.file("artifacts/app/${project.name}")
+
+    applicationDefaultJvmArgs = [
+            '-DeventStoreConfig=/Users/vach/workspace/jarvis/dist/config/event-store.json',
+            '-DlogsPath=/Users/vach/workspace/jarvis/dist/logs/event-store',
+            '-Dprofile=dev'
+    ]
+
+    installDist.destinationDir=rootProject.file("dist/app/${project.name}")
 
     description = "[app] Event Store server."
 
@@ -276,8 +267,14 @@ project(":bitfinex-collector-client") {
 project(":bitfinex-collector-server") {
     apply plugin: 'application'
     mainClassName = "collector.bitfinex.RunBitfinexCollectorServerKt"
-    configureAppEnvVariables()
-    installDist.destinationDir=rootProject.file("artifacts/app/${project.name}")
+
+    applicationDefaultJvmArgs = [
+            '-DbitfinexCollectorConfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
+            '-DlogsPath=/Users/vach/workspace/jarvis/dist/logs/bitfinex-collector',
+            '-Dprofile=dev'
+    ]
+
+    installDist.destinationDir=rootProject.file("dist/app/${project.name}")
 
     description = "[app] Bitfinex collector server collects trade and orderbook data to a persistent store."
 
@@ -288,6 +285,7 @@ project(":bitfinex-collector-server") {
 
 }
 
+
 // ./gradlew wrapper --gradle-version=2.13
 
 task wrapper(type: Wrapper) {
@@ -296,7 +294,7 @@ task wrapper(type: Wrapper) {
 }
 
 task cleanOutput(){
-    delete "${projectDir}/artifacts/app"
-    delete "${projectDir}/artifacts/logs"
-    delete "${projectDir}/artifacts/data"
+//    delete "${projectDir}/dist/app"
+    delete "${projectDir}/dist/logs"
+    delete "${projectDir}/dist/data"
 }

@@ -67,17 +67,17 @@ object cleanupTasks {
         internalTasks.put(key, priority to task)
     }
 
-    fun printExecutionInOrder() {
-        tasks.entries.asSequence()
-                .sortedBy { -it.value.first }
-                .forEach {
-                    System.err.println("${it.key}|${it.value.first}")
-                }
-
-        internalTasks.entries.asSequence()
-                .sortedBy { -it.value.first }
-                .forEach {
-                    System.err.println("${it.key}|${it.value.first}")
-                }
-    }
+//    fun printExecutionInOrder() {
+//        tasks.entries.asSequence()
+//                .sortedBy { -it.value.first }
+//                .forEach {
+//                    System.err.println("${it.key}|${it.value.first}")
+//                }
+//
+//        internalTasks.entries.asSequence()
+//                .sortedBy { -it.value.first }
+//                .forEach {
+//                    System.err.println("${it.key}|${it.value.first}")
+//                }
+//    }
 }

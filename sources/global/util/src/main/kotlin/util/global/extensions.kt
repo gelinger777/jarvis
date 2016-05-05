@@ -153,6 +153,7 @@ fun <K, V> MutableMap<K, V>.getOptional(key: K): Option<V> {
 }
 
 // todo remove after java 8 default method support
+
 fun <K, V> MutableMap<K, V>.computeIfAbsent(key: K, mappingFunction: (key: K) -> V): V {
     val v = this[key]
     if (v == null) {

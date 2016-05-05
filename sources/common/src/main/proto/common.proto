@@ -5,12 +5,12 @@ option java_outer_classname = "ProtobufCommon";
 
 package proto.common;
 
-// services ============================================================================
+// ---------------------------------------------------------------------------
+// service interface
+// ---------------------------------------------------------------------------
 
 
-// Collector service provides interface to record and stream realtime
-// and historical data for a particular exchange, it only reads and records
-// publicly accessible data
+// Collector service provides interface to record and stream realtime and historical data for a particular exchange
 service Collector{
 
     rpc info(CollInfoReq) returns (CollInfoResp){}
@@ -25,21 +25,9 @@ service Collector{
     rpc streamHistoricalOrders(StreamHistoricalOrdersReq) returns (stream Order){}
 }
 
-// Controller service is providing interface to send commands to the particular exchange
-service Controller{
-
-    // information about service
-    rpc info(ContInfoReq) returns (ContInfoResp){}
-
-    // puts or cancels orders
-    rpc order(OrderReq) returns (OrderResp){}
-}
-
-
-// request response types ===============================================================
-
-
-// collector service types
+// ---------------------------------------------------------------------------
+// request/response types
+// ---------------------------------------------------------------------------
 
 message CollInfoReq{
     enum Type {
@@ -97,16 +85,9 @@ message StreamHistoricalOrdersReq{
     int64 endIndex = 3;
 }
 
-// controller service types
-
-message ContInfoReq{}
-message ContInfoResp{}
-message OrderReq{}
-message OrderResp{}
-
-
-// base types ==========================================================================
-
+// ---------------------------------------------------------------------------
+// base types
+// ---------------------------------------------------------------------------
 
 message Currency {
     string symbol = 1;
@@ -117,7 +98,7 @@ message Pair {
     Currency quote = 2;
 }
 
-// Canceled orders shall have same order id but 0 price and 0 volume
+// note : Canceled orders shall have same order id but 0 price and 0 volume
 message Order {
     enum Side {
         BID = 0;
@@ -136,6 +117,12 @@ message Trade {
     double price = 2;
     double volume = 3;
 }
+
+
+// ---------------------------------------------------------------------------
+// configuration types
+// ---------------------------------------------------------------------------
+
 
 message ServiceAddress{
     string host = 1;

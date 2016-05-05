@@ -1,0 +1,42 @@
+// low frequency trading
+
+    strategy.lft.trendCatcher{
+        Uses trend following approach to make objections about long term trend
+    }
+
+    strategy.lft.coinCube{
+        Use the coincube trading sequence, and replicate on other markets. this bot primarily uses indicator.coincube as a source...
+    }
+
+// medium frequency trading
+
+    strategy.mft.jarvis{
+        This is general purpose strategy which uses decision making trees and supervised learning to tune them for target market. Operator can compose different combinations of indicators and give them for this strategy to study... if combination of indicators makes sense decision making tree will adapt and learn how to make profitable decisions based on indicator values...
+    }
+
+    strategy.mft.wallBraker {
+        Uses orderbook depth, detects walls, and waits to make final blow to break the wall (moving in trend direction)...
+        Walls are detected by relative volume, the more equity we dedicate to this strategy the bigger shall be the walls threshold to cause this strategy to act.
+    }
+
+    strategy.mft.patternCatcher{
+        Uses pattern recognition to issue orders (e.g. something like indicator.shazam or similar pattern recognition techniques)
+    }
+
+    strategy.mft.waveCatcher{
+        Uses moving averages on multiple time frames simultaneously to detect trend reversals, uses price movement speed and/or acceleration indicators to catch waves.
+    }
+
+    strategy.mft.crossExchangeArbitrage{
+        Using same markets on multiple exchanges to perform statistical arbitrage, avoiding moving funds.
+    }
+
+// high frequency trading
+
+    strategy.hft.maker {
+        Market making strategy applicable to all exchanges with market maker friendly pricing model or big enough spread ( todo : try doing this on many exchanges coordinated )
+    }
+
+    strategy.hft.crossMarketArbitrage{
+        Using multiple markets of different exchanges to compose chain of trades that will make profitable outcome (e.g. 3 async trades on 3 different exchanges A -> B, B -> C, C -> A )
+    }

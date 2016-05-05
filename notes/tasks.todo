@@ -1,17 +1,23 @@
+// use Sublime with PlainTasks
 
- data collection: 
+data collection: 
 
   ✔ event store service @done (16-05-04 22:54)
     ✔ initial prototype  @done (16-05-02 00:12)
     ✔ testing @done (16-05-02 00:12)
+    ☐ upgrade chronicle-queue
   ☐ collectors
     ☐ bitfinex
-      ☐ tune logging and allerts
-      ☐ separate logging locations for different apps
+      ☐ tune logging and alert emails
+      ☐ separate logging locations per app
     ☐ bitstamp
   ☐ deployment
-    ☐ gradle application plugin
+    ✔ gradle application plugin @done (16-05-05 18:41)
+    ☐ gradle proguard (optional)
     ☐ aws ec2 / elb
+  
+  ☐ Misc tasks
+    ☐ Add AspectJ 1.8 
 
 
 analysis:
@@ -21,17 +27,22 @@ analysis:
    ☐ Force Index
    ☐ ...
  ☐ visualization
-   ☐ java fx / webview / tradingveiw library
+   ☐ java fx / webview / tradingView library
+     ✔ make a prototype @done (16-05-05 18:40)
  ☐ supervised machine learning
+   ☐ python for prototyping
+   ✔ stanford ML course @done (16-05-05 18:41)
 
 backtesting:
 
  ☐ risk management
- ☐ performance management
+ ☐ performance tracking
+ ☐ scheduled reporting
  
 live trading: 
 
  ☐ one week demo trading
  ☐ one month staging
  ☐ production
+ ☐ fundraising
  
