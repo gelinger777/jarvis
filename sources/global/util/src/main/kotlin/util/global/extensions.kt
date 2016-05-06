@@ -103,6 +103,10 @@ fun <T> PublishSubject<T>.asGrpcObserver(): StreamObserver<T> {
     }
 }
 
+fun <T> Subscriber<T>.isSubscribed(): Boolean {
+    return !this.isUnsubscribed
+}
+
 fun <T> StreamObserver<T>.subscribe(source: Observable<T>) {
     source.subscribe(
             { this.onNext(it) },

@@ -15,22 +15,32 @@ internal object EventStore : EventStoreGrpc.EventStore {
         throw UnsupportedOperationException() // todo
     }
 
-    override fun read(request: ReadReq, observer: StreamObserver<ReadResp>) {
+    override fun read(req: ReadReq, observer: StreamObserver<ReadResp>) {
         try {
+            validate(req)
             // get the corresponding event stream
-            val es = request.path.getEventStream()
+            val es = req.path.getEventStream()
+
+            if (req.isRealtime()) {
+
+            }
 
             // create requested data stream
-            val source = es.observe(request.start, request.end, request.keepStreaming)
+            val source = es.observe(req.start, req.end)
                     .map { it.toByteString() }
                     .batch()
                     .map { it.toReadResponse() }
-                    .doOnNext { log.debug("sending batch of size ${it.dataCount}")}
+                    .doOnNext { log.debug("sending batch of size ${it.dataCount}") }
 
             // subscribe to the stream
             observer.subscribe(source)
         } catch(error: Throwable) {
-            observer.onError(error)
+            observer.complete(
+                    ReadResp.newBuilder()
+                            .setSuccess(true)
+                            .setError("${error.javaClass.simpleName} : ${error.message}")
+                            .build()
+            );
         }
     }
 
@@ -66,6 +76,19 @@ internal object EventStore : EventStoreGrpc.EventStore {
 
     // stuff
 
+    private fun validate(req: ReadReq) {
+        condition(notNullOrEmpty(req.path), "path must be provided")
+//        condition(
+//                (req.start != -1L || req.end != -1L) ||
+//                        req.realtime && (req.start ==-1L && req.end),
+//                "either range must be provided or realtime flag"
+//        )
+    }
+
+    private fun ReadReq.isRealtime(): Boolean {
+        return this.realtime
+    }
+
     private fun readConfiguration(propertyName: String): EventStoreConfig {
         log.info("reading the configuration")
         return EventStoreConfig.newBuilder().readFromFS(propertyName).build();
@@ -75,19 +98,25 @@ internal object EventStore : EventStoreGrpc.EventStore {
         return conf.path + relative
     }
 
-    @Synchronized fun String.getEventStream(): EventStream {
+    private @Synchronized fun String.getEventStream(): EventStream {
         condition(notNullOrEmpty(this))
         return streams.computeIfAbsent(this, { EventStream(it, toAbsolutePath(it)) })
     }
 
-    fun ByteArray.toByteString(): ByteString {
+    private fun ByteArray.toByteString(): ByteString {
         return ByteString.copyFrom(this)
     }
 
-    fun Collection<ByteString>.toReadResponse(): ReadResp {
+    private fun Collection<ByteString>.toReadResponse(): ReadResp {
         return ReadResp.newBuilder()
+                .setSuccess(true)
                 .addAllData(this)
                 .build()
     }
+}
 
+fun main(args: Array<String>) {
+    val build = ReadReq.newBuilder().build()
+
+    println(build.start)
 }

@@ -1,6 +1,8 @@
 // use Sublime with PlainTasks
 
 data collection: 
+  ☐ Excersize EventSourcing with Kotlin
+    ☐ Use the concept in microservices to make fully reproducable systems
 
   ✔ event store service @done (16-05-04 22:54)
     ✔ initial prototype  @done (16-05-02 00:12)
