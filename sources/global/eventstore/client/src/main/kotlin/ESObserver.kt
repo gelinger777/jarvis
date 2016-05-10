@@ -1,3 +1,4 @@
+
 import common.util.address
 import eventstore.client.EventStoreClient
 
@@ -6,9 +7,9 @@ fun main(args: Array<String>) {
 
     val es = esc.getStream("demo/test")
 
-    es.observe(realtime = true)
+    es.stream()
             .subscribe (
-                    { println(String(it)) },
+                    { println("${it.index} : ${String(it.data.toByteArray())}") },
                     { it.printStackTrace() }
             )
 

@@ -1,4 +1,8 @@
 // indicators
+
+    indicator.analysisPicker{
+        Some financial analytics post analysis results online, publish trough rss, those can either be parsed or entered manually...
+    }
     
     indicator.blockchainTracker{
         This indicator is capable to do various different analysis on actual blockchains.

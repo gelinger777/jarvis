@@ -1,9 +1,7 @@
 package eventstore.client
 
 import com.google.protobuf.ByteString
-import proto.eventstore.ReadReq
-import proto.eventstore.ReadResp
-import proto.eventstore.WriteReq
+import proto.eventstore.*
 import rx.Observable
 import rx.Observer
 import rx.subjects.PublishSubject
@@ -50,23 +48,37 @@ class EventStream(val path: String, val client: EventStoreClient) {
         writeStream.onNext(data)
     }
 
-    fun observe(start: Long = -1, end: Long = -1, realtime: Boolean = false): Observable<ByteArray> {
-        val observer = PublishSubject.create<ReadResp>()
+    fun read(start: Long = -1, end: Long = -1): Observable<Event> {
+        val observer = PublishSubject.create<DataResp>()
 
         client.asyncStub.read(
                 ReadReq.newBuilder()
                         .setPath(path)
                         .setStart(start)
                         .setEnd(end)
-                        .setKeepStreaming(realtime)
                         .build(),
                 observer.asGrpcObserver()
         )
 
         return observer
-                .map { it.dataList }
+                .map { it.eventsList }
                 .unpack()
-                .map { it.toByteArray() }
+    }
+
+    fun stream(): Observable<Event> {
+        val observer = PublishSubject.create<DataResp>()
+
+        client.asyncStub.stream(
+                StreamReq.newBuilder()
+                        .setPath(path)
+                        .build(),
+                observer.asGrpcObserver()
+        )
+
+        return observer
+                .map { it.eventsList }
+                .doOnNext { log.debug("observing batch of size : ${it.size}") }
+                .unpack()
     }
 
     // stuff

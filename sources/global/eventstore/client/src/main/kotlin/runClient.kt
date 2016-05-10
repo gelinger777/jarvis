@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     val count = AtomicInteger()
 
 
-    es.observe(start = 90, realtime = true)
+    es.read(start = 90)
             .subscribe ({
                 println("${Thread.currentThread().name} : ${count.incrementAndGet()}")
             })

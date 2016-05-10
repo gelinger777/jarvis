@@ -59,8 +59,8 @@ internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val
         val stream = eventStore.getStream(path)
 
         val dataStream = stream
-                .observe(request.startIndex, request.endIndex)
-                .map { Trade.parseFrom(it) } // note : unnecessary serialization
+                .read(request.startIndex, request.endIndex)
+                .map { Trade.parseFrom(it.data) }
 
         observer.subscribe(dataStream)
     }
@@ -70,8 +70,8 @@ internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val
         val stream = eventStore.getStream(path)
 
         val dataStream = stream
-                .observe(request.startIndex, request.endIndex)
-                .map { Order.parseFrom(it) } // note : unnecessary serialization
+                .read(request.startIndex, request.endIndex)
+                .map { Order.parseFrom(it.data) }
 
         observer.subscribe(dataStream)
     }

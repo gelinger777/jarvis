@@ -6,6 +6,8 @@ import proto.eventstore.*
 import util.global.*
 
 internal object EventStore : EventStoreGrpc.EventStore {
+
+
     val log by logger("event-store-server")
 
     val conf = readConfiguration("eventStoreConfig");
@@ -15,32 +17,49 @@ internal object EventStore : EventStoreGrpc.EventStore {
         throw UnsupportedOperationException() // todo
     }
 
-    override fun read(req: ReadReq, observer: StreamObserver<ReadResp>) {
+    override fun read(readRequest: ReadReq, observer: StreamObserver<DataResp>) {
         try {
-            validate(req)
-            // get the corresponding event stream
-            val es = req.path.getEventStream()
-
-            if (req.isRealtime()) {
-
-            }
-
-            // create requested data stream
-            val source = es.observe(req.start, req.end)
-                    .map { it.toByteString() }
-                    .batch()
-                    .map { it.toReadResponse() }
-                    .doOnNext { log.debug("sending batch of size ${it.dataCount}") }
-
-            // subscribe to the stream
-            observer.subscribe(source)
+            observer.subscribe(
+                    readRequest
+                            .validate()
+                            .path.getEventStream()
+                            .observe(readRequest.start, readRequest.end)
+                            .map { it.asEvent() }
+                            .batch()
+                            .map { it.toDataResponse() }
+                            .doOnNext { log.debug("sending batch of size ${it.eventsCount}") }
+            )
         } catch(error: Throwable) {
             observer.complete(
-                    ReadResp.newBuilder()
+                    DataResp.newBuilder()
                             .setSuccess(true)
                             .setError("${error.javaClass.simpleName} : ${error.message}")
                             .build()
             );
+        }
+    }
+
+    override fun stream(streamRequest: StreamReq, observer: StreamObserver<DataResp>) {
+        try {
+            observer.subscribe(
+                    streamRequest
+                            .validate()
+                            .path.getEventStream()
+                            .realtime()
+                            .map { it.asEvent() }
+                            .batch()
+                            .map { it.toDataResponse() }
+                            .doOnNext { log.debug("sending batch of size ${it.eventsCount}") }
+            )
+
+
+        } catch(error: Throwable) {
+            observer.complete(
+                    DataResp.newBuilder()
+                            .setSuccess(false)
+                            .setError("${error.javaClass.simpleName} : ${error.message}")
+                            .build()
+            )
         }
     }
 
@@ -76,17 +95,24 @@ internal object EventStore : EventStoreGrpc.EventStore {
 
     // stuff
 
-    private fun validate(req: ReadReq) {
-        condition(notNullOrEmpty(req.path), "path must be provided")
-//        condition(
-//                (req.start != -1L || req.end != -1L) ||
-//                        req.realtime && (req.start ==-1L && req.end),
-//                "either range must be provided or realtime flag"
-//        )
+    private fun ReadReq.validate(): ReadReq {
+        condition(notNullOrEmpty(this.path), "path must be provided")
+
+        if (this.start < 0) {
+            condition(this.start == -1L)
+        }
+
+        if (this.end < 0) {
+            condition(this.end == -1L)
+        } else {
+            condition(this.start < this.end)
+        }
+        return this;
     }
 
-    private fun ReadReq.isRealtime(): Boolean {
-        return this.realtime
+    private fun StreamReq.validate(): StreamReq {
+        condition(notNullOrEmpty(this.path), "path must be provided")
+        return this;
     }
 
     private fun readConfiguration(propertyName: String): EventStoreConfig {
@@ -107,16 +133,18 @@ internal object EventStore : EventStoreGrpc.EventStore {
         return ByteString.copyFrom(this)
     }
 
-    private fun Collection<ByteString>.toReadResponse(): ReadResp {
-        return ReadResp.newBuilder()
+    private fun Collection<Event>.toDataResponse(): DataResp {
+        return DataResp.newBuilder()
                 .setSuccess(true)
-                .addAllData(this)
+                .addAllEvents(this)
                 .build()
     }
-}
 
-fun main(args: Array<String>) {
-    val build = ReadReq.newBuilder().build()
+    private fun Pair<Long, ByteArray>.asEvent(): Event {
+        return Event.newBuilder()
+                .setIndex(this.first)
+                .setData(ByteString.copyFrom(this.second))
+                .build();
+    }
 
-    println(build.start)
 }

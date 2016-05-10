@@ -10,9 +10,9 @@ service EventStore{
 
     rpc write(WriteReq) returns (WriteResp){}
 
-    rpc read(ReadReq) returns (stream ReadResp){}
+    rpc read(ReadReq) returns (stream DataResp){}
 
-    rpc stream(StreamReq) returns (stream StreamResp){}
+    rpc stream(StreamReq) returns (stream DataResp){}
 
     rpc delete(DelReq) returns (DelResp){}
 }
@@ -46,20 +46,19 @@ message ReadReq{
     int64 start = 2;
     int64 end = 3;
 }
-
-message ReadResp{
-    bool success = 1;
-    repeated bytes data = 2;
-    string error = 3;
-}
-
 message StreamReq{
     string path = 1;
 }
 
-message StreamResp{
+message DataResp{
     bool success = 1;
-    repeated bytes data =2;
+    repeated Event events = 2;
+    string error = 3;
+}
+
+message Event{
+    int64 index = 1;
+    bytes data = 2;
 }
 
 message DelReq{

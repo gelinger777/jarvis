@@ -6,32 +6,30 @@ import net.openhft.chronicle.ExcerptTailer
 import rx.Observable
 import rx.subjects.PublishSubject
 import util.cpu
-import util.global.condition
 import util.global.isSubscribed
 import util.global.logger
-import util.global.report
 
 internal class EventStream(val name: String, val path: String) {
     private val log by logger("server-event-stream")
     private val chronicle = ChronicleQueueBuilder.indexed(path).small().build()
     private val appender = chronicle.createAppender()
 
-    private val writeSubject = PublishSubject.create<ByteArray>()
+    private val writeSubject = PublishSubject.create<Pair<Long, ByteArray>>()
     private val writeStream = writeSubject.observeOn(cpu.schedulers.io)
 
     /**
      * Append a new event to the stream.
      */
-    fun write(event: ByteArray): Long {
+    fun write(bytes: ByteArray): Long {
         // info : memory footprint can be optimized if we don't create byte[] and use buffers
-        log.debug("writing ${event.size} bytes to $name")
+        log.debug("writing ${bytes.size} bytes to $name")
         synchronized(appender, {
-            // write the event and get the index
-            val index = writeByteArrayFrame(appender, event)
+            // write bytes and get the index
+            val index = appender.writeFrame(bytes)
 
             // async notify observers about this write
             if (writeSubject.hasObservers()) {
-                writeSubject.onNext(event)
+                writeSubject.onNext(index to bytes)
             }
 
             return index
@@ -45,19 +43,19 @@ internal class EventStream(val name: String, val path: String) {
 
             events.forEach {
                 // write the event and get the index
-                writeByteArrayFrame(appender, it)
+                val index = appender.writeFrame(it)
 
                 // async notify observers about this write
                 if (writeSubject.hasObservers()) {
-                    writeSubject.onNext(it)
+                    writeSubject.onNext(index to it)
                 }
             }
 
         })
     }
 
-    fun observe(start: Long = -1L, end: Long = -1L): Observable<ByteArray> {
-        return Observable.create<ByteArray> { subscriber ->
+    fun observe(start: Long = -1L, end: Long = -1L): Observable<Pair<Long, ByteArray>> {
+        return Observable.create<Pair<Long, ByteArray>> { subscriber ->
             var tailer = chronicle.createTailer()
 
             if (start != -1L) {
@@ -72,7 +70,7 @@ internal class EventStream(val name: String, val path: String) {
                         if (tailer.index() > end) {
                             break
                         }
-                        subscriber.onNext(readFrameAsByteArray(tailer))
+                        subscriber.onNext(tailer.readFrame())
                     } else {
                         break
                     }
@@ -80,7 +78,7 @@ internal class EventStream(val name: String, val path: String) {
             } else {
                 while (subscriber.isSubscribed()) {
                     if (tailer.nextIndex()) {
-                        subscriber.onNext(readFrameAsByteArray(tailer))
+                        subscriber.onNext(tailer.readFrame())
                     }
                 }
             }
@@ -89,105 +87,32 @@ internal class EventStream(val name: String, val path: String) {
         }
     }
 
-    fun realtime(): Observable<ByteArray> {
+    fun realtime(): Observable<Pair<Long, ByteArray>> {
         return writeStream
     }
 
-
-//    fun observe(start: Long, end: Long, realtime: Boolean): Observable<ByteArray> {
-//        return Observable.create<ByteArray> { subscriber ->
-//            var tailer = chronicle.createTailer()
-//
-//            try {
-//                val startSpecified = start != -1L
-//                val endSpecified = end != -1L
-//
-//                val useExisting = startSpecified || !realtime
-//
-//                if (useExisting) {
-//                    log.debug("$name : streaming existing data")
-//
-//                    if (startSpecified) {
-//                        condition(start >= 0)
-//                        tailer.index(start - 1)
-//                    }
-//
-//                    if (endSpecified) {
-//                        condition(start < end && end < chronicle.lastIndex())
-//                    }
-//
-//                    // while subscriber is subscribed keep streaming
-//                    while (!subscriber.isUnsubscribed) {
-//
-//                        // if there is data
-//                        if (tailer.nextIndex()) {
-//                            // if end was specified and reached finish
-//                            if (endSpecified && tailer.index() > end) {
-//                                break
-//                            }
-//                            subscriber.onNext(readFrameAsByteArray(tailer))
-//                        } else {
-//                            break
-//                        }
-//                    }
-//                }
-//
-//                if (realtime) {
-//
-//                    log.debug("$name : streaming realtime")
-//                    synchronized(appender, {
-//
-//                        if (useExisting) {
-//                            // make sure not to loose any messages before subscribing
-//                            while (tailer.nextIndex() && !subscriber.isUnsubscribed) {
-//                                subscriber.onNext(readFrameAsByteArray(tailer))
-//                            }
-//
-//                            // make sure we are on the same index (synced state with watcher)
-//                            condition(tailer.index() == chronicle.lastIndex())
-//                        }
-//
-//                        // further subscribe to watcher
-//                        if (!subscriber.isUnsubscribed) {
-//                            writeStream.subscribe(subscriber)
-//                        }
-//                    })
-//                } else {
-//                    subscriber.onCompleted()
-//                }
-//            } catch (cause: Throwable) {
-//                report(cause)
-//                subscriber.onCompleted()
-//            } finally {
-//                // release allocated resource
-//                tailer.close()
-//            }
-//        }
-//        //                .subscribeOn(cpu.schedulers.io)
-//        //                .observeOn(cpu.schedulers.io)
-//        //                .unsubscribeOn(cpu.schedulers.io)
-//    }
-
-    internal fun readFrameAsByteArray(tailer: ExcerptTailer): ByteArray {
+    internal fun ExcerptTailer.readFrame(): Pair<Long, ByteArray> {
+        val index = this.index();
         // read next message size
-        val result = ByteArray(tailer.readInt())
+        val result = ByteArray(this.readInt())
         // read message content
-        tailer.read(result)
-        tailer.finish()
-        return result
+        this.read(result)
+        this.finish()
+
+        return index to result
     }
 
-    internal fun writeByteArrayFrame(appender: ExcerptAppender, data: ByteArray): Long {
+    internal fun ExcerptAppender.writeFrame(data: ByteArray): Long {
         // current index we write to
-        val index = appender.index()
+        val index = this.index()
         // calculate total message size
         val msgSize = 4 + data.size
-        appender.startExcerpt(msgSize.toLong())
+        this.startExcerpt(msgSize.toLong())
         // write length of the message
-        appender.writeInt(data.size)
+        this.writeInt(data.size)
         // write message content
-        appender.write(data)
-        appender.finish()
+        this.write(data)
+        this.finish()
 
         return index
     }
