@@ -66,11 +66,8 @@ internal class EventStream(val name: String, val path: String) {
 
             if (end != -1L) {
 
-                while (subscriber.isSubscribed()) {
+                while (subscriber.isSubscribed() && tailer.readBytes(buffer)) {
                     // if there is data
-
-                    if (tailer.readBytes(buffer)) {
-                        // if end was specified and reached finish
                         val index = tailer.index()
 
                         if (index > end) {
@@ -81,18 +78,13 @@ internal class EventStream(val name: String, val path: String) {
                         buffer.clear()
 
                         subscriber.onNext(index to data)
-                    } else {
-                        break
-                    }
                 }
             } else {
-                while (subscriber.isSubscribed()) {
-                    if (tailer.readBytes(buffer)) {
-                        val index = tailer.index()
-                        val data = buffer.toByteArray()
-                        buffer.clear()
-                        subscriber.onNext(index to data)
-                    }
+                while (subscriber.isSubscribed() && tailer.readBytes(buffer)) {
+                    val index = tailer.index()
+                    val data = buffer.toByteArray()
+                    buffer.clear()
+                    subscriber.onNext(index to data)
                 }
             }
 
