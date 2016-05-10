@@ -73,10 +73,10 @@ subprojects {
         testCompile 'junit:junit:4.12'
     }
 
-    // for cache invalidation
-    configurations.all {
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    }
+//    // for cache invalidation
+//    configurations.all {
+//        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//    }
 
     // Remove unwanted logger implementation from all transitive dependencies
     configurations.all.collect {
@@ -227,7 +227,7 @@ project(":eventstore-server") {
         compile project(":common")
 
         // chronicle
-        compile 'net.openhft:chronicle:3.6.0'
+        compile 'net.openhft:chronicle-queue:4.3.2'
     }
 
 

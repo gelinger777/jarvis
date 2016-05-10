@@ -1,8 +1,8 @@
 package eventstore.server
 
-import net.openhft.chronicle.ChronicleQueueBuilder
-import net.openhft.chronicle.ExcerptAppender
-import net.openhft.chronicle.ExcerptTailer
+import net.openhft.chronicle.bytes.Bytes
+import net.openhft.chronicle.queue.ChronicleQueueBuilder
+import net.openhft.chronicle.queue.ExcerptAppender
 import rx.Observable
 import rx.subjects.PublishSubject
 import util.cpu
@@ -11,7 +11,7 @@ import util.global.logger
 
 internal class EventStream(val name: String, val path: String) {
     private val log by logger("server-event-stream")
-    private val chronicle = ChronicleQueueBuilder.indexed(path).small().build()
+    private val chronicle = ChronicleQueueBuilder.single(path).build()
     private val appender = chronicle.createAppender()
 
     private val writeSubject = PublishSubject.create<Pair<Long, ByteArray>>()
@@ -25,7 +25,7 @@ internal class EventStream(val name: String, val path: String) {
         log.debug("writing ${bytes.size} bytes to $name")
         synchronized(appender, {
             // write bytes and get the index
-            val index = appender.writeFrame(bytes)
+            val index = appender.write(bytes)
 
             // async notify observers about this write
             if (writeSubject.hasObservers()) {
@@ -43,7 +43,7 @@ internal class EventStream(val name: String, val path: String) {
 
             events.forEach {
                 // write the event and get the index
-                val index = appender.writeFrame(it)
+                val index = appender.write(it)
 
                 // async notify observers about this write
                 if (writeSubject.hasObservers()) {
@@ -57,28 +57,41 @@ internal class EventStream(val name: String, val path: String) {
     fun observe(start: Long = -1L, end: Long = -1L): Observable<Pair<Long, ByteArray>> {
         return Observable.create<Pair<Long, ByteArray>> { subscriber ->
             var tailer = chronicle.createTailer()
+            val buffer = Bytes.allocateElasticDirect()
+
 
             if (start != -1L) {
-                tailer.index(start)
+                tailer.moveToIndex(start)
             }
 
             if (end != -1L) {
+
                 while (subscriber.isSubscribed()) {
                     // if there is data
-                    if (tailer.nextIndex()) {
+
+                    if (tailer.readBytes(buffer)) {
                         // if end was specified and reached finish
-                        if (tailer.index() > end) {
+                        val index = tailer.index()
+
+                        if (index > end) {
                             break
                         }
-                        subscriber.onNext(tailer.readFrame())
+
+                        val data = buffer.toByteArray()
+                        buffer.clear()
+
+                        subscriber.onNext(index to data)
                     } else {
                         break
                     }
                 }
             } else {
                 while (subscriber.isSubscribed()) {
-                    if (tailer.nextIndex()) {
-                        subscriber.onNext(tailer.readFrame())
+                    if (tailer.readBytes(buffer)) {
+                        val index = tailer.index()
+                        val data = buffer.toByteArray()
+                        buffer.clear()
+                        subscriber.onNext(index to data)
                     }
                 }
             }
@@ -91,31 +104,10 @@ internal class EventStream(val name: String, val path: String) {
         return writeStream
     }
 
-    internal fun ExcerptTailer.readFrame(): Pair<Long, ByteArray> {
-        val index = this.index();
-        // read next message size
-        val result = ByteArray(this.readInt())
-        // read message content
-        this.read(result)
-        this.finish()
-
-        return index to result
+    fun ExcerptAppender.write(bytes: ByteArray): Long {
+        return this.apply { writeBytes(Bytes.wrapForRead(bytes)) }.lastIndexAppended()
     }
 
-    internal fun ExcerptAppender.writeFrame(data: ByteArray): Long {
-        // current index we write to
-        val index = this.index()
-        // calculate total message size
-        val msgSize = 4 + data.size
-        this.startExcerpt(msgSize.toLong())
-        // write length of the message
-        this.writeInt(data.size)
-        // write message content
-        this.write(data)
-        this.finish()
-
-        return index
-    }
 }
 
 
