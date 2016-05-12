@@ -4,7 +4,9 @@ data collection:
   ✔ event store service @done (16-05-04 22:54)
     ✔ initial prototype  @done (16-05-02 00:12)
     ✔ testing @done (16-05-02 00:12)
-    ☐ upgrade chronicle-queue
+    ✔ upgrade chronicle-queue @done (16-05-12 14:02)
+    // note when subscribing to a stream that is written by busy loop observer fails
+    // consider internal ring buffer 
   ☐ collectors
     ☐ bitfinex
       ☐ tune logging and alert emails

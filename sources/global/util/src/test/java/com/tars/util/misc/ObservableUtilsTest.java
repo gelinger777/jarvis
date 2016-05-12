@@ -84,7 +84,7 @@
 //    PublishSubject<Integer> ps = PublishSubject.create();
 //    TestScheduler sch = Schedulers.test();
 //
-//    ps.lift(new BatchPerSubscriber<>(sch))
+//    ps.lift(new BatchOperator<>(sch))
 //        .subscribe(
 //            (value) -> System.out.println(currentThread().getName() + " : " + value),
 //            Throwable::printStackTrace,

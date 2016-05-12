@@ -14,16 +14,17 @@ import static java.util.Collections.unmodifiableList;
 /**
  * Operator for batching values while consumer is busy processing the previous batch...
  */
-public final class BatchPerSubscriber<T> implements Operator<Collection<T>, T> {
+public final class BatchOperator<T> implements Operator<Collection<T>, T> {
 
   final Scheduler scheduler;
 
-  public BatchPerSubscriber(Scheduler scheduler) {
+  public BatchOperator(Scheduler scheduler) {
     this.scheduler = scheduler;
   }
 
   @Override
   public Subscriber<? super T> call(Subscriber<? super Collection<T>> subscriber) {
+
     return new BatchingSubscriber<>(subscriber, scheduler.createWorker());
   }
 

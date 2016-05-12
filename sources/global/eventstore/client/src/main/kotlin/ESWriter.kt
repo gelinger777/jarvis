@@ -15,7 +15,6 @@ fun main(args: Array<String>) {
         var counter = 0
         while (flag) {
             es.write("message ${counter++}".toByteArray())
-            cpu.sleep(1)
         }
     }
 

@@ -233,16 +233,6 @@ project(":eventstore-server") {
 
 }
 
-// Engine =======================================================================================
-
-project(":engine") {
-    description = "[app] Uses collector services to get realtime exchange data to generate trade signals."
-
-    dependencies {
-        compile project(":common")
-    }
-}
-
 // Bitfinex =====================================================================================
 
 project(":bitfinex-client") {

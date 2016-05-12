@@ -62,6 +62,7 @@ class EventStream(val path: String, val client: EventStoreClient) {
 
         return observer
                 .map { it.eventsList }
+                .doOnNext { log.debug("observing batch of size : ${it.size}") }
                 .unpack()
     }
 

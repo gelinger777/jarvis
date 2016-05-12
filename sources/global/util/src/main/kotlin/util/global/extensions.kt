@@ -4,7 +4,7 @@ package util.global
 
 import com.google.protobuf.Message
 import com.google.protobuf.util.JsonFormat
-import com.tars.util.misc.BatchPerSubscriber
+import com.tars.util.misc.BatchOperator
 import io.grpc.stub.StreamObserver
 import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
@@ -51,10 +51,10 @@ fun consoleStream(): Observable<String> {
 // observable
 
 /**
- * Apply BatchPerSubscriber to observable.
+ * Apply BatchOperator to observable.
  */
 fun <T> Observable<T>.batch(scheduler: Scheduler = cpu.schedulers.io): Observable<Collection<T>> {
-    return this.lift(BatchPerSubscriber<T>(scheduler))
+    return this.lift(BatchOperator<T>(scheduler))
 }
 
 /**

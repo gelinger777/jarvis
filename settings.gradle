@@ -4,11 +4,6 @@ rootProject.name = 'jarvis'
 include ":common"
 project(':common').projectDir = "$rootDir/sources/common" as File
 
-
-include ":engine"
-project(':engine').projectDir = "$rootDir/sources/engine" as File
-
-
 include ":util"
 project(':util').projectDir = "$rootDir/sources/global/util" as File
 

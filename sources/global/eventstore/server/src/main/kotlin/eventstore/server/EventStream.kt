@@ -29,6 +29,7 @@ internal class EventStream(val name: String, val path: String) {
 
             // async notify observers about this write
             if (writeSubject.hasObservers()) {
+                log.info("broadcasting")
                 writeSubject.onNext(index to bytes)
             }
 

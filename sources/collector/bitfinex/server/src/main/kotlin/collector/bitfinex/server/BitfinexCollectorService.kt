@@ -98,13 +98,13 @@ internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val
 
 
     private fun Pair.asTradeDataPath(): String {
-        // btc-usd\trades\data.*
-        return this.asFolderName() + File.separator + "trades" + File.separator + "data"
+        // btc-usd\trades
+        return this.asFolderName() + File.separator + "trades"
     }
 
     private fun Pair.asOrdersDataPath(): String {
-        // btc-usd\book\data.*
-        return this.asFolderName() + File.separator + "orders" + File.separator + "data"
+        // btc-usd\orders
+        return this.asFolderName() + File.separator + "orders"
     }
 }
 

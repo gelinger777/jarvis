@@ -9,27 +9,33 @@ package proto.common;
 // service interface
 // ---------------------------------------------------------------------------
 
-
 // Collector service provides interface to record and stream realtime and historical data for a particular exchange
-service Collector{
+service Collector {
 
-    rpc info(CollInfoReq) returns (CollInfoResp){}
+    rpc info (CollInfoReq) returns (CollInfoResp) {
+    }
 
-    rpc streamTrades(StreamTradesReq) returns (stream Trade){}
-    rpc streamOrders(StreamOrdersReq) returns (stream Order){}
+    rpc streamTrades (StreamTradesReq) returns (stream Trade) {
+    }
+    rpc streamOrders (StreamOrdersReq) returns (stream Order) {
+    }
 
-    rpc recordTrades(RecordTradesReq) returns (RecordTradesResp){}
-    rpc recordOrders(RecordOrdersReq) returns (RecordOrdersResp){}
+    rpc recordTrades (RecordTradesReq) returns (RecordTradesResp) {
+    }
+    rpc recordOrders (RecordOrdersReq) returns (RecordOrdersResp) {
+    }
 
-    rpc streamHistoricalTrades(StreamHistoricalTradesReq) returns (stream Trade){}
-    rpc streamHistoricalOrders(StreamHistoricalOrdersReq) returns (stream Order){}
+    rpc streamHistoricalTrades (StreamHistoricalTradesReq) returns (stream Trade) {
+    }
+    rpc streamHistoricalOrders (StreamHistoricalOrdersReq) returns (stream Order) {
+    }
 }
 
 // ---------------------------------------------------------------------------
 // request/response types
 // ---------------------------------------------------------------------------
 
-message CollInfoReq{
+message CollInfoReq {
     enum Type {
         ALL = 0;
         ACCESSIBLE_MARKET_PAIRS = 1;
@@ -39,47 +45,47 @@ message CollInfoReq{
     Type type = 1;
 }
 
-message CollInfoResp{
+message CollInfoResp {
     repeated Pair accessibleMarketPairs = 1;
     repeated Pair activeOrderbookStreams = 2;
     repeated Pair activeStreamTradess = 3;
 }
 
-message StreamTradesReq{
+message StreamTradesReq {
     Pair pair = 1;
 }
 
 
-message StreamOrdersReq{
+message StreamOrdersReq {
     Pair pair = 1;
 }
 
 
-message RecordTradesReq{
+message RecordTradesReq {
     Pair pair = 1;
 }
 
-message RecordTradesResp{
+message RecordTradesResp {
     bool success = 1;
     string error = 2;
 }
 
-message RecordOrdersReq{
+message RecordOrdersReq {
     Pair pair = 1;
 }
 
-message RecordOrdersResp{
+message RecordOrdersResp {
     bool success = 1;
     string error = 2;
 }
 
-message StreamHistoricalTradesReq{
+message StreamHistoricalTradesReq {
     Pair pair = 1;
     int64 startIndex = 2;
     int64 endIndex = 3;
 }
 
-message StreamHistoricalOrdersReq{
+message StreamHistoricalOrdersReq {
     Pair pair = 1;
     int64 startIndex = 2;
     int64 endIndex = 3;
@@ -118,13 +124,34 @@ message Trade {
     double volume = 3;
 }
 
+// ---------------------------------------------------------------------------
+// indicator types
+// ---------------------------------------------------------------------------
+
+// simple moving average
+message SMA {
+    double averagePrice = 1;
+    int64 startTime = 2;
+    int64 endTime = 3;
+}
+
+// exponential moving average
+message EMA {
+    double averagePrice = 1;
+    int64 startTime = 2;
+    int64 endTime = 3;
+}
+
+message MACD{
+
+}
 
 // ---------------------------------------------------------------------------
 // configuration types
 // ---------------------------------------------------------------------------
 
 
-message ServiceAddress{
+message ServiceAddress {
     string host = 1;
     int32 port = 2;
 }

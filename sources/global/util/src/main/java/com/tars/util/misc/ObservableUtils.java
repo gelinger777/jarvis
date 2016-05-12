@@ -49,6 +49,6 @@ public class ObservableUtils {
    * previous batch.
    */
   public static <T> Transformer<T, Collection<T>> batchPerSubscriber(Scheduler scheduler) {
-    return source -> source.lift(new BatchPerSubscriber<>(scheduler));
+    return source -> source.lift(new BatchOperator<>(scheduler));
   }
 }
