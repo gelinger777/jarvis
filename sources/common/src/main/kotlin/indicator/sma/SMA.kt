@@ -1,59 +1,68 @@
-package indicator.sma
+package indicator.ohlc
 
+import common.util.json
+import common.util.protoRandom
 import proto.common.OHLC
 import proto.common.SMA
 import rx.Observable
 import rx.Subscriber
-import rx.subjects.PublishSubject
-import util.app.log
+import util.app
+import util.global.wtf
+import java.util.*
 
-// extensions functions
+fun Observable<OHLC>.SMA(count: Int): Observable<SMA> {
+    return this.lift {
 
+        object : Subscriber<OHLC>() {
 
-fun Observable<OHLC>.indicatorSMA(barCount: Long): Observable<SMA> {
-    return this.lift(SimpleMovingAverageOperator(barCount))
-}
+            val bars = LinkedList<OHLC>()
 
-// implementation specifics
+            override fun onNext(bar: OHLC) {
+                // add current bar to the stack
+                bars.addFirst(bar)
 
-class SimpleMovingAverageOperator(val barCount: Long) : Observable.Operator<SMA, OHLC> {
+                // ensure correct size of the stack
+                if (bars.size > count) {
+                    bars.removeLast()
+                }
 
-    override fun call(smaSubscriber: Subscriber<in SMA>): Subscriber<in OHLC> {
-        return OHLCSubscriber(smaSubscriber, barCount)
+                // calculate
+
+                if (bars.size == count) {
+                    val simpleMovingAverage = bars.map { it.close }.sum() / count
+
+                    val builder = SMA.newBuilder()
+                    builder.start = bars.last.start
+                    builder.end = bars.first.end
+                    builder.price = simpleMovingAverage
+
+                    it.onNext(builder.build())
+                }
+            }
+
+            override fun onError(error: Throwable) {
+                wtf()
+            }
+
+            override fun onCompleted() {
+            }
+        }
     }
 }
-
-class OHLCSubscriber(val observer: Subscriber<in SMA>, val barCount: Long) : Subscriber<OHLC>() {
-
-
-    val bars = mutableListOf<OHLC>();
-
-
-    override fun onNext(trade: OHLC) {
-        log.info("trade")
-
-    }
-
-    override fun onError(error: Throwable) {
-        log.info("error")
-
-    }
-
-    override fun onCompleted() {
-        log.info("completed")
-    }
-
-}
-
 
 fun main(args: Array<String>) {
-    val tradeStream = PublishSubject.create<OHLC>()
 
-    tradeStream.indicatorSMA(100).subscribe {
-        log.info("SMA")
+    protoRandom.trades()
+            .doOnNext { app.log.info("TRADE : ${it.json()}") }
+            .OHLC(3)
+            .doOnNext { app.log.info("OHLC : ${it.json()}") }
+            .SMA(5)
+            .subscribe { app.log.info("SMA : ${it.json()}") }
+
+    var price = 1.0
+    var time = 1L
+    for(i in 1..20) {
+        protoRandom.nextTrade(price++, 1.0, time++)
     }
-
-    tradeStream.onNext(OHLC.getDefaultInstance());
-    tradeStream.onNext(OHLC.getDefaultInstance());
 
 }

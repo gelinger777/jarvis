@@ -78,6 +78,7 @@ fun order(id: Long = 0, side: Order.Side, price: Double, volume: Double, time: L
             .build();
 }
 
+
 /**
  * Convert to single line json representation
  */
@@ -138,4 +139,8 @@ fun respondRecordTrades(observer: StreamObserver<RecordTradesResp>, success: Boo
 fun respondRecordOrders(observer: StreamObserver<RecordOrdersResp>, success: Boolean) {
     observer.onNext(RecordOrdersResp.newBuilder().setSuccess(success).build());
     observer.onCompleted()
+}
+
+fun OHLC.haveSameTimeRange(other: OHLC): Boolean {
+    return this.start == other.start && this.end == other.end
 }

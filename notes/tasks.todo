@@ -25,8 +25,10 @@ data collection:
 analysis:
 
  ☐ realtime indicators
-   ☐ SMA (Simple Moving Average)
+   ✔ OHLC (Open Close High Low) @done (16-05-16 20:25)
+   ✔ SMA (Simple Moving Average) @done (16-05-16 20:25)
    ☐ EMA (Exponential Moving Average)
+   ☐ VEMA (Volume affected EMA )
    ☐ MACD (Moving Average Convergence Divergence)
    ☐ Force Index
    ☐ ...

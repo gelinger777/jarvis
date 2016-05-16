@@ -3,7 +3,7 @@ package bitfinex
 import common.util.bitfinexConfig
 import common.util.json
 import common.util.pair
-import indicator.ohlc.indicatorOHLC
+import indicator.ohlc.OHLC
 import proto.common.OHLC
 import util.app
 import java.util.concurrent.TimeUnit.MINUTES
@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
     val data = mutableListOf<OHLC>()
 
     val stream = bitfinex.streamTrades(pair("BTC", "USD"))
-            .indicatorOHLC(MINUTES.toMillis(1))
+            .OHLC(MINUTES.toMillis(1))
             .subscribe {
                 data.add(it)
                 app.log.info("${it.json()}")

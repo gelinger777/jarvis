@@ -140,16 +140,17 @@ message OHLC {
 
 // simple moving average
 message SMA {
-    double averagePrice = 1;
-    int64 startTime = 2;
-    int64 endTime = 3;
+    double price = 1;
+    int64 start = 2;
+    int64 end = 3;
 }
 
 // exponential moving average
 message EMA {
     double averagePrice = 1;
-    int64 startTime = 2;
-    int64 endTime = 3;
+    int64 start = 2;
+    int64 end = 3;
+    bool completed = 4;
 }
 
 message MACD{
