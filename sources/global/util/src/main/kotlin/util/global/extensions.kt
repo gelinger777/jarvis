@@ -253,3 +253,10 @@ fun <T : Message.Builder> T.readFromFS(propertyName : String): T {
         }
     }
 }
+
+/**
+ * Check if number is in range [start, end)
+ */
+fun Long.inRange(start: Long, end: Long): Boolean {
+    return this >= start && this < end
+}

@@ -1,6 +1,6 @@
 package common.util
 
-import com.google.protobuf.GeneratedMessage
+import com.google.protobuf.MessageOrBuilder
 import com.google.protobuf.util.JsonFormat
 import io.grpc.stub.StreamObserver
 import proto.bitfinex.BitfinexConfig
@@ -81,7 +81,7 @@ fun order(id: Long = 0, side: Order.Side, price: Double, volume: Double, time: L
 /**
  * Convert to single line json representation
  */
-fun GeneratedMessage.json(pretty: Boolean = false): String {
+fun MessageOrBuilder.json(pretty: Boolean = false): String {
     val json = JsonFormat.printer().print(this)
 
     if (!pretty) {
