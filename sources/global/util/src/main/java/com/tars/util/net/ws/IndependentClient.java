@@ -80,7 +80,8 @@ class IndependentClient extends Endpoint implements WebsocketClient {
 
   @Override
   public Observable<String> stream() {
-    return subject;
+    return subject
+        .onBackpressureBuffer();
   }
 
   @Override
