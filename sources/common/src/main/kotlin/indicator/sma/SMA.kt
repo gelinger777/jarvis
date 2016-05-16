@@ -1,7 +1,5 @@
 package indicator.sma
 
-import common.IHavePrice
-import common.IHaveTimestamp
 import proto.common.SMA
 import proto.common.Trade
 import rx.Observable
@@ -27,25 +25,13 @@ fun Observable<Trade>.indicatorSMA(time: Long, unit: TimeUnit = MILLISECONDS, st
 class SimpleMovingAverageOperator(val time: Long, val unit: TimeUnit, val streamInRealtime: Boolean) : Observable.Operator<SMA, Trade> {
 
     override fun call(smaSubscriber: Subscriber<in SMA>): Subscriber<in Trade> {
-        return TradeSubscriber(smaSubscriber, time, unit, streamInRealtime)
+        return TradeSubscriber(smaSubscriber, unit.toMillis(time), streamInRealtime)
     }
-}
-
-class Somthing : IHavePrice, IHaveTimestamp{
-    override fun price(): Double {
-        throw UnsupportedOperationException()
-    }
-
-    override fun time(): Long {
-        throw UnsupportedOperationException()
-    }
-
 }
 
 class TradeSubscriber(
         val targetSubscriber: Subscriber<in SMA>,
         val time: Long,
-        val unit: TimeUnit,
         val streamInRealtime: Boolean) : Subscriber<Trade>() {
 
 
@@ -54,6 +40,15 @@ class TradeSubscriber(
 
     override fun onNext(trade: Trade) {
         log.info("trade")
+
+        val endTime = trade.time
+        val startTime = endTime - time
+
+        trades.removeAll { it.time < startTime || it.time > endTime }
+        trades.add(trade)
+
+
+
 
 
 

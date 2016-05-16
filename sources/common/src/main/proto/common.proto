@@ -128,6 +128,16 @@ message Trade {
 // indicator types
 // ---------------------------------------------------------------------------
 
+message OHLC {
+    double open = 1;
+    double high = 2;
+    double low = 3;
+    double close = 4;
+    double vol = 5;
+    int64 start = 6;
+    int64 end = 7;
+}
+
 // simple moving average
 message SMA {
     double averagePrice = 1;
