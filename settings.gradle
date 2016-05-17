@@ -26,3 +26,7 @@ project(':bitfinex-collector-client').projectDir = "$rootDir/sources/collector/b
 include ":bitfinex-collector-server"
 project(':bitfinex-collector-server').projectDir = "$rootDir/sources/collector/bitfinex/server" as File
 
+
+include ":visual"
+project(':visual').projectDir = "$rootDir/sources/visual" as File
+

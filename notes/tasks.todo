@@ -17,10 +17,6 @@ data collection:
     ✔ gradle application plugin @done (16-05-05 18:41)
     ☐ gradle proguard (optional)
     ☐ aws ec2 / elb
-  
-  ☐ Misc tasks
-    ☐ Add AspectJ 1.8 
-
 
 analysis:
 
@@ -33,22 +29,8 @@ analysis:
    ☐ Force Index
    ☐ ...
  ☐ visualization
-   ☐ java fx / webview / tradingView library
-     ✔ make a prototype @done (16-05-05 18:40)
+   ☐ java fx / webview / d3.js
+     ☐ make a prototype
  ☐ supervised machine learning
    ☐ python for prototyping
-   ✔ stanford ML course @done (16-05-05 18:41)
-
-backtesting:
-
- ☐ risk management
- ☐ performance tracking
- ☐ scheduled reporting
- 
-live trading: 
-
- ☐ one week demo trading
- ☐ one month staging
- ☐ production
- ☐ fundraising
- 
+   ☐ stanford ML course

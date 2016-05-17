@@ -276,6 +276,17 @@ project(":bitfinex-collector-server") {
 }
 
 
+project(":visual") {
+
+    description = "[app] Ui that connects to other services and visualizes the data."
+
+    dependencies {
+        compile project(":common")
+    }
+
+}
+
+
 // ./gradlew wrapper --gradle-version=2.13
 
 task wrapper(type: Wrapper) {
