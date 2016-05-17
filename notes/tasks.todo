@@ -33,11 +33,11 @@ analysis:
    ☐ Force Index
    ☐ ...
  ☐ visualization
-   ☐ java fx / webview / tradingView library
-     ✔ make a prototype @done (16-05-05 18:40)
+   ☐ java fx / webview / d3.js
+     ☐ make a prototype
  ☐ supervised machine learning
    ☐ python for prototyping
-   ✔ stanford ML course @done (16-05-05 18:41)
+   ☐ stanford ML course
 
 backtesting:
 
