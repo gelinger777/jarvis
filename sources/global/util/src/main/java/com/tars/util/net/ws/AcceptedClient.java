@@ -18,7 +18,7 @@ class AcceptedClient extends Endpoint implements WebsocketClient {
   Logger log = LoggerFactory.getLogger(WebsocketClient.class);
 
   Server server;
-  Option<Session> session = Option.<Session>empty();
+  MutableOption<Session> session = MutableOption.empty();
   PublishSubject<String> messageStream = PublishSubject.create();
   LinkedList<String> pendingMessages = new LinkedList<>();
 
