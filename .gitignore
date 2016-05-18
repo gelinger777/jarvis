@@ -18,7 +18,7 @@ build/
 
 # custom stuff
 gen/
-data/
-logs/
+dist/app/
+dist/data/
 bin/
 lib/

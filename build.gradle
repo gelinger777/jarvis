@@ -215,7 +215,7 @@ project(":eventstore-server") {
 
     applicationDefaultJvmArgs = [
             '-DeventStoreConfig=/Users/vach/workspace/jarvis/dist/config/event-store.json',
-            '-DlogsPath=/Users/vach/workspace/jarvis/dist/logs/event-store',
+            '-DlogPath=/Users/vach/workspace/jarvis/dist/logs/event-store',
             '-Dprofile=dev'
     ]
 
@@ -260,7 +260,7 @@ project(":bitfinex-collector-server") {
 
     applicationDefaultJvmArgs = [
             '-DbitfinexCollectorConfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
-            '-DlogsPath=/Users/vach/workspace/jarvis/dist/logs/bitfinex-collector',
+            '-DlogPath=/Users/vach/workspace/jarvis/dist/logs/bitfinex-collector',
             '-Dprofile=dev'
     ]
 
@@ -278,10 +278,18 @@ project(":bitfinex-collector-server") {
 
 project(":visual") {
 
-    description = "[app] Ui that connects to other services and visualizes the data."
+    description = "[app] Ui which operates with other services."
+
+    /**
+     * notes : ui will be composed of static web app which connects to backend endpoint,
+     * front end is angular 2 + material design + d3 for charts
+     * back end is simple websocket endpoint which will redirect any calls from ui to actual services...
+     */
 
     dependencies {
         compile project(":common")
+        compile project(":eventstore-client")
+        compile project(":bitfinex-collector-client")
     }
 
 }
@@ -295,7 +303,6 @@ task wrapper(type: Wrapper) {
 }
 
 task cleanOutput(){
-//    delete "${projectDir}/dist/app"
-    delete "${projectDir}/dist/logs"
+    delete "${projectDir}/dist/app"
     delete "${projectDir}/dist/data"
 }

@@ -39,7 +39,6 @@ fun main(args: Array<String>) {
     println("all completed OHLCs")
 
     data
-            .filter { it.isCompleted }
             .forEach { println(it.json()) }
 
 }

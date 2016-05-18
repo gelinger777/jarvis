@@ -13,14 +13,14 @@ object app {
     internal val reportedErrors = PublishSubject.create<Throwable>()
 
     init {
-        val logsPath = System.getProperty("logsPath")
+        val logs = System.getProperty("logPath")
         val profile = System.getProperty("profile")
 
-        mandatoryCondition(notNullOrEmpty(logsPath), "'logsPath' system property must be specified")
+        mandatoryCondition(notNullOrEmpty(logs), "'logPath' system property must be specified")
         mandatoryCondition(notNullOrEmpty(profile), "'profile' system property must be specified")
 
         log.info("started with profile : $profile")
-        log.info("log files root : $logsPath")
+        log.info("log files root : $logs")
 
         when (profile) {
             "dev" -> {

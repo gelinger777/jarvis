@@ -17,10 +17,6 @@ data collection:
     ✔ gradle application plugin @done (16-05-05 18:41)
     ☐ gradle proguard (optional)
     ☐ aws ec2 / elb
-  
-  ☐ Misc tasks
-    ☐ Add AspectJ 1.8 
-
 
 analysis:
 
@@ -33,8 +29,12 @@ analysis:
    ☐ Force Index
    ☐ ...
  ☐ visualization
-   ☐ java fx / webview / d3.js
-     ☐ make a prototype
+   ☐ node endpoint
+     ☐ ui build tasks
+     ☐ make it talk to java backend using GRPC
+   ☐ typescript
+   ☐ angular 2
+   ☐ d3.js
  ☐ supervised machine learning
    ☐ python for prototyping
    ☐ stanford ML course
