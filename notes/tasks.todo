@@ -1,6 +1,6 @@
 current tasks:
- ☐ fix project inconsistency
- ☐ create protobuf plugin for gradle 
+ ✔ fix project inconsistency @done (16-05-22 15:42)
+ ☐ protobuf/grpc compilation to Java/C#/Node
 
  ☐ java <-> c# <-> node connectivity
  ☐ node <-> ui websocket connectivity
