@@ -1,6 +1,14 @@
 // indicators
 
-    indicator.analysisPicker{
+    indicator.effort{
+        every trade is an effort moving the price in one of the two directions, this indicator shows how much effort is put for one of the sides... each trade is consuming some amount of volume from one of the sides, this aggregates consumed volume for specified perioud of time, giving slightly more value to the recently consumed..
+    }
+
+    indicator.resistance{
+        compares how much volume needs to be consumed for the same price change to be achieved on ask or bid side...
+    }
+
+    indicator.langProcess{
         Some financial analytics post analysis results online, publish trough rss, those can either be parsed or entered manually...
     }
     
@@ -10,7 +18,7 @@
         Or tracks wallets with high rate of transactions (most likely exchange wallets), compares volume of incoming and outgoing coins...
         Many different useful information can be harvested from blockchain, but to test its usefulness hypothesis must be tested with correlation indicator...
 
-        [ requires block stream ] ( todo : bitcoinJ )
+        [ requires block stream ] todo : bitcoinJ
     }
 
     indicator.sleepAwake{
@@ -58,7 +66,7 @@
     indicator.googleTrends{
         Data from google trends correlates with trading volumes. Operator can create many instances of indicator with different keywords, like target currencies used in the market, or industries... then use correlation indicator to test how trend affects actual market...
 
-        [ requires google trends data stream ] ( todo : googleTrends collector )
+        [ requires google trends data stream ] todo : googleTrends collector
     }
     
     indicator.shazam {
@@ -76,5 +84,5 @@
     indicator.codeForce {
         This indicator tracks git activity of the project, for example one can track bitcoins git repository. This indicator shows how active the repository is...
 
-        [ requires github event stream ] ( todo : githubCollector )
+        [ requires github event stream ] todo : githubCollector
     }
