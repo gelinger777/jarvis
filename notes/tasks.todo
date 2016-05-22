@@ -27,6 +27,7 @@ data collection:
       ✔ separate logging locations per app @done (16-05-12 15:26)
     ☐ bitstamp
   ☐ deployment
+    ☐ use kotlin for gradle https://github.com/gradle/gradle-script-kotlin/tree/master/samples
     ✔ gradle application plugin @done (16-05-05 18:41)
     ☐ gradle proguard (optional)
     ☐ aws ec2 / elb
