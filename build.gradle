@@ -9,7 +9,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.2"
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.6'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.7'
     }
 }
 
@@ -73,11 +73,6 @@ subprojects {
         testCompile 'junit:junit:4.12'
     }
 
-//    // for cache invalidation
-//    configurations.all {
-//        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-//    }
-
     // Remove unwanted logger implementation from all transitive dependencies
     configurations.all.collect {
         it.exclude group: 'commons-logging'
@@ -88,6 +83,76 @@ subprojects {
         description = 'Initializes directory structure according to source sets'
         sourceSets.all { set ->
             set.allSource.srcDirs.each { it.mkdirs() }
+        }
+    }
+
+    ext {
+        /**
+         * Configure project for protobuf/grpc compilation
+         */
+        enableProto = {
+            project.apply plugin: 'com.google.protobuf'
+            project.protobuf {
+                generatedFilesBaseDir = "${projectDir}/src/gen"
+
+                plugins {
+                    grpc {
+                        artifact = 'io.grpc:protoc-gen-grpc-java:0.13.2'
+                    }
+                }
+
+                protoc {
+                    artifact = "com.google.protobuf:protoc:3.0.0-beta-2"
+                }
+
+                generateProtoTasks {
+                    all().each { task ->
+                        task.plugins {
+                            grpc {}
+                        }
+
+                        if (task.name.equals("generateProto")) {
+                            task.outputs.upToDateWhen {
+                                new File(generatedFilesBaseDir).exists()
+                            }
+                        }
+                    }
+
+                    compileJava.dependsOn(generateProto)
+                    compileKotlin.dependsOn(generateProto)
+
+                    task deleteGeneratedProto << {
+                        delete generatedFilesBaseDir
+                    }
+
+                    task recompileProto {}
+
+                    recompileProto.dependsOn(deleteGeneratedProto)
+                    recompileProto.dependsOn(generateProto)
+
+                    clean.dependsOn(deleteGeneratedProto)
+                }
+
+            }
+
+            project.sourceSets {
+                main {
+                    proto {
+                        srcDir 'src/main/proto'
+                    }
+                    java {
+                        srcDirs 'src/main/java', 'src/gen/main/java', 'src/gen/main/grpc'
+                    }
+                }
+                test {
+                    proto {
+                        srcDir 'src/test/proto'
+                    }
+                    java {
+                        srcDirs 'src/test/java', 'src/gen/test/java', 'src/gen/test/grpc'
+                    }
+                }
+            }
         }
     }
 }
@@ -125,8 +190,6 @@ project(":util") {
 // Common =======================================================================================
 
 project(":common") {
-    apply plugin: 'com.google.protobuf'
-
 
     description = "[lib] Common jarvis codebase shared across multiple modules."
 
@@ -134,67 +197,7 @@ project(":common") {
         compile project(":util")
     }
 
-    protobuf {
-        generatedFilesBaseDir = "${projectDir}/src/gen"
-
-        plugins {
-            grpc {
-                artifact = 'io.grpc:protoc-gen-grpc-java:0.13.2'
-            }
-        }
-
-        protoc {
-            artifact = "com.google.protobuf:protoc:3.0.0-beta-2"
-        }
-
-        generateProtoTasks {
-            all().each { task ->
-                task.plugins {
-                    grpc {}
-                }
-
-                if (task.name.equals("generateProto")) {
-                    task.outputs.upToDateWhen {
-                        new File(generatedFilesBaseDir).exists()
-                    }
-                }
-            }
-
-            compileJava.dependsOn(generateProto)
-            compileKotlin.dependsOn(generateProto)
-
-            task deleteGeneratedProto << {
-                delete generatedFilesBaseDir
-            }
-
-            task recompileProto {}
-
-            recompileProto.dependsOn(deleteGeneratedProto)
-            recompileProto.dependsOn(generateProto)
-
-            clean.dependsOn(deleteGeneratedProto)
-        }
-
-    }
-
-    sourceSets {
-        main {
-            proto {
-                srcDir 'src/main/proto'
-            }
-            java {
-                srcDirs 'src/main/java', 'src/gen/main/java', 'src/gen/main/grpc'
-            }
-        }
-        test {
-            proto {
-                srcDir 'src/test/proto'
-            }
-            java {
-                srcDirs 'src/test/java', 'src/gen/test/java', 'src/gen/test/grpc'
-            }
-        }
-    }
+    enableProto()
 }
 
 // Event Store ==================================================================================
@@ -219,7 +222,7 @@ project(":eventstore-server") {
             '-Dprofile=dev'
     ]
 
-    installDist.destinationDir=rootProject.file("dist/app/${project.name}")
+    installDist.destinationDir = rootProject.file("dist/app/${project.name}")
 
     description = "[app] Event Store server."
 
@@ -264,7 +267,7 @@ project(":bitfinex-collector-server") {
             '-Dprofile=dev'
     ]
 
-    installDist.destinationDir=rootProject.file("dist/app/${project.name}")
+    installDist.destinationDir = rootProject.file("dist/app/${project.name}")
 
     description = "[app] Bitfinex collector server collects trade and orderbook data to a persistent store."
 
@@ -294,7 +297,6 @@ project(":visual") {
 
 }
 
-
 // ./gradlew wrapper --gradle-version=2.13
 
 task wrapper(type: Wrapper) {
@@ -302,7 +304,7 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
 }
 
-task cleanOutput(){
+task cleanOutput() {
     delete "${projectDir}/dist/app"
     delete "${projectDir}/dist/data"
 }

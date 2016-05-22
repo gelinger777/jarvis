@@ -27,6 +27,7 @@ data collection:
       ✔ separate logging locations per app @done (16-05-12 15:26)
     ☐ bitstamp
   ☐ deployment
+    ☐ use kotlin for gradle https://github.com/gradle/gradle-script-kotlin/tree/master/samples
     ✔ gradle application plugin @done (16-05-05 18:41)
     ☐ gradle proguard (optional)
     ☐ aws ec2 / elb
@@ -39,7 +40,7 @@ analysis:
    ✔ OHLC (Open Close High Low) @done (16-05-16 20:25)
    ✔ SMA (Simple Moving Average) @done (16-05-16 20:25)
    ☐ EMA (Exponential Moving Average)
-   ☐ VEMA (Volume affected EMA )
+   ☐ VEMA (EMA amplified with volume)
    ☐ MACD (Moving Average Convergence Divergence)
    ☐ Force Index
    ☐ ...
