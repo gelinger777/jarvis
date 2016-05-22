@@ -1,4 +1,17 @@
-// use Sublime with PlainTasks
+current tasks:
+ ☐ fix project inconsistency
+ ☐ create protobuf plugin for gradle 
+
+ ☐ java <-> c# <-> node connectivity
+ ☐ node <-> ui websocket connectivity
+ ☐ web build scripts
+ ☐ typescript
+ ☐ angular 2
+ ☐ angular material
+ ☐ d3 charting
+ ☐ stocksharp research
+ ☐ stocksharp grpc api
+
 
 data collection: 
   ✔ event store service @done (16-05-04 22:54)
@@ -18,6 +31,8 @@ data collection:
     ✔ gradle application plugin @done (16-05-05 18:41)
     ☐ gradle proguard (optional)
     ☐ aws ec2 / elb
+  ☐ stocksharp
+    ☐ create java api with grpc
 
 analysis:
 
@@ -25,7 +40,7 @@ analysis:
    ✔ OHLC (Open Close High Low) @done (16-05-16 20:25)
    ✔ SMA (Simple Moving Average) @done (16-05-16 20:25)
    ☐ EMA (Exponential Moving Average)
-   ☐ VEMA (Volume affected EMA )
+   ☐ VEMA (EMA amplified with volume)
    ☐ MACD (Moving Average Convergence Divergence)
    ☐ Force Index
    ☐ ...

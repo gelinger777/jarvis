@@ -25,7 +25,7 @@ We use `eventstore` for denormalized data storage as it very efficiently stores 
 access and provides streaming api.
 
 
-# Tools
+## Tools
 
 Before working with this project make sure you have following tools configured properly.
 * `intellij ultimate` there are some plugins that are available only for ultimate edition,
@@ -42,7 +42,7 @@ make sure following plugins are installed
     * `SidebarEnhancements`
 
 
-# Design
+## Design
 
 
  Working trading system is a composition of several services and libraries. Those
@@ -62,7 +62,7 @@ make sure following plugins are installed
  * `other` components are there to facilitate work of the logical components.
 
 
-# Technological Stack
+## Technological Stack
 
 
 We use latest stable versions of the best tools available relevant for
@@ -79,11 +79,12 @@ the tasks we solve.
 * Frontend
     * `Node` - as endpoint for ui websocket communication
     * `Angular 2` - main framework for ui
+    * `Material Components` - material design as base
     * `TypeScript` - better js and default for angular 2
     * `D3` - for charts
 
 
-# Folder Structure
+## Folder Structure
 
 
 * `/sources` contains all the source files for all the modules without any build
@@ -97,7 +98,7 @@ are used with `sublime text` (with `PlainTasks` plugin enabled)
     persisted by eventstore are located here by default
 
 
-# Conventions
+## Conventions
 
 All services follow some conventions that proved to be good practice over time.
 `Java/kotlin` apps use shared `:global:util` lib which has some utility classes that
@@ -118,7 +119,7 @@ taking place we kill and report the cause of the failure (for example email to d
 
 Each module that may need some explanation will provide a `readme.md` file under the sources root.
 
-# Run Instructions
+## Run Instructions
 
 In order to recompile `.proto` files run
 
@@ -134,3 +135,17 @@ This will generate binary distributions of services and store them under `/dist/
 
 Shell scripts under `/bin` directory have default environment variables hardcoded in them,
 those can be customized for production.
+
+## Contributing
+
+If multiple devices are used to work with the codebase a developer can keep a single dev branch
+on remote repo like `dev-vach` and all the unfinished work is being committed to that branch
+when changing different development environments... When a feature is complete `squash` command
+can be used to merge all changes to the `main` branch.
+
+```
+    git merge --squash dev-vach
+```
+
+This will merge all work from `dev-vach` to `main` branch. At this point developer can
+do final polish of the source before committing the feature.
