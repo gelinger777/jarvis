@@ -4,6 +4,7 @@ import bitfinex.channel.BookChannel
 import bitfinex.channel.BroadCoastingChannel
 import bitfinex.channel.TradeChannel
 import com.google.gson.JsonParser
+import common.IExchangeClient
 import common.util.asKey
 import common.util.asPair
 import common.util.json
@@ -18,7 +19,7 @@ import util.global.*
 import util.net.http
 import java.util.concurrent.TimeUnit
 
-class Bitfinex(val config: BitfinexConfig) {
+class Bitfinex(val config: BitfinexConfig) : IExchangeClient {
     val log by logger("bitfinex")
     val version = 1
 
@@ -51,14 +52,7 @@ class Bitfinex(val config: BitfinexConfig) {
         websocketClient.start()
     }
 
-    //    fun stop() {
-    //        log.info("stopping")
-    //        channels.keys.filter { it is Int }.forEach {
-    //            websocketClient.send("{\"event\":\"unsubscribe\",\"chanId\":\"$it\"}");
-    //        }
-    //    }
-
-    fun symbols(): List<Pair> {
+    override fun symbols(): List<Pair> {
         log.info("getting accessible market pairs")
 
         return http.getString(get("https://api.bitfinex.com/v1/symbols"))
@@ -73,8 +67,7 @@ class Bitfinex(val config: BitfinexConfig) {
                 .get()
     }
 
-
-    fun streamTrades(pair: Pair): Observable<Trade> {
+    override fun streamTrades(pair: Pair): Observable<Trade> {
         // get channel or create if necessary
         val channel = channels.computeIfAbsent(pair.asTradeKey(), {
             log.info("starting trade stream : {}", pair.json());
@@ -86,11 +79,9 @@ class Bitfinex(val config: BitfinexConfig) {
         })
 
         return (channel as TradeChannel).observable
-
     }
 
-    fun streamOrders(pair: Pair): Observable<Order> {
-
+    override fun streamOrders(pair: Pair): Observable<Order> {
         // get channel or create if necessary
         val channel = channels.computeIfAbsent(pair.asBookKey(), {
             log.info("starting orderbook stream : {}", pair.json());
