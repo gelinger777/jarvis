@@ -22,3 +22,11 @@ fun <T> consumer(consumer: Consumer<T>): (T) -> Unit {
 fun runnable(runnable: Runnable): () -> Unit {
     return { runnable.run() }
 }
+
+fun roundDown5(d: Double): Double {
+    return Math.floor(d * 1e5) / 1e5
+}
+
+fun roundDown3(d: Double): Double {
+    return Math.floor(d * 1e3) / 1e3
+}

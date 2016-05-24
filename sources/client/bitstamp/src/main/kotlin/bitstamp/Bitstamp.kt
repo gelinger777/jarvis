@@ -2,37 +2,47 @@ package bitstamp
 
 import com.google.gson.JsonParser
 import com.pusher.client.Pusher
+import common.IAccount
 import common.IExchange
+import common.IMarket
 import common.util.pair
-import proto.bitfinex.BitstampConfig
-import proto.common.Order
+import proto.bitfinex.ProtoBitstamp
 import proto.common.Pair
 import proto.common.Trade
-import rx.Observable
 import rx.subjects.PublishSubject
-import util.global.notImplemented
 
 
-class Bitstamp(val config: BitstampConfig) : IExchange {
+class Bitstamp(val config: ProtoBitstamp.BitstampConfig) : IExchange {
+    override fun name(): String {
+        throw UnsupportedOperationException()
+    }
+
+    override fun market(pair: Pair): IMarket {
+        throw UnsupportedOperationException()
+    }
+
+    override fun account(): IAccount {
+        throw UnsupportedOperationException()
+    }
 
     override fun pairs(): List<Pair> {
         return listOf(pair("BTC", "USD"), pair("BTC", "EUR"))
     }
 
-    override fun streamTrades(pair: Pair): Observable<Trade> {
-        if (pair == pair("BTC", "USD")) {
-            util.net.pusher.stream(config.pusherKey, "live_trades", "trade")
-            .map { it.asTrade() }
-        }else{
-
-        }
-
-        return notImplemented()
-    }
-
-    override fun streamOrders(pair: Pair): Observable<Order> {
-        return notImplemented()
-    }
+//    override fun streamTrades(pair: Pair): Observable<Trade> {
+//        if (pair == pair("BTC", "USD")) {
+//            util.net.pusher.stream(config.pusherKey, "live_trades", "trade")
+//            .map { it.asTrade() }
+//        }else{
+//
+//        }
+//
+//        return notImplemented()
+//    }
+//
+//    override fun streamOrders(pair: Pair): Observable<Order> {
+//        return notImplemented()
+//    }
 
 
 

@@ -6,6 +6,8 @@ import proto.bitfinex.ProtoBitfinex
 import proto.common.Order
 import rx.Observable
 import rx.subjects.PublishSubject
+import util.global.roundDown5
+import java.util.concurrent.ThreadLocalRandom
 
 internal class OrderBook(val market: Market) : IOrderBook {
     val orders = PublishSubject.create<Order>()
@@ -38,5 +40,35 @@ internal class OrderBook(val market: Market) : IOrderBook {
                         .build()
         )
     }
+
+}
+
+fun main(args: Array<String>) {
+
+//45.36469
+    val rand = ThreadLocalRandom.current()
+
+//    val map = LinkedHashMap<Int, String>().toSortedMap(Comparator { first, second -> first.compareTo(second) })
+//
+//    for (i in 1..10) {
+//        val random = rand.nextInt(0, 10)
+//
+//        println(random)
+//
+//        map.put(random, random.toString())
+//
+//        map.forEach { println("<> : "+it.key) }
+//
+//    }
+
+    var num = 0.0
+
+    for (i in 0..100) {
+        val rounded = roundDown5(rand.nextDouble())
+        val next = num + rounded
+        println("$num + $rounded = $next")
+        num = next
+    }
+
 
 }
