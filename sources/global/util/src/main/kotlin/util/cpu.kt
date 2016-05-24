@@ -24,7 +24,7 @@ object cpu {
     init {
         log.info("init")
 
-        cleanupTasks.internalAdd("cpu", {
+        cleanupTasks.internalAdd({
             log.info("shutdown");
 
             // common pool doesn't need shutdown
@@ -34,7 +34,7 @@ object cpu {
 
             executeMandatory { executors.io.awaitTermination(1, TimeUnit.MINUTES) }
             executeMandatory { executors.fj.awaitQuiescence(1, TimeUnit.MINUTES) }
-        })
+        }, key = "cpu")
     }
 
 

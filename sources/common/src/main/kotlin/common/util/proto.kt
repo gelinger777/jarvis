@@ -3,33 +3,58 @@ package common.util
 import com.google.protobuf.MessageOrBuilder
 import com.google.protobuf.util.JsonFormat
 import io.grpc.stub.StreamObserver
-import proto.bitfinex.BitfinexConfig
+import proto.bitfinex.ProtoBitfinex.BitfinexConfig
 import proto.common.*
 import util.global.condition
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Pattern
 
+
+private object repo {
+    val currencies = ConcurrentHashMap<String, Currency>()
+    val pairs = ConcurrentHashMap<String, Pair>()
+}
+
 // base types ==========================================================================
 
-/**
- * Get the currency instance with provided symbol.
- */
 fun currency(symbol: String): Currency {
-    return repo.currencies.computeIfAbsent(symbol, { Currency.newBuilder().setSymbol(it).build() })
+
+    val uSymbol = symbol.toUpperCase()
+
+    return repo.currencies.computeIfAbsent(uSymbol, { Currency.newBuilder().setSymbol(it).build() })
 }
 
 fun pair(base: String, quote: String): Pair {
-    return repo.pairs.computeIfAbsent("$base|$quote", {
+
+    val uBase = base.toUpperCase()
+    val uQuote = quote.toUpperCase()
+
+    return repo.pairs.computeIfAbsent("$uBase|$uQuote", {
         Pair.newBuilder()
-                .setBase(currency(base))
+                .setBase(currency(uBase))
                 .setQuote(currency(quote))
                 .build()
     })
 }
 
-/**
- * Convert to Pair instance.
- */
+fun trade(price: Double, volume: Double, time: Long): Trade {
+    return Trade.newBuilder()
+            .setPrice(price)
+            .setVolume(volume)
+            .setTime(time)
+            .build()
+}
+
+fun order(side: Order.Side, price: Double, volume: Double, time: Long = System.currentTimeMillis()): Order {
+    condition(time > 0)
+    return Order.newBuilder()
+            .setTime(time)
+            .setSide(side)
+            .setPrice(price)
+            .setVolume(volume)
+            .build();
+}
+
 fun String.asPair(): Pair {
 
     val matcher = Pattern.compile("(.{3})[-|\\||/|-]?(.{3})").matcher(this)
@@ -46,9 +71,6 @@ fun String.asPair(): Pair {
     )
 }
 
-/**
- * Path friendly identifier for representing a pair.
- */
 fun Pair.asFolderName(): String {
     // btc-usd
     return "${this.base.symbol.toLowerCase()}-${this.quote.symbol.toLowerCase()}"
@@ -57,27 +79,6 @@ fun Pair.asFolderName(): String {
 fun Pair.asKey(): String {
     return "${this.base.symbol}|${this.quote.symbol}"
 }
-
-fun trade(price: Double, volume: Double, time: Long): Trade {
-    return Trade.newBuilder()
-            .setPrice(price)
-            .setVolume(volume)
-            .setTime(time)
-            .build()
-}
-
-
-fun order(id: Long = 0, side: Order.Side, price: Double, volume: Double, time: Long = System.currentTimeMillis()): Order {
-    condition(time > 0)
-    return Order.newBuilder()
-            .setId(id)
-            .setTime(time)
-            .setSide(side)
-            .setPrice(price)
-            .setVolume(volume)
-            .build();
-}
-
 
 /**
  * Convert to single line json representation
@@ -91,13 +92,7 @@ fun MessageOrBuilder.json(pretty: Boolean = false): String {
     return json
 }
 
-private object repo {
-    val currencies = ConcurrentHashMap<String, Currency>()
-    val pairs = ConcurrentHashMap<String, Pair>()
-}
-
 // services ============================================================================
-
 
 fun address(host: String, port: Int): ServiceAddress {
     return ServiceAddress.newBuilder()
@@ -106,9 +101,9 @@ fun address(host: String, port: Int): ServiceAddress {
             .build()
 }
 
-fun bitfinexConfig(websocketConnectionURL: String, publicKey: String, privateKey: String): BitfinexConfig {
+fun bitfinexConfig(wsUrl: String, publicKey: String, privateKey: String): BitfinexConfig {
     return BitfinexConfig.newBuilder()
-            .setWebsocketConnectionURL(websocketConnectionURL)
+            .setWsURL(wsUrl)
             .setPublicKey(publicKey)
             .setPrivateKey(privateKey)
             .build()

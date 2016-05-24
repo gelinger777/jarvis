@@ -20,7 +20,7 @@ interface IExchangeCollector {
 
     fun recordOrders(request: RecordOrdersReq): RecordOrdersResp
 
-    fun streamHistoricalTrades(request: StreamHistoricalTradesReq):Observable<Trade>
+    fun streamHistoricalTrades(request: StreamHistoricalTradesReq): Observable<Trade>
 
     fun streamHistoricalOrders(request: StreamHistoricalOrdersReq) : Observable<Order>
 }

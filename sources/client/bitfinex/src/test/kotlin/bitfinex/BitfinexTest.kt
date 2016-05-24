@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit.MINUTES
 class BitfinexTest {
     val bitfinex = Bitfinex(
             bitfinexConfig(
-                    websocketConnectionURL = "wss://api2.bitfinex.com:3000/ws",
+                    wsUrl = "wss://api2.bitfinex.com:3000/ws",
                     publicKey = "8SOAdEL7gPLgB0zz7KiqdOqmIHMw5vfgRnVlFbytfKa",
                     privateKey = "a9pZv0zDvprfK0PvUF7wKZGzeU16m06ZvM7CHQRfncY"
             )
@@ -18,7 +18,7 @@ class BitfinexTest {
 
     @Test
     fun symbols() {
-        bitfinex.symbols().forEach { println(it.json()) }
+        bitfinex.pairs().forEach { println(it.json()) }
     }
 
     @Test

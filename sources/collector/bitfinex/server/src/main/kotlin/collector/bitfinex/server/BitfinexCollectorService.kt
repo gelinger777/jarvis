@@ -30,7 +30,7 @@ internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val
     override fun info(request: CollInfoReq, observer: StreamObserver<CollInfoResp>) {
         log.debug("getting accessible market pairs")
 
-        val supportedPairs = bitfinex.symbols()
+        val supportedPairs = bitfinex.pairs()
 
         respondCollInfo(observer, supportedPairs)
     }

@@ -15,9 +15,20 @@ include ":eventstore-server"
 project(':eventstore-server').projectDir = "$rootDir/sources/global/eventstore/server" as File
 
 
+include ":visual"
+project(':visual').projectDir = "$rootDir/sources/visual" as File
+
+
+// clients
+
 include ":bitfinex-client"
 project(':bitfinex-client').projectDir = "$rootDir/sources/client/bitfinex" as File
 
+
+include ":bitstamp-client"
+project(':bitstamp-client').projectDir = "$rootDir/sources/client/bitstamp" as File
+
+// collectors
 
 include ":bitfinex-collector-client"
 project(':bitfinex-collector-client').projectDir = "$rootDir/sources/collector/bitfinex/client" as File
@@ -25,8 +36,3 @@ project(':bitfinex-collector-client').projectDir = "$rootDir/sources/collector/b
 
 include ":bitfinex-collector-server"
 project(':bitfinex-collector-server').projectDir = "$rootDir/sources/collector/bitfinex/server" as File
-
-
-include ":visual"
-project(':visual').projectDir = "$rootDir/sources/visual" as File
-

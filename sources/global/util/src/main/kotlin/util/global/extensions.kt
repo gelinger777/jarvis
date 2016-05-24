@@ -145,14 +145,14 @@ fun logger(name: String): Logger {
 /**
  * Get non null value or throw IllegalStateException.
  */
-fun <K, V> MutableMap<K, V>.getMandatory(key: K): V {
+fun <K, V> Map<K, V>.getMandatory(key: K): V {
     return this[key] ?: throw IllegalStateException("nothing found for [$key]")
 }
 
 /**
  * Get optional value.
  */
-fun <K, V> MutableMap<K, V>.getOptional(key: K): Option<V> {
+fun <K, V> Map<K, V>.getOptional(key: K): Option<V> {
     return Option.ofNullable(this[key])
 }
 

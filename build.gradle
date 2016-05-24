@@ -182,7 +182,7 @@ project(":util") {
         compile 'ws.wamp.jawampa:jawampa-netty:0.4.1'
 
         // pusher
-        compile 'com.pusher:pusher-java-client:1.0.0'
+        compile 'com.pusher:pusher-java-client:1.1.3'
     }
 }
 
@@ -235,7 +235,27 @@ project(":eventstore-server") {
 
 }
 
-// Bitfinex =====================================================================================
+// User Interface================================================================================
+
+project(":visual") {
+
+    description = "[app] Ui which operates with other services."
+
+    /**
+     * notes : ui will be composed of static web app which connects to backend endpoint,
+     * front end is angular 2 + material design + d3 for charts
+     * back end is simple websocket endpoint which will redirect any calls from ui to actual services...
+     */
+
+    dependencies {
+        compile project(":common")
+        compile project(":eventstore-client")
+        compile project(":bitfinex-collector-client")
+    }
+
+}
+
+// Clients ======================================================================================
 
 project(":bitfinex-client") {
     description = "[lib] Bitfinex client library to work with bitfinex exchange."
@@ -245,6 +265,19 @@ project(":bitfinex-client") {
     }
 
 }
+
+
+project(":bitstamp-client") {
+    description = "[lib] Bitstamp client library to work with bitstamp exchange."
+
+    dependencies {
+        compile project(":common")
+    }
+
+}
+
+// Collectors ===================================================================================
+
 
 project(":bitfinex-collector-client") {
 
@@ -278,23 +311,6 @@ project(":bitfinex-collector-server") {
 }
 
 
-project(":visual") {
-
-    description = "[app] Ui which operates with other services."
-
-    /**
-     * notes : ui will be composed of static web app which connects to backend endpoint,
-     * front end is angular 2 + material design + d3 for charts
-     * back end is simple websocket endpoint which will redirect any calls from ui to actual services...
-     */
-
-    dependencies {
-        compile project(":common")
-        compile project(":eventstore-client")
-        compile project(":bitfinex-collector-client")
-    }
-
-}
 
 // ./gradlew wrapper --gradle-version=2.13
 

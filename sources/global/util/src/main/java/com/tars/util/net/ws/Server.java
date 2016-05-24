@@ -1,21 +1,20 @@
 package com.tars.util.net.ws;
 
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.servlet.*;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.*;
+import org.slf4j.*;
 
-import java.util.LinkedList;
-import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.*;
 
-import javax.websocket.server.ServerEndpointConfig;
-import javax.websocket.server.ServerEndpointConfig.Configurator;
+import javax.websocket.server.*;
+import javax.websocket.server.ServerEndpointConfig.*;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.subjects.*;
 
-import static util.global.ExceptionsKt.wtf;
+import static util.global.ExceptionsKt.*;
 
 class Server implements WebsocketServer {
 

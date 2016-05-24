@@ -1,0 +1,22 @@
+syntax = "proto3";
+option java_outer_classname = "ProtoBitstamp";
+
+package proto.bitfinex;
+
+import "common.proto";
+import "event-store.proto";
+
+
+message BitstampConfig {
+    string pusherKey = 1;
+    string publicKey = 2;
+    string privateKey = 3;
+}
+
+message BitstampCollectorConfig {
+    proto.common.ServiceAddress eventStoreConfig = 1;
+    int32 port = 2;
+    BitstampConfig bitfinexConfig = 3;
+    repeated proto.common.Pair trades = 4;
+    repeated proto.common.Pair orders = 5;
+}

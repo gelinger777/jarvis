@@ -1,29 +1,42 @@
 package util
 
 import com.tars.util.net.http.HttpHub
+import com.tars.util.net.pusher.PusherHub
 import com.tars.util.net.socket.SocketHub
+import com.tars.util.net.ws.WebsocketClient
 import com.tars.util.net.ws.WebsocketHub
-import util.global.logger
+import com.tars.util.net.ws.WebsocketServer
 
 object net {
-    private val log by logger()
-
     val socket by lazy {
         val socketHub = SocketHub()
-        cleanupTasks.internalAdd("socket-hub", { socketHub.release() }, 1)
+        cleanupTasks.internalAdd({ socketHub.release() }, 1, "socket-hub")
         socketHub
     }
     val http by lazy {
         val httpHub = HttpHub()
-        cleanupTasks.internalAdd("http-hub", { httpHub.release() }, 1)
+        cleanupTasks.internalAdd({ httpHub.release() }, 1, "http-hub")
         httpHub
     }
-    val websocket by lazy {
-        val websocketHub = WebsocketHub()
-        cleanupTasks.internalAdd("websocket-hub", { websocketHub.release() }, 1)
-        websocketHub
+
+    // todo fix net util
+    // todo add cleanup tasks
+    // todo move mailer here
+    // todo move grpc stuff here
+
+    fun wsServer(port: Int, path: String): WebsocketServer {
+        val server = WebsocketHub.server(port, path)
+        cleanupTasks.internalAdd({server.stop()}, 1)
+
+        return server
     }
 
-    // todo : move mailer here
-    // todo : move grpc methods here
+    fun wsClient(address: String): WebsocketClient {
+        return WebsocketHub.client(address)
+    }
+
+    val pusher by lazy {
+        PusherHub()
+    }
+
 }

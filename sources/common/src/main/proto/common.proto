@@ -104,7 +104,6 @@ message Pair {
     Currency quote = 2;
 }
 
-// note : Canceled orders shall have same order id but 0 price and 0 volume
 message Order {
     enum Side {
         BID = 0;
@@ -112,10 +111,9 @@ message Order {
     }
 
     int64 time = 1;
-    int64 id = 2;
-    double price = 3;
-    double volume = 4;
-    Side side = 5;
+    double price = 2;
+    double volume = 3;
+    Side side = 4;
 }
 
 message Trade {
