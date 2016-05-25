@@ -1,4 +1,4 @@
-package common.util
+package common.global
 
 import proto.common.Trade
 import rx.Observable

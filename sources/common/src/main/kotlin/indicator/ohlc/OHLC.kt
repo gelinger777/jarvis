@@ -1,6 +1,6 @@
 package indicator.ohlc
 
-import common.util.json
+import common.global.json
 import proto.common.OHLC
 import proto.common.Trade
 import rx.Observable

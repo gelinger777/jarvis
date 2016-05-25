@@ -1,5 +1,5 @@
 
-import common.util.address
+import common.global.address
 import eventstore.client.EventStoreClient
 
 fun main(args: Array<String>) {

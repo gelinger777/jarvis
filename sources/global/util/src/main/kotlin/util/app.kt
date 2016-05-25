@@ -7,6 +7,7 @@ import util.global.*
 object app {
     val log by logger("application")
     val exceptionLogger by logger("exceptions")
+    val profile: String
 
     internal val unrecoverableErrors = PublishSubject.create<Throwable>()
 
@@ -14,7 +15,7 @@ object app {
 
     init {
         val logs = System.getProperty("logPath")
-        val profile = System.getProperty("profile")
+        profile = System.getProperty("profile")
 
         mandatoryCondition(notNullOrEmpty(logs), "'logPath' system property must be specified")
         mandatoryCondition(notNullOrEmpty(profile), "'profile' system property must be specified")
@@ -57,11 +58,15 @@ object app {
         }
     }
 
-    fun reportedErrors() : Observable<Throwable>{
+    fun isDevProfile(): Boolean {
+        return profile == "dev"
+    }
+
+    fun reportedErrors(): Observable<Throwable> {
         return reportedErrors;
     }
 
-    fun unrecoverableErrors() : Observable<Throwable>{
+    fun unrecoverableErrors(): Observable<Throwable> {
         return unrecoverableErrors;
     }
 

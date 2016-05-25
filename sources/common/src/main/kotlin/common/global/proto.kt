@@ -1,4 +1,4 @@
-package common.util
+package common.global
 
 import com.google.protobuf.MessageOrBuilder
 import com.google.protobuf.util.JsonFormat
@@ -38,6 +38,7 @@ fun pair(base: String, quote: String): Pair {
 }
 
 fun trade(price: Double, volume: Double, time: Long): Trade {
+    condition(price > 0 && volume > 0 && time > 0)
     return Trade.newBuilder()
             .setPrice(price)
             .setVolume(volume)
@@ -46,7 +47,7 @@ fun trade(price: Double, volume: Double, time: Long): Trade {
 }
 
 fun order(side: Order.Side, price: Double, volume: Double, time: Long = System.currentTimeMillis()): Order {
-    condition(time > 0)
+    condition(time > 0 && price > 0 && volume >= 0)
     return Order.newBuilder()
             .setTime(time)
             .setSide(side)

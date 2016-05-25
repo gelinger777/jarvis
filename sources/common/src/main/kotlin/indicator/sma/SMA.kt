@@ -1,7 +1,7 @@
 package indicator.ohlc
 
-import common.util.json
-import common.util.protoRandom
+import common.global.json
+import common.global.protoRandom
 import proto.common.OHLC
 import proto.common.SMA
 import rx.Observable

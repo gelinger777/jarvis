@@ -149,3 +149,11 @@ can be used to merge all changes to the `main` branch.
 
 This will merge all work from `dev-vach` to `main` branch. At this point developer can
 do final polish of the source before committing the feature.
+
+In order to separate boilerplate from actual business logic code, we use extensions functions in
+file `/internal/stuff.kt` in the root of each module, to write easily readable code in public classes,
+each method or object defined in `stuff.kt` must have `internal` visibility, this file is only for
+implementation boilerplate, it shall not contain valuable business logic on its own.
+
+`internal` package can also be used to hold some sample run scripts that are not valid tests on their
+own but are valuable for development (for debugging purposes).

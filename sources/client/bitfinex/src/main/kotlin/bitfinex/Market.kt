@@ -1,11 +1,11 @@
 package bitfinex
 
 import com.google.gson.JsonArray
-import com.tars.util.net.ws.WebsocketClient
+import common.AggregatedOrderbook
 import common.IExchange
 import common.IMarket
 import common.IOrderBook
-import proto.bitfinex.ProtoBitfinex
+import internal.*
 import proto.common.Order
 import proto.common.Pair
 import proto.common.Trade
@@ -18,35 +18,27 @@ import util.global.wtf
 internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
     internal val log by logger("bitfinex")
 
-    val trades: PublishSubject<Trade>
-    val orders: PublishSubject<ProtoBitfinex.Order>
+    val trades = PublishSubject.create<Trade>()
+    val orders = PublishSubject.create<Order>()
 
-    val ob: OrderBook
+    val book = AggregatedOrderbook()
 
-    val ws: WebsocketClient
-    val channels: MutableMap<Any, (JsonArray) -> Unit>
+    val ws = util.net.wsClient(exchange.config.wsURL)
+    val channels = mutableMapOf<Any, (JsonArray) -> Unit>()
 
 
     init {
-        trades = PublishSubject.create()
-        orders = PublishSubject.create()
-        ob = OrderBook(this)
-
-        orders.subscribe { ob.acceptNext(it) }
-
-
-        ws = util.net.wsClient(exchange.config.wsURL)
-        channels = mutableMapOf()
-
+        orders.subscribe { book.accept(it) }
 
         channels.put(pair.asTradeKey(), object : (JsonArray) -> Unit {
             override fun invoke(data: JsonArray) {
                 parseTrades(data).forEach { trades.onNext(it) }
             }
         })
+
         channels.put(pair.asBookKey(), object : (JsonArray) -> Unit {
             override fun invoke(data: JsonArray) {
-                parseOrders(data).forEach { ob.acceptNext(it) }
+                parseOrders(data).forEach { orders.onNext(it) }
             }
         })
 
@@ -65,9 +57,8 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
         )
 
         ws.start()
-
-        ws.send("{\"event\": \"subscribe\",\"channel\": \"trades\",\"pair\": \"${pair.base.symbol}${pair.quote.symbol}\"}")
-        ws.send("{\"event\":\"subscribe\",\"channel\":\"book\",\"pair\":\"${pair.base.symbol}${pair.quote.symbol}\",\"prec\":\"R0\",\"len\":\"full\"}")
+        ws.send(subscribeTradesCommand(pair))
+        ws.send(subscribeOrdersCommand(pair))
     }
 
     override fun exchange(): IExchange {
@@ -79,14 +70,14 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
     }
 
     override fun orderbook(): IOrderBook {
-        return ob
+        return book
     }
 
-    override fun streamOrders(): Observable<Order> {
-        return ob.stream()
+    override fun orders(): Observable<Order> {
+        return orders
     }
 
-    override fun streamTrades(): Observable<Trade> {
+    override fun trades(): Observable<Trade> {
         return trades
     }
 

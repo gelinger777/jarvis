@@ -5,7 +5,7 @@ import com.pusher.client.Pusher
 import common.IAccount
 import common.IExchange
 import common.IMarket
-import common.util.pair
+import common.global.pair
 import proto.bitfinex.ProtoBitstamp
 import proto.common.Pair
 import proto.common.Trade

@@ -3,25 +3,22 @@ package bitfinex
 import common.IAccount
 import common.IExchange
 import common.IMarket
-import common.util.pair
+import common.global.asPair
+import common.global.pair
+import org.apache.http.client.methods.RequestBuilder.get
 import proto.bitfinex.ProtoBitfinex.BitfinexConfig
 import proto.common.Pair
+import util.app
 import util.global.computeIfAbsent
 import util.global.condition
 import util.global.logger
 import util.global.notImplemented
+import util.net.http
 
 class Bitfinex(val config: BitfinexConfig) : IExchange {
     internal val log by logger("bitfinex")
 
-    internal val markets: MutableMap<Pair, Market>
-
-
-    init {
-        log.info("starting")
-
-        markets = mutableMapOf()
-    }
+    internal val markets = mutableMapOf<Pair, Market>()
 
     override fun name(): String {
         return "BITFINEX"
@@ -30,26 +27,26 @@ class Bitfinex(val config: BitfinexConfig) : IExchange {
     override fun pairs(): List<Pair> {
         log.info("getting accessible market pairs")
 
-//        return http.getString(get("https://api.bitfinex.com/v1/symbols"))
-//                .map { response ->
-//                    response.replace(Regex("\\[|\\]|\\n|\""), "")
-//                            .split(",")
-//                            .asSequence()
-//                            .map { str -> str.asPair() }
-//                            .toList()
-//                }
-//                .ifNotPresentCompute { emptyList<Pair>() }
-//                .get()
-
-        // remove this shit later
-
-        return mutableListOf(
-                pair("btc", "usd"),
-                pair("ltc", "usd"),
-                pair("ltc", "btc"),
-                pair("eth", "usd"),
-                pair("eth", "btc")
-        )
+        if(app.isDevProfile()){
+            return mutableListOf(
+                    pair("btc", "usd"),
+                    pair("ltc", "usd"),
+                    pair("ltc", "btc"),
+                    pair("eth", "usd"),
+                    pair("eth", "btc")
+            )
+        }else{
+            return http.getString(get("https://api.bitfinex.com/v1/symbols"))
+                    .map { response ->
+                        response.replace(Regex("\\[|\\]|\\n|\""), "")
+                                .split(",")
+                                .asSequence()
+                                .map { str -> str.asPair() }
+                                .toList()
+                    }
+                    .ifNotPresentCompute { emptyList<Pair>() }
+                    .get()
+        }
     }
 
     override @Synchronized fun market(pair: Pair): IMarket {

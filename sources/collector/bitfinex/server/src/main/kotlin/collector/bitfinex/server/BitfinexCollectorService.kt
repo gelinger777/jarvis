@@ -2,10 +2,10 @@ package collector.bitfinex.server
 
 import bitfinex.Bitfinex
 import collector.bitfinex.server.recorder.RecordingObserver
-import common.util.*
+import common.global.*
 import eventstore.client.EventStoreClient
 import io.grpc.stub.StreamObserver
-import proto.bitfinex.BitfinexCollectorConfig
+import proto.bitfinex.ProtoBitfinex.BitfinexCollectorConfig
 import proto.common.*
 import util.global.computeIfAbsent
 import util.global.logger
@@ -36,11 +36,11 @@ internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val
     }
 
     override fun streamTrades(request: StreamTradesReq, observer: StreamObserver<Trade>) {
-        observer.subscribe(bitfinex.streamTrades(request.pair))
+        observer.subscribe(bitfinex.market(request.pair).trades())
     }
 
     override fun streamOrders(request: StreamOrdersReq, observer: StreamObserver<Order>) {
-        observer.subscribe(bitfinex.streamOrders(request.pair))
+        observer.subscribe(bitfinex.market(request.pair).orders())
     }
 
     override fun recordTrades(request: RecordTradesReq, observer: StreamObserver<RecordTradesResp>) {
@@ -83,7 +83,7 @@ internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val
         val path = pair.asTradeDataPath()
 
         recorders.computeIfAbsent(path, {
-            RecordingObserver<Trade>(it, eventStore).apply { this.subscribe(bitfinex.streamTrades(pair)) }
+            RecordingObserver<Trade>(it, eventStore).apply { this.subscribe(bitfinex.market(pair).trades()) }
         })
     }
 
@@ -92,7 +92,7 @@ internal class BitfinexCollectorService(val config: BitfinexCollectorConfig, val
         val path = pair.asOrdersDataPath()
 
         recorders.computeIfAbsent(path, {
-            RecordingObserver<Order>(it, eventStore).apply { this.subscribe(bitfinex.streamOrders(pair)) }
+            RecordingObserver<Order>(it, eventStore).apply { this.subscribe(bitfinex.market(pair).orders()) }
         })
     }
 

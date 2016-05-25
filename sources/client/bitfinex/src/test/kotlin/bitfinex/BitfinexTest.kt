@@ -1,8 +1,8 @@
 package bitfinex
 
-import common.util.bitfinexConfig
-import common.util.json
-import common.util.pair
+import common.global.bitfinexConfig
+import common.global.json
+import common.global.pair
 import org.junit.Test
 import util.cpu
 import java.util.concurrent.TimeUnit.MINUTES

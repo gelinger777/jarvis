@@ -3,16 +3,16 @@ package util.global
 import java.util.function.Consumer
 
 /**
- * Will execute a block of code and throw a runtime exception.
- * This is only placeholder for required return values.
+ * This is only here to trick compiler, pretend to return whatever type is required,
+ * while this method will never return...
  */
-internal fun <T> whatever(block: () -> Unit): T {
+fun <T> whatever(block: () -> Unit): T {
     block.invoke()
     throw IllegalStateException("")
 }
 
 fun <T> notImplemented(): T {
-    return whatever { wtf("not implemented") }
+    return whatever { wtf("this shouldn't happen") }
 }
 
 fun <T> consumer(consumer: Consumer<T>): (T) -> Unit {

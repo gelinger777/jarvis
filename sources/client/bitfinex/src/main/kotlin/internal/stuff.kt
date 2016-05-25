@@ -1,11 +1,12 @@
-package bitfinex
+package internal
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonParser
-import common.util.asKey
-import common.util.asPair
-import common.util.trade
-import proto.bitfinex.ProtoBitfinex.Order
+import common.global.asKey
+import common.global.asPair
+import common.global.order
+import common.global.trade
+import proto.common.Order
 import proto.common.Pair
 import proto.common.Trade
 import util.global.associateKeys
@@ -13,7 +14,7 @@ import util.global.condition
 import util.global.getMandatory
 import util.global.wtf
 
-// parsers
+// message parsers
 
 internal fun handleMessage(data: String, channels: MutableMap<Any, (JsonArray) -> Unit>) {
 
@@ -62,7 +63,6 @@ internal fun handleMessage(data: String, channels: MutableMap<Any, (JsonArray) -
     }
 }
 
-
 internal fun parseOrders(array: JsonArray): List<Order> {
     val result = mutableListOf<Order>()
 
@@ -75,36 +75,35 @@ internal fun parseOrders(array: JsonArray): List<Order> {
         // add all orders in batch
         element.asJsonArray.forEach { jsonOrder ->
             val orderArray = jsonOrder.asJsonArray
-            val id = orderArray.get(0).asLong
-            val price = orderArray.get(1).asDouble
-            val volume = orderArray.get(2).asDouble
+            val price = orderArray.get(0).asDouble
+            var volume = orderArray.get(2).asDouble
             val side = if (volume > 0) Order.Side.BID else Order.Side.ASK
 
-            result.add(Order.newBuilder()
-                    .setId(id)
-                    .setPrice(price)
-                    .setVolume(volume)
-                    .setSide(side)
-                    .build()
-            )
+            if (side == Order.Side.ASK) volume *= -1
+
+            result.add(order(side, price, volume))
         }
 
     } else if (element.isJsonPrimitive) {
         val primitive = element.asJsonPrimitive
 
         if (primitive.isNumber) {
-            val id = primitive.asLong;
-            val price = array.asJsonArray.get(2).asDouble
-            val volume = array.asJsonArray.get(3).asDouble
+            val price = primitive.asDouble
+            var volume = array.asJsonArray.get(3).asDouble
             val side = if (volume > 0) Order.Side.BID else Order.Side.ASK
+            val count = array.asJsonArray.get(2).asInt
 
-            result.add(Order.newBuilder()
-                    .setId(id)
-                    .setPrice(price)
-                    .setVolume(volume)
-                    .setSide(side)
-                    .build()
-            )
+            if (side == Order.Side.ASK) volume *= -1
+
+            if (count == 0) {
+                if (volume == -1.0 || volume == 1.0) {
+                    volume = 0.0
+                }else{
+                    wtf("no orders but provided volume?")
+                }
+            }
+
+            result.add(order(side, price, volume))
         } else {
             // ensure it was heart beat
             condition(primitive.isString && primitive.asString == "hb")
@@ -132,6 +131,15 @@ internal fun parseTrades(array: JsonArray): List<Trade> {
     return result
 }
 
+// message builders
+
+internal fun subscribeTradesCommand(pair: Pair): String {
+    return "{\"event\": \"subscribe\",\"channel\": \"trades\",\"pair\": \"${pair.base.symbol}${pair.quote.symbol}\"}"
+}
+
+internal fun subscribeOrdersCommand(pair: Pair): String {
+    return "{\"event\":\"subscribe\",\"channel\":\"book\",\"pair\":\"${pair.base.symbol}${pair.quote.symbol}\",\"prec\":\"P0\",\"len\":\"full\"}"
+}
 
 // util
 

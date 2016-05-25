@@ -1,11 +1,11 @@
-package bitfinex
+package internal
 
-import common.util.bitfinexConfig
-import common.util.json
-import common.util.pair
-import util.app
+import bitfinex.Bitfinex
+import common.global.bitfinexConfig
+import common.global.json
+import common.global.pair
 
-fun main(args: Array<String>) {
+internal fun main(args: Array<String>) {
     val bitfinex = Bitfinex(
             bitfinexConfig(
                     wsUrl = "wss://api2.bitfinex.com:3000/ws",
@@ -17,10 +17,11 @@ fun main(args: Array<String>) {
 //    bitfinex.pairs().forEach { println(it.asKey()) }
 
 
-    val market = bitfinex.market(pair("btc", "usd"))
+    bitfinex.market(pair("btc", "usd")).orders().subscribe { println("order : " + it.json()) }
+//    bitfinex.market(pair("btc", "usd")).trades().subscribe { println("trade : " + it.json()) }
 
-    market.streamTrades().subscribe { app.log.info(it.json()) }
-    market.streamOrders().subscribe { app.log.info(it.json()) }
 
     readLine()
+
+
 }

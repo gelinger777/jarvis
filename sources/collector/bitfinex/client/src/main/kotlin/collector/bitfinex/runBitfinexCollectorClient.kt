@@ -1,9 +1,9 @@
 package collector.bitfinex
 
 import collector.bitfinex.client.BitfinexCollectorClient
-import common.util.address
-import common.util.json
-import common.util.pair
+import common.global.address
+import common.global.json
+import common.global.pair
 import proto.common.StreamOrdersReq
 
 fun main(args: Array<String>) {
