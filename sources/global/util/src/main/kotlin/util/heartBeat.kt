@@ -3,48 +3,35 @@ package util
 import util.cpu.executors.io
 import util.global.condition
 import util.global.logger
-import util.misc.RefCountTask
-import java.lang.Thread.currentThread
+import util.misc.RefCountSchTask
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 
 object heartBeat {
     private val log by logger("heartbeat")
     private val registry = ConcurrentHashMap<String, Pulse>()
-    private val watchDogTask = RefCountTask("heartbeat-watchdog", {
-        log.info("heartbeat watchdog started")
+    private val watchDogTask = RefCountSchTask(
+            name = "heartbeat-watchdog",
+            task = {
+                // iterate over all monitored instances
+                for (pulse in registry.values) {
+                    log.trace("checking : {}", pulse.name)
+                    // filter those who violated the timeout
+                    if ((System.currentTimeMillis() - pulse.lastBeat.get()) > pulse.timeout) {
+                        println(System.currentTimeMillis())
+                        println(pulse.lastBeat.get())
+                        println(pulse.timeout)
 
-        while (!currentThread().isInterrupted) {
-            // iterate over all monitored instances
-            for (pulse in registry.values) {
-                log.trace("checking : {}", pulse.name)
-                // filter those who violated the timeout
-                if ((System.currentTimeMillis() - pulse.lastBeat.get()) > pulse.timeout) {
-                    println(System.currentTimeMillis())
-                    println(pulse.lastBeat.get())
-                    println(pulse.timeout)
 
-
-                    // schedule the callback execution
-                    log.warn("heartbeat violation : {}", pulse.name)
-                    io.execute(pulse.callback)
-                    stop(pulse.name)
+                        // schedule the callback execution
+                        log.warn("heartbeat violation : {}", pulse.name)
+                        io.execute(pulse.callback)
+                        stop(pulse.name)
+                    }
                 }
-            }
-
-            // support interruption
-            try {
-                TimeUnit.SECONDS.sleep(1)
-            } catch (ignored: InterruptedException) {
-                // heartbeat watchdog is not needed anymore (ref count = 0)
-                break
-            }
-
-        }
-
-        log.info("heartbeat watchdog completed")
-    })
+            },
+            delay = 1000
+    )
 
     fun start(name: String, timeout: Long, callback: () -> Unit) {
         condition(!registry.containsKey(name), "another heartbeat with the same name [$name] is already registered")
@@ -70,7 +57,7 @@ object heartBeat {
         log.info("beat on : $name")
     }
 
-    data class Pulse(val name: String, val timeout: Long, val callback: () -> Unit, var lastBeat: AtomicLong = AtomicLong(System.currentTimeMillis()))
+    data class Pulse(val name: String, val timeout: Long, val callback: () -> Unit, val lastBeat: AtomicLong = AtomicLong(System.currentTimeMillis()))
 }
 
 

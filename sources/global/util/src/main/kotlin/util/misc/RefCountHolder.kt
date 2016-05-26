@@ -1,5 +1,9 @@
 package util.misc
 
+import util.global.areSame
+import util.global.condition
+import util.global.getMandatory
+
 class RefCountHolder<T>(supplier: () -> T, finalizer: (T) -> Unit) {
 
     private val toggle: RefCountToggle
@@ -9,7 +13,7 @@ class RefCountHolder<T>(supplier: () -> T, finalizer: (T) -> Unit) {
         toggle = RefCountToggle(
                 { instance = supplier.invoke() },
                 {
-                    finalizer.invoke(this.instance ?: throw IllegalStateException("instance was not created"))
+                    finalizer.invoke(getMandatory(instance))
                     instance = null
                 }
         )
@@ -17,18 +21,11 @@ class RefCountHolder<T>(supplier: () -> T, finalizer: (T) -> Unit) {
 
     fun requestInstance(): T {
         toggle.increment()
-        return this.instance ?: throw IllegalStateException("instance was not created")
+        return getMandatory(instance)
     }
 
     fun returnInstance(instance: T?) {
-        if (instance == null) {
-            throw NullPointerException()
-        }
-
-        if (instance !== this.instance) {
-            throw IllegalStateException("resource does not belong to holder")
-        }
-
+        condition(areSame(this.instance, instance))
         toggle.decrement()
     }
 }

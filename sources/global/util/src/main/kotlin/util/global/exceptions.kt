@@ -185,23 +185,21 @@ fun <T> executeAndGet(callable: () -> T): T {
     }
 }
 
+fun <T> getMandatory(arg : T?): T{
+    if(arg != null){
+        return arg
+    }else{
+        return whatever { reportAndKill(WTFException("not null is expected")) }
+    }
+}
+
 /**
  * Executes callable, if callable returns null or any exception is thrown logs it, executes callbacks if any, AND
  * KILLS THE PROCESS.
  */
 @Deprecated("use kotlin")
 fun <T> executeAndGetMandatory(callable: Callable<T>): T {
-    try {
-        val result = callable.call()
-
-        if (result != null) {
-            return result
-        } else {
-            throw RuntimeException("callable returned null")
-        }
-    } catch (cause: Throwable) {
-        return whatever { reportAndKill(WTFException(cause)) }
-    }
+    return getMandatory(callable.call())
 }
 
 /**

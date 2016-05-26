@@ -1,25 +1,28 @@
 package util.misc
 
-class RefCountToggle(private val start: () -> Unit, private val stop: () -> Unit) {
+import javax.annotation.concurrent.ThreadSafe
+
+@ThreadSafe
+class RefCountToggle(private val on: () -> Unit, private val off: () -> Unit) {
 
     private var refCount = 0
 
     @Synchronized fun increment() {
         if (++refCount == 1) {
-            start.invoke()
+            on.invoke()
         }
     }
 
     @Synchronized fun decrement() {
         if (--refCount == 0) {
-            stop.invoke()
+            off.invoke()
         }
     }
 
     @Synchronized fun reset() {
-        if ( refCount != 0) {
+        if (refCount != 0) {
             refCount = 0;
-            stop.invoke()
+            off.invoke()
         }
     }
 }

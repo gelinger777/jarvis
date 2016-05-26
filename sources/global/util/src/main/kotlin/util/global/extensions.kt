@@ -265,3 +265,7 @@ fun <T : Message.Builder> T.readFromFS(propertyName: String): T {
 fun Long.inRange(start: Long, end: Long): Boolean {
     return this >= start && this < end
 }
+
+fun Thread.notInterrupted(): Boolean {
+    return !this.isInterrupted
+}
