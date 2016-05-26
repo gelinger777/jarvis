@@ -3,7 +3,7 @@ package collector.bitfinex
 import bitfinex.Bitfinex
 import collector.bitfinex.server.BitfinexCollectorService
 import eventstore.client.EventStoreClient
-import proto.bitfinex.BitfinexCollectorConfig
+import proto.bitfinex.ProtoBitfinex.BitfinexCollectorConfig
 import proto.common.CollectorGrpc
 import util.app
 import util.global.readFromFS
