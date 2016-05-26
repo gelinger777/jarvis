@@ -6,6 +6,8 @@ import com.tars.util.net.socket.SocketHub
 import com.tars.util.net.ws.WebsocketClient
 import com.tars.util.net.ws.WebsocketHub
 import com.tars.util.net.ws.WebsocketServer
+import io.grpc.ServerServiceDefinition
+import util.grpc.GrpcServer
 
 object net {
     val socket by lazy {
@@ -19,20 +21,24 @@ object net {
         httpHub
     }
 
-    // todo fix net util
     // todo add cleanup tasks
     // todo move mailer here
     // todo move grpc stuff here
 
     fun wsServer(port: Int, path: String): WebsocketServer {
         val server = WebsocketHub.server(port, path)
-        cleanupTasks.internalAdd({server.stop()}, 1)
-
+        cleanupTasks.internalAdd({ server.stop() }, 1)
         return server
     }
 
     fun wsClient(address: String): WebsocketClient {
-        return WebsocketHub.client(address)
+        val client = WebsocketHub.client(address)
+        cleanupTasks.internalAdd({ client.stop() }, 1)
+        return client
+    }
+
+    fun grpcServer(port: Int, service: ServerServiceDefinition): GrpcServer {
+        return GrpcServer(port, service)
     }
 
     val pusher by lazy {

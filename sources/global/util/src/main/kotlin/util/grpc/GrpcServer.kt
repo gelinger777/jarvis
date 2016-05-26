@@ -19,7 +19,10 @@ class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
         log.info("starting a ${service.name} server on $port")
 
         server.start()
-        cleanupTasks.add(task = { server.shutdown() }, key = "server:$port")
+        cleanupTasks.add(
+                task = { server.shutdown() },
+                key = "server:$port"
+        )
         return this
     }
 

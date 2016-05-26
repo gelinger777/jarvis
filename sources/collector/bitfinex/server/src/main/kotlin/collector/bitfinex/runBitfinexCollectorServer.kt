@@ -3,11 +3,11 @@ package collector.bitfinex
 import bitfinex.Bitfinex
 import collector.bitfinex.server.BitfinexCollectorService
 import eventstore.client.EventStoreClient
-import proto.bitfinex.BitfinexCollectorConfig
+import proto.bitfinex.ProtoBitfinex.BitfinexCollectorConfig
 import proto.common.CollectorGrpc
 import util.app
 import util.global.readFromFS
-import util.grpc.GrpcServer
+import util.net
 
 fun main(args: Array<String>) {
     app.log.info("starting BitfinexCollectorServer")
@@ -23,6 +23,6 @@ fun main(args: Array<String>) {
 
     app.log.info("starting grpc service")
     val bitfinexService = BitfinexCollectorService(config, bitfinex, eventStore)
-    val grpcServer = GrpcServer(config.port, CollectorGrpc.bindService(bitfinexService))
+    val grpcServer = net.grpcServer(config.port, CollectorGrpc.bindService(bitfinexService))
     grpcServer.start().blockForTermination()
 }
