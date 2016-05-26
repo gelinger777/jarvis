@@ -1,8 +1,7 @@
 package eventstore.client
 
 import com.google.protobuf.ByteString
-import proto.eventstore.ProtoES
-import proto.eventstore.ProtoES.*
+import proto.eventstore.*
 import rx.Observable
 import rx.Observer
 import rx.subjects.PublishSubject
@@ -20,7 +19,7 @@ class EventStream(val path: String, val client: EventStoreClient) {
                 .subscribe(object : Observer<Collection<ByteString>> {
                     override fun onNext(batch: Collection<ByteString>) {
                         // compose write request with batch of data
-                        val writeRequest = ProtoES.WriteReq.newBuilder()
+                        val writeRequest = WriteReq.newBuilder()
                                 .setPath(path)
                                 .addAllData(batch)
                                 .build()
@@ -53,7 +52,7 @@ class EventStream(val path: String, val client: EventStoreClient) {
         val observer = PublishSubject.create<DataResp>()
 
         client.asyncStub.read(
-                ProtoES.ReadReq.newBuilder()
+                ReadReq.newBuilder()
                         .setPath(path)
                         .setStart(start)
                         .setEnd(end)
