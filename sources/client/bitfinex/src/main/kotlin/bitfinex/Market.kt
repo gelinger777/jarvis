@@ -11,7 +11,6 @@ import proto.common.Pair
 import proto.common.Trade
 import rx.Observable
 import rx.subjects.PublishSubject
-import util.cpu
 import util.global.logger
 import util.global.wtf
 
@@ -42,7 +41,7 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
             }
         })
 
-        ws.stream().observeOn(cpu.schedulers.io).subscribe(
+        ws.stream().subscribe(
                 {
                     log.debug("| << {}", it)
                     handleMessage(it, channels)

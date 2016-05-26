@@ -4,6 +4,7 @@ import com.pusher.client.Pusher
 import rx.Observable
 import rx.subjects.PublishSubject
 import util.cleanupTasks
+import util.cpu
 import util.global.logger
 
 class PusherHub {
@@ -29,6 +30,6 @@ class PusherHub {
             subject.onNext(data)
         }
 
-        return subject
+        return subject.observeOn(cpu.schedulers.io).onBackpressureBuffer()
     }
 }

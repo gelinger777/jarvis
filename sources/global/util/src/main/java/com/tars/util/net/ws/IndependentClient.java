@@ -12,6 +12,7 @@ import javax.websocket.MessageHandler.*;
 import rx.Observable;
 import rx.subjects.*;
 import util.*;
+import util.cpu.*;
 
 class IndependentClient extends Endpoint implements WebsocketClient {
 
@@ -81,6 +82,7 @@ class IndependentClient extends Endpoint implements WebsocketClient {
   @Override
   public Observable<String> stream() {
     return subject
+        .observeOn(schedulers.INSTANCE.getIo())
         .onBackpressureBuffer();
   }
 

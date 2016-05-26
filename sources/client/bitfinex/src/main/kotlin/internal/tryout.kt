@@ -17,11 +17,11 @@ internal fun main(args: Array<String>) {
 //    bitfinex.pairs().forEach { println(it.asKey()) }
 
 
-    bitfinex.market(pair("btc", "usd")).orders().subscribe { println("order : " + it.json()) }
+    val market = bitfinex.market(pair("btc", "usd"))
+
+    market.orders().subscribe { println("order : " + it.json()) }
 //    bitfinex.market(pair("btc", "usd")).trades().subscribe { println("trade : " + it.json()) }
 
-
     readLine()
-
 
 }

@@ -11,6 +11,7 @@ import javax.websocket.MessageHandler.*;
 import rx.Observable;
 import rx.subjects.*;
 import util.*;
+import util.cpu.*;
 
 
 class AcceptedClient extends Endpoint implements WebsocketClient {
@@ -66,7 +67,9 @@ class AcceptedClient extends Endpoint implements WebsocketClient {
 
   @Override
   public Observable<String> stream() {
-    return messageStream;
+    return messageStream
+        .observeOn(schedulers.INSTANCE.getIo())
+        .onBackpressureBuffer();
   }
 
   @Override

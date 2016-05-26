@@ -1,75 +1,41 @@
 package bitstamp
 
-import com.google.gson.JsonParser
-import com.pusher.client.Pusher
 import common.IAccount
 import common.IExchange
 import common.IMarket
 import common.global.pair
-import proto.bitfinex.ProtoBitstamp
+import proto.bitfinex.ProtoBitstamp.BitstampConfig
 import proto.common.Pair
-import proto.common.Trade
-import rx.subjects.PublishSubject
+import util.global.computeIfAbsent
+import util.global.condition
+import util.global.logger
+import util.global.notImplemented
 
 
-class Bitstamp(val config: ProtoBitstamp.BitstampConfig) : IExchange {
+class Bitstamp(val config: BitstampConfig) : IExchange {
+    internal val log by logger("bitstamp")
+
+    internal val markets = mutableMapOf<Pair, Market>()
+
     override fun name(): String {
-        throw UnsupportedOperationException()
-    }
-
-    override fun market(pair: Pair): IMarket {
-        throw UnsupportedOperationException()
-    }
-
-    override fun account(): IAccount {
-        throw UnsupportedOperationException()
+        return "BITSTAMP"
     }
 
     override fun pairs(): List<Pair> {
-        return listOf(pair("BTC", "USD"), pair("BTC", "EUR"))
+        log.info("getting accessible market pairs")
+
+            return mutableListOf(
+                    pair("btc", "usd"),
+                    pair("btc", "eur")
+            )
     }
 
-//    override fun streamTrades(pair: Pair): Observable<Trade> {
-//        if (pair == pair("BTC", "USD")) {
-//            util.net.pusher.stream(config.pusherKey, "live_trades", "trade")
-//            .map { it.asTrade() }
-//        }else{
-//
-//        }
-//
-//        return notImplemented()
-//    }
-//
-//    override fun streamOrders(pair: Pair): Observable<Order> {
-//        return notImplemented()
-//    }
-
-
-
-    private fun String.asTrade(): Trade {
-        val rootElement = JsonParser().parse(this)
-
-        return Trade.getDefaultInstance()
+    override @Synchronized fun market(pair: Pair): IMarket {
+        condition(pairs().contains(pair))
+        return markets.computeIfAbsent(pair, { Market(this, it) })
     }
 
-    private fun String.asOrderbook(){}
-}
-
-fun main(args: Array<String>) {
-    val pusher = Pusher("de504dc5763aeef9ff52")
-    pusher.connect()
-
-    val channel = pusher.subscribe("diff_order_book")
-    val subject = PublishSubject.create<String>()
-
-    subject.subscribe { println(it) }
-
-    channel.bind("data") { ch, ev, data ->
-        subject.onNext(data)
+    override fun account(): IAccount {
+        return notImplemented()
     }
-
-    util.net.pusher.stream("de504dc5763aeef9ff52", "order_book", "data")
-            .subscribe { println(it) }
-
-    readLine()
 }
