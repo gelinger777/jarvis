@@ -23,14 +23,14 @@ class BitfinexTest {
 
     @Test
     fun tradeStream() {
-        bitfinex.streamTrades(pair("BTC", "USD")).subscribe { println(it.json()) }
+        bitfinex.market(pair("BTC", "USD")).trades().subscribe { println(it.json()) }
 
         cpu.sleep(1, MINUTES)
     }
 
     @Test
     fun orderStream() {
-        bitfinex.streamOrders(pair("BTC", "USD")).subscribe { println(it.json()) }
+        bitfinex.market(pair("BTC", "USD")).orders().subscribe { println(it.json()) }
 
         cpu.sleep(1, MINUTES)
     }

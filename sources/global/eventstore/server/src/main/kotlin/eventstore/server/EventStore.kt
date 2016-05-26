@@ -2,7 +2,7 @@ package eventstore.server
 
 import com.google.protobuf.ByteString
 import io.grpc.stub.StreamObserver
-import proto.eventstore.*
+import proto.eventstore.EventStoreGrpc
 import proto.eventstore.ProtoES.*
 import util.global.*
 

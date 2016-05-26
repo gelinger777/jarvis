@@ -1,7 +1,7 @@
 package eventstore.client
 
 import com.google.protobuf.ByteString
-import proto.eventstore.*
+import proto.eventstore.ProtoES.*
 import rx.Observable
 import rx.Observer
 import rx.subjects.PublishSubject
