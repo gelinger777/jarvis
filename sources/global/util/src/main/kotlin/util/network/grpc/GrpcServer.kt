@@ -1,4 +1,4 @@
-package util.grpc
+package util.network.grpc
 
 import io.grpc.ServerBuilder
 import io.grpc.ServerServiceDefinition
@@ -19,8 +19,9 @@ class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
         log.info("starting a ${service.name} server on $port")
 
         server.start()
-        cleanupTasks.add(
+        cleanupTasks.internalAdd(
                 task = { server.shutdown() },
+                priority = 1,
                 key = "server:$port"
         )
         return this

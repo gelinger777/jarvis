@@ -1,6 +1,5 @@
 package eventstore.client
 
-import io.grpc.ManagedChannelBuilder
 import proto.common.ServiceAddress
 import proto.eventstore.EventStoreGrpc
 import util.global.computeIfAbsent
@@ -10,7 +9,7 @@ class EventStoreClient(val address : ServiceAddress) {
 
     val log by logger("event-store-client")
 
-    val channel = ManagedChannelBuilder.forAddress(address.host, address.port).usePlaintext(true).build()
+    val channel = util.net.grpc.channel(address.host, address.port)
     val asyncStub = EventStoreGrpc.newStub(channel)
     val blockStub = EventStoreGrpc.newBlockingStub(channel)
 

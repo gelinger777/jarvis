@@ -128,6 +128,7 @@ fun executeMandatory(block: () -> Unit) {
 /**
  * Executes callable, wraps in Option, if any exception is thrown logs it and returns empty option.
  */
+@Deprecated("use kotlin")
 fun <T> executeAndGetSilent(callable: Callable<T>): Option<T> {
     try {
         return Option.ofNullable(callable.call())
@@ -138,8 +139,21 @@ fun <T> executeAndGetSilent(callable: Callable<T>): Option<T> {
 }
 
 /**
+ * Executes callable, wraps in Option, if any exception is thrown logs it and returns empty option.
+ */
+fun <T> executeAndGetSilent(callable: () -> T): Option<T> {
+    try {
+        return Option.ofNullable(callable.invoke())
+    } catch (cause: Throwable) {
+        report(cause)
+        return Option.empty<T>()
+    }
+}
+
+/**
  * Executes callable, if callable returns null or any exception is thrown logs it, and rethrows.
  */
+@Deprecated("use kotlin")
 fun <T> executeAndGet(callable: Callable<T>): T {
     try {
         val result = callable.call()
@@ -155,12 +169,48 @@ fun <T> executeAndGet(callable: Callable<T>): T {
 }
 
 /**
+ * Executes callable, if callable returns null or any exception is thrown logs it, and rethrows.
+ */
+fun <T> executeAndGet(callable: () -> T): T {
+    try {
+        val result = callable.invoke()
+
+        if (result != null) {
+            return result
+        } else {
+            throw report(RuntimeException("callable returned null"))
+        }
+    } catch (cause: Throwable) {
+        throw report(cause)
+    }
+}
+
+/**
  * Executes callable, if callable returns null or any exception is thrown logs it, executes callbacks if any, AND
  * KILLS THE PROCESS.
  */
+@Deprecated("use kotlin")
 fun <T> executeAndGetMandatory(callable: Callable<T>): T {
     try {
         val result = callable.call()
+
+        if (result != null) {
+            return result
+        } else {
+            throw RuntimeException("callable returned null")
+        }
+    } catch (cause: Throwable) {
+        return whatever { reportAndKill(WTFException(cause)) }
+    }
+}
+
+/**
+ * Executes callable, if callable returns null or any exception is thrown logs it, executes callbacks if any, AND
+ * KILLS THE PROCESS.
+ */
+fun <T> executeAndGetMandatory(callable: () -> T): T {
+    try {
+        val result = callable.invoke()
 
         if (result != null) {
             return result

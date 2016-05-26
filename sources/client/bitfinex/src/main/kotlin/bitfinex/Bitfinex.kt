@@ -5,7 +5,6 @@ import common.IExchange
 import common.IMarket
 import common.global.asPair
 import common.global.pair
-import org.apache.http.client.methods.RequestBuilder.get
 import proto.bitfinex.ProtoBitfinex.BitfinexConfig
 import proto.common.Pair
 import util.app
@@ -13,7 +12,7 @@ import util.global.computeIfAbsent
 import util.global.condition
 import util.global.logger
 import util.global.notImplemented
-import util.net.http
+import util.net
 
 class Bitfinex(val config: BitfinexConfig) : IExchange {
     internal val log by logger("bitfinex")
@@ -27,7 +26,7 @@ class Bitfinex(val config: BitfinexConfig) : IExchange {
     override fun pairs(): List<Pair> {
         log.info("getting accessible market pairs")
 
-        if(app.isDevProfile()){
+        if (app.isDevProfile()) {
             return mutableListOf(
                     pair("btc", "usd"),
                     pair("ltc", "usd"),
@@ -35,12 +34,11 @@ class Bitfinex(val config: BitfinexConfig) : IExchange {
                     pair("eth", "usd"),
                     pair("eth", "btc")
             )
-        }else{
-            return http.getString(get("https://api.bitfinex.com/v1/symbols"))
+        } else {
+            return net.http.get("https://api.bitfinex.com/v1/symbols")
                     .map { response ->
                         response.replace(Regex("\\[|\\]|\\n|\""), "")
                                 .split(",")
-                                .asSequence()
                                 .map { str -> str.asPair() }
                                 .toList()
                     }

@@ -1,48 +1,24 @@
 package util
 
-import com.tars.util.net.http.HttpHub
-import com.tars.util.net.pusher.PusherHub
 import com.tars.util.net.socket.SocketHub
-import com.tars.util.net.ws.WebsocketClient
-import com.tars.util.net.ws.WebsocketHub
-import com.tars.util.net.ws.WebsocketServer
-import io.grpc.ServerServiceDefinition
-import util.grpc.GrpcServer
+import util.global.notImplemented
+import util.network.grpc.Grpc
+import util.network.http.HttpHub
+import util.network.mail.Postman
+import util.network.pusher.PusherHub
+import util.network.websocket.WebsocketHub
 
 object net {
-    val socket by lazy {
-        val socketHub = SocketHub()
-        cleanupTasks.internalAdd({ socketHub.release() }, 1, "socket-hub")
-        socketHub
-    }
-    val http by lazy {
-        val httpHub = HttpHub()
-        cleanupTasks.internalAdd({ httpHub.release() }, 1, "http-hub")
-        httpHub
-    }
+    val socket by lazy { notImplemented<SocketHub>() }
 
-    // todo add cleanup tasks
-    // todo move mailer here
-    // todo move grpc stuff here
+    val http by lazy { HttpHub() }
 
-    fun wsServer(port: Int, path: String): WebsocketServer {
-        val server = WebsocketHub.server(port, path)
-        cleanupTasks.internalAdd({ server.stop() }, 1)
-        return server
-    }
+    val ws by lazy { WebsocketHub() }
 
-    fun wsClient(address: String): WebsocketClient {
-        val client = WebsocketHub.client(address)
-        cleanupTasks.internalAdd({ client.stop() }, 1)
-        return client
-    }
+    val grpc by lazy { Grpc() }
 
-    fun grpcServer(port: Int, service: ServerServiceDefinition): GrpcServer {
-        return GrpcServer(port, service)
-    }
+    val pusher by lazy { PusherHub() }
 
-    val pusher by lazy {
-        PusherHub()
-    }
+    val mail by lazy { Postman() }
 
 }

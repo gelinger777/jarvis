@@ -23,6 +23,6 @@ fun main(args: Array<String>) {
 
     app.log.info("starting grpc service")
     val bitfinexService = BitfinexCollectorService(config, bitfinex, eventStore)
-    val grpcServer = net.grpcServer(config.port, CollectorGrpc.bindService(bitfinexService))
+    val grpcServer = net.grpc.server(config.port, CollectorGrpc.bindService(bitfinexService))
     grpcServer.start().blockForTermination()
 }

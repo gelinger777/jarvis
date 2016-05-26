@@ -23,7 +23,7 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
 
     val book = AggregatedOrderbook()
 
-    val ws = util.net.wsClient(exchange.config.wsURL)
+    val ws = util.net.ws.client(exchange.config.wsURL)
     val channels = mutableMapOf<Any, (JsonArray) -> Unit>()
 
 

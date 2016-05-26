@@ -1,23 +1,15 @@
 package collector.bitfinex.client
 
 import common.ICollector
-import io.grpc.ManagedChannelBuilder
 import proto.common.*
 import rx.Observable
 import rx.subjects.PublishSubject
-import util.cpu
 import util.global.asGrpcObserver
 
 class BitfinexCollectorClient(val address: ServiceAddress) : ICollector {
-    private val channel = ManagedChannelBuilder
-            .forAddress(address.host, address.port)
-            .usePlaintext(true)
-            .executor(cpu.executors.io)
-            .build()
-
+    private val channel = util.net.grpc.channel(address.host, address.port)
     private val asyncStub = CollectorGrpc.newStub(channel)
     private val blockingStub = CollectorGrpc.newBlockingStub(channel)
-
 
     override fun info(request: CollInfoReq): CollInfoResp {
         return blockingStub.info(request)

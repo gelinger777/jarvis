@@ -36,7 +36,7 @@ object app {
                 onReportedFailure {
                     log.info("REPORTED ERROR", it)
 
-                    mailer.send(
+                    net.mail.send(
                             subject = "reported error",
                             message = it.stackTraceAsString()
                     )
@@ -45,7 +45,7 @@ object app {
                 onUnrecoverableFailure {
                     log.info("UNRECOVERABLE ERROR", it)
 
-                    mailer.send(
+                    net.mail.send(
                             subject = "unrecoverable error",
                             message = it.stackTraceAsString()
                     )

@@ -9,7 +9,7 @@ import util.net
 fun main(args: Array<String>) {
 
     app.log.info("starting EventStoreServer")
-    val server = net.grpcServer(
+    val server = net.grpc.server(
             port = EventStore.conf.port,
             service = EventStoreGrpc.bindService(EventStore)
     )
