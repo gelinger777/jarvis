@@ -1,5 +1,17 @@
 // indicators
 
+    indicator.diff {
+        projects price difference between two trade streams
+    }
+
+    indicator.mostFrequentMax {
+        calculates most frequent maximum of the chart, recent data has more weight (like EMA)
+    }
+
+    indicator.mostFrequentMin {
+        calculates most frequent minimum of the chart, recent data has more weight (like EMA)
+    }
+
     indicator.effort{
         every trade is an effort moving the price in one of the two directions, this indicator shows how much effort is put for one of the sides... each trade is consuming some amount of volume from one of the sides, this aggregates consumed volume for specified perioud of time, giving slightly more value to the recently consumed..
     }
