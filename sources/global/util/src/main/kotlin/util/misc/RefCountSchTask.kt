@@ -3,8 +3,18 @@ package util.misc
 import util.global.notInterrupted
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
-class RefCountSchTask(val name: String, val task: () -> Unit, val delay: Long, val terminationTimeout: Long = 10000) {
-    val scheduledTask = {
+/**
+ * Scheduled Reference Counting Task is extended version of RefCountTask, except it expects the task,
+ * to complete without interruption, in which case after specified delay it will reschedule the same
+ * task again (while reference count is positive).
+ */
+class RefCountSchTask(
+        private val name: String,
+        private val task: () -> Unit,
+        private val delay: Long,
+        private val terminationTimeout: Long = 10000) {
+
+    private val scheduledTask = {
         while (Thread.currentThread().notInterrupted()) {
             task.invoke()
             try {
@@ -15,7 +25,8 @@ class RefCountSchTask(val name: String, val task: () -> Unit, val delay: Long, v
         }
     }
 
-    val refCountTask = RefCountTask(name, scheduledTask, terminationTimeout)
+
+    private val refCountTask = RefCountTask(name, scheduledTask, terminationTimeout)
 
     fun increment() {
         refCountTask.increment()
@@ -25,8 +36,12 @@ class RefCountSchTask(val name: String, val task: () -> Unit, val delay: Long, v
         refCountTask.decrement()
     }
 
-    fun reset() {
-        refCountTask.reset()
+    fun forceStart(){
+        refCountTask.forceStart()
+    }
+
+    fun forceStop(){
+        refCountTask.forceStop()
     }
 
     fun isAlive(): Boolean {

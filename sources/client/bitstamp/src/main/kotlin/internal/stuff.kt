@@ -2,6 +2,7 @@ package internal
 
 import com.google.gson.JsonParser
 import common.global.order
+import common.global.pair
 import proto.common.Order
 import proto.common.Pair
 import util.Option
@@ -40,21 +41,20 @@ fun parseOrdersFromDiff(json: String): OrderBatch {
     return OrderBatch(timestamp, orders)
 }
 
-data class OrderBatch(val time: Long, val orders: List<Order>)
 
 fun main(args: Array<String>) {
-    val pendingOrders = mutableListOf<Order>()
-    var streamStartTime = -1L;
-    var synced = false
-    val count = AtomicLong(0)
 
-    val sync = OrderStreamSynchronizer()
+    val pair = pair("btc", "usd")
+
+    val fetcher: () -> Option<OrderBatch> = { getOrderbookSnapshot(pair).map { parseOrdersFromDiff(it) } }
+
+    val sync = OrderStreamSync()
 
     util.net.pusher.stream("de504dc5763aeef9ff52", "diff_order_book", "data")
             .map { parseOrdersFromDiff(it) }
             .subscribe { it.orders.forEach { sync.feedOrder(it) } }
 
-    // todo i'm here
+
 
 
     readLine()

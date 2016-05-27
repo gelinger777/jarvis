@@ -6,8 +6,7 @@ import java.util.function.*;
 import static java.util.Objects.*;
 
 /**
- * Mutable implementation of Optional with different interface and additional methods, and yeah its
- * mutable...
+ * Mutable implementation of Optional with different interface and additional methods, and yeah its mutable...
  */
 @SuppressWarnings("unchecked")
 public final class MutableOption<T> {
@@ -51,6 +50,10 @@ public final class MutableOption<T> {
 
   public boolean isPresent() {
     return value != null;
+  }
+
+  public boolean isNotPresent() {
+    return value == null;
   }
 
   public MutableOption<T> ifPresent(Consumer<? super T> consumer) {

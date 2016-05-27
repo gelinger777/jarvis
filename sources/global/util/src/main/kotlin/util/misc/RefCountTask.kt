@@ -6,12 +6,18 @@ import util.global.wtf
 import javax.annotation.concurrent.ThreadSafe
 import kotlin.concurrent.thread
 
+
+/**
+ * Reference Counting Task ensures that with the first positive reference a daemon thread will be
+ * executing defined task, and that this thread will be interrupted when reference count gets to 0.
+ * Provided task must support interruption.
+ */
 @ThreadSafe
-class RefCountTask(val name: String, val task: () -> Unit, val terminationTimeout: Long = 10000) {
+class RefCountTask(private val name: String, private val task: () -> Unit, private val terminationTimeout: Long = 10000) {
 
-    var thread: Thread? = null
+    private var thread: Thread? = null
 
-    val toggle = RefCountToggle(
+    private val toggle = RefCountToggle(
             on = {
                 if (thread == null) {
                     thread = thread(name = name, block = task, isDaemon = true, start = true)
@@ -42,8 +48,12 @@ class RefCountTask(val name: String, val task: () -> Unit, val terminationTimeou
         toggle.decrement()
     }
 
-    fun reset() {
-        toggle.reset()
+    fun forceStart(){
+        toggle.forceOn()
+    }
+
+    fun forceStop(){
+        toggle.forceOff()
     }
 
     fun isAlive(): Boolean {

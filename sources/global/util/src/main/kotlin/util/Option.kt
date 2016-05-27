@@ -3,7 +3,7 @@ package util
 import java.util.function.Consumer
 
 @Suppress("UNCHECKED_CAST")
-class Option<T>(val value: T?) {
+class Option<T>(private val value: T?) {
 
     fun mutable(): MutableOption<T> {
         return MutableOption.ofNullable(value)
@@ -15,6 +15,10 @@ class Option<T>(val value: T?) {
 
     fun isPresent(): Boolean {
         return value != null
+    }
+
+    fun isNotPresent(): Boolean {
+        return value == null
     }
 
     fun filter(predicate: (T) -> Boolean): Option<T> {
