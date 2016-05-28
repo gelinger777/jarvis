@@ -1,28 +1,16 @@
 # Jarvis - Autonomous Trading System
 
-Jarvis is a set of modules that together provide necessary environment
-to create any trading strategy imaginable. Codebase is created so that
-its very readable and flexible. Support for exchange, indicator or strategy
-can be easily implemented using existing codebase.
+Jarvis is a set of modules that together provide necessary environment to create any trading strategy imaginable. Codebase is created so that its very readable and flexible. Support for exchange, indicator or strategy can be easily implemented using existing codebase.
 
-We use multi module gradle build with single file configuration. Modules
-and their dependencies are described in `build.gradle`.
+We use multi module gradle build with single file configuration. Modules and their dependencies are described in `build.gradle`.
 
-Some modules are libraries, some are runnable services in which case
-`gradle` will produce distribution under `/dist` folder with the service name
-and necessary binaries. Services provide two modules one for client and
-one for server.
+Some modules are libraries, some are runnable services in which case `gradle` will produce distribution under `/dist` folder with the service name and necessary binaries. Services provide two modules one for client and one for server.
 
-All services are communicating using `HTTP2` over `GRPC` which provides bidirectional
-communication.
+All services are communicating using `HTTP2` over `GRPC` which provides bidirectional communication.
 
-All data structures are defined using `Protobuf` which generates fast and very memory
-efficient serialization/deserialization logic for each data structure. Those are used
-to persist to event streams. Due to very compact size huge amount of data can be
-stored and used later.
+All data structures are defined using `Protobuf` which generates fast and very memory efficient serialization/deserialization logic for each data structure. Those are used to persist to event streams. Due to very compact size huge amount of data can be stored and used later.
 
-We use `eventstore` for denormalized data storage as it very efficiently stores data for sequential
-access and provides streaming api.
+We use `eventstore` for denormalized data storage as it very efficiently stores data for sequential access and provides streaming api.
 
 
 ## Tools
@@ -33,8 +21,7 @@ make sure the following plugins are installed
     * `Markdown` to read and edit files like this (`*.md`) with proper assistance
     * `Protobuf Support` both protobuf and grpc highlighting
     * `NodeJS`
-* `sublime text` for some tasks sublime may be more appropriate (such as UI codebase),
-make sure following plugins are installed
+* `sublime text` for some tasks sublime may be more appropriate (such as UI codebase), make sure following plugins are installed
     * `PlainTasks` to open `tasks.todo` file.
     * `Typescript`
     * `Handlebars`
@@ -45,28 +32,19 @@ make sure following plugins are installed
 ## Design
 
 
- Working trading system is a composition of several services and libraries. Those
- can be logically divided to several categories :
+ Working trading system is a composition of several services and libraries. Those can be logically divided to several categories :
 
- * `collectors` handle historical data collection, each collector is responsible
- for one exchange, these must be very reliable as any interruption of collected data
- makes it unusable for testing. Collection must not be interrupted or have data loss.
- * `indicators` take some source of data like stream of trades or
- orderbook stream and extract some meaningful information about it. They
- process data in realtime as soon as it arrives. General notes regarding indicators
+ * `collectors` handle historical data collection, each collector is responsible for one exchange, these must be very reliable as any interruption of collected data makes it unusable for testing. Collection must not be interrupted or have data loss.
+ * `indicators` take some source of data like stream of trades or orderbook stream and extract some meaningful information about it. They process data in realtime as soon as it arrives. General notes regarding indicators
  can be found in `indicators.rm` file.
- * `strategies` may use indicators to generate trading signals, these contain decision
- making logic based on information that is being provided by some set of indicators,
- each strategy defines required set of indicators. Strategy may also use historical data
- to learn and optimize for specific market.
+ * `strategies` may use indicators to generate trading signals, these contain decision making logic based on information that is being provided by some set of indicators, each strategy defines required set of indicators. Strategy may also use historical data to learn and optimize for specific market.
  * `other` components are there to facilitate work of the logical components.
 
 
 ## Technological Stack
 
 
-We use latest stable versions of the best tools available relevant for
-the tasks we solve.
+We use latest stable versions of the best tools available relevant for the tasks we solve.
 
 * Backend
     * `Java 8 / Kotlin` - main programming languages
@@ -87,35 +65,29 @@ the tasks we solve.
 ## Folder Structure
 
 
-* `/sources` contains all the source files for all the modules without any build
-configurations and scripts
+* `/sources` contains all the source files for all the modules without any build configurations and scripts
 * `/notes` general notes about different aspects of the project, `.todo` files
 are used with `sublime text` (with `PlainTasks` plugin enabled)
 * `/dist` all the artifacts from build
     * `/app` binary distributions of different services
     * `/config` all the configurations for different services
-    * `/data` this is the convention for storage location, all the data streams
-    persisted by eventstore are located here by default
+    * `/data` this is the convention for storage location, all the data streams persisted by eventstore are located here by default
 
 
 ## Conventions
 
-All services follow some conventions that proved to be good practice over time.
-`Java/kotlin` apps use shared `:global:util` lib which has some utility classes that
-handle some routine tasks. More information is provided in project 'readme.md'.
+All services follow some conventions that proved to be good practice over time. `Java/kotlin` apps use shared `:global:util` lib which has some utility classes that handle some routine tasks. More information is provided in project 'readme.md'.
 
-By convention all the generated binary distribution for any `app` will contain scripts,
-that will provide the configuration location in `/config` folder, those can be overridden
-if appropriate configuration is provided.
+All the text in `readme` files or `notes` are single line per paragraph, make sure to turn on `soft wrap` line breaks for the `idea` to automatically adjust to your screen size.
+
+By convention all the generated binary distribution for any `app` will contain scripts, that will provide the configuration location in `/config` folder, those can be overridden if appropriate configuration is provided.
 
 Each `app` expects following environment variables to be provided :
 * `[appName]Config` location of json configuration for that specific app
 * `logPath` where log files for the execution will be stored
-* `profile` one of `dev` or `prod`, if the app is running in production mode, unrecoverable
-failures will or failed (timeout) heartbeats will trigger an email to the developer etc...
+* `profile` one of `dev` or `prod`, if the app is running in production mode, unrecoverable failures will or failed (timeout) heartbeats will trigger an email to the developer etc...
 
-We favour fail fast approach, if any unexpected behaviour of the application is
-taking place we kill and report the cause of the failure (for example email to developer).
+We favour fail fast approach, if any unexpected behaviour of the application is taking place we kill and report the cause of the failure (for example email to developer).
 
 Each module that may need some explanation will provide a `readme.md` file under the sources root.
 
@@ -133,27 +105,18 @@ In order to generates binaries for services run
 
 This will generate binary distributions of services and store them under `/dist/app/..`
 
-Shell scripts under `/bin` directory have default environment variables hardcoded in them,
-those can be customized for production.
+Shell scripts under `/bin` directory have default environment variables described in `build.gradle`, those shall be be customized for local development or production environment. For that make a separate branch, change the files accordingly and leave those changes.
 
 ## Contributing
 
-If multiple devices are used to work with the codebase a developer can keep a single dev branch
-on remote repo like `dev-vach` and all the unfinished work is being committed to that branch
-when changing different development environments... When a feature is complete `squash` command
-can be used to merge all changes to the `main` branch.
+If multiple devices are used to work with the codebase a developer can keep a single dev branch on remote repo like `dev-vach` and all the unfinished work is being committed to that branch when changing different development environments... When a feature is complete `squash` command can be used to merge all changes to the `main` branch.
 
 ```
     git merge --squash dev-vach
 ```
 
-This will merge all work from `dev-vach` to `main` branch. At this point developer can
-do final polish of the source before committing the feature.
+This will merge all work (many commits) from `dev-vach` to `main`, but without committing it. At this point developer can do final polish of the source and make a single commit.
 
-In order to separate boilerplate from actual business logic code, we use extensions functions in
-file `/internal/stuff.kt` in the root of each module, to write easily readable code in public classes,
-each method or object defined in `stuff.kt` must have `internal` visibility, this file is only for
-implementation boilerplate, it shall not contain valuable business logic on its own.
+Code quality, readability and modularity is a top priorityfunctions in this project hence in order to separate boilerplate from actual business logic code, we use extensions  in file `/internal/stuff.kt` in the root package of each module, each method or object defined in `stuff.kt` must have `internal` visibility, this file is only for implementation boilerplate, it shall not contain valuable business logic on its own, usually all the code that one must never read trough must be here...
 
-`internal` package can also be used to hold some sample run scripts that are not valid tests on their
-own but are valuable for development (for debugging purposes).
+`internal` package can also be used to hold some sample run scripts that are not valid tests on their own but are valuable for development (for debugging purposes), those are stored in `tryout-this-or-that.kt` files.

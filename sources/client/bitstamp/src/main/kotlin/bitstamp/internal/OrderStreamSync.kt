@@ -1,4 +1,4 @@
-package internal
+package bitstamp.internal
 
 import common.global.order
 import proto.common.Order
@@ -8,12 +8,11 @@ import util.MutableOption
 import util.Option
 import util.global.condition
 import util.global.logger
-import util.global.notImplemented
 import util.misc.RefCountSchTask
 import java.util.*
 
 
-class OrderStreamSync(val fetcher: () -> OrderBatch, val delay: Long) {
+class OrderStreamSync(val fetcher: () -> Option<OrderBatch>, val delay: Long) {
 
     val log by logger("orderSync")
 
@@ -21,16 +20,19 @@ class OrderStreamSync(val fetcher: () -> OrderBatch, val delay: Long) {
     val buffer = LinkedList<Order>()
     var isSynced = false
     val snapshot = MutableOption.empty<OrderBatch>()
+
     val fetcherTask = RefCountSchTask(
             name = "snapshot-fetcher",
-            task = { snapshot.takeNullable(fetcher.invoke()) },
+            task = {
+                log.debug("fetching")
+                fetcher.invoke().ifPresent { snapshot.take(it) }
+            },
             delay = delay
     )
 
 
     fun next(order: Order) {
 
-        // todo i'm here improve this shit
         if (isSynced) {
             log.debug("synced, emitting")
             stream.onNext(order)
@@ -41,7 +43,13 @@ class OrderStreamSync(val fetcher: () -> OrderBatch, val delay: Long) {
 
             log.debug("getting the snapshot")
 
-            if (snapshot.isNotPresent) {
+            if(!fetcherTask.isStarted()){
+                fetcherTask.forceStart()
+            }
+
+            val snapshot = snapshot.immutable()
+
+            if (snapshot.isNotPresent()) {
                 log.debug("no snapshot, skipping...")
                 return
             }
@@ -52,8 +60,11 @@ class OrderStreamSync(val fetcher: () -> OrderBatch, val delay: Long) {
                 log.debug("outdated snapshot, skipping...")
             } else {
                 log.debug("up to date snapshot")
+                fetcherTask.forceStop()
+
                 log.debug("emitting the snapshot")
                 batchOrders.forEach { stream.onNext(it) }
+                this.snapshot.clear()
 
                 log.debug("emitting buffered orders")
 
@@ -76,11 +87,8 @@ class OrderStreamSync(val fetcher: () -> OrderBatch, val delay: Long) {
 
     }
 
-    /**
-     * Synchronized order stream
-     */
     fun stream(): Observable<Order> {
-        return notImplemented()
+        return stream
     }
 
 }
@@ -91,13 +99,16 @@ fun main(args: Array<String>) {
 
     val option = MutableOption.empty<OrderBatch>()
 
-    val supplier: () -> OrderBatch = { option.get() }
+    val supplier: () -> Option<OrderBatch> = { option.immutable() }
 
-    val sync = OrderStreamSync(supplier)
+    val sync = OrderStreamSync(supplier, 2000)
 
     sync.stream.subscribe { println("ordTime : ${it.time}") }
 
-    println("setting initial snapshot")
+    println("setting outdated snapshot")
+
+    sync.next(ord(2))
+
     option.take(
             OrderBatch(
                     time = 1,
@@ -107,15 +118,16 @@ fun main(args: Array<String>) {
             )
     )
 
-    println("pushing orders")
 
-    sync.next(ord(2))
+
     sync.next(ord(3))
 
 
     sync.next(ord(4))
     sync.next(ord(5))
     sync.next(ord(6))
+
+    println("setting up to date snapshot")
 
     option.take(
             OrderBatch(

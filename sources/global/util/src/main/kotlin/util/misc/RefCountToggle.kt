@@ -29,7 +29,7 @@ class RefCountToggle(
 
     @Synchronized fun forceOn() {
         refCount = 1;
-        off.invoke()
+        on.invoke()
     }
 
     @Synchronized fun forceOff() {

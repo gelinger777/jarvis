@@ -1,11 +1,11 @@
 package bitfinex
 
+import bitfinex.internal.*
 import com.google.gson.JsonArray
 import common.AggregatedOrderbook
 import common.IExchange
 import common.IMarket
 import common.IOrderBook
-import internal.*
 import proto.common.Order
 import proto.common.Pair
 import proto.common.Trade

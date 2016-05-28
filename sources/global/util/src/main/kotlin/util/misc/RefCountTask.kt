@@ -48,18 +48,26 @@ class RefCountTask(private val name: String, private val task: () -> Unit, priva
         toggle.decrement()
     }
 
-    fun forceStart(){
+    fun forceStart() {
         toggle.forceOn()
     }
 
-    fun forceStop(){
+    fun forceStop() {
         toggle.forceOff()
+    }
+
+    fun isStarted(): Boolean {
+        return thread != null
     }
 
     fun isAlive(): Boolean {
         return Option.ofNullable(thread)
                 .filter { it.isAlive }
                 .isPresent()
+    }
+
+    fun isNotAlive(): Boolean {
+        return !isAlive()
     }
 
     fun isCurrentThread(): Boolean {

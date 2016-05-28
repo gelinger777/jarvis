@@ -44,8 +44,16 @@ class RefCountSchTask(
         refCountTask.forceStop()
     }
 
+    fun isStarted():Boolean{
+        return refCountTask.isStarted()
+    }
+
     fun isAlive(): Boolean {
         return refCountTask.isAlive()
+    }
+
+    fun isNotAlive(): Boolean {
+        return refCountTask.isNotAlive()
     }
 
     fun isCurrentThread(): Boolean {

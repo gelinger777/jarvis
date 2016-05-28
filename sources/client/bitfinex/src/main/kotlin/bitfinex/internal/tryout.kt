@@ -1,4 +1,4 @@
-package internal
+package bitfinex.internal
 
 import bitfinex.Bitfinex
 import common.global.bitfinexConfig

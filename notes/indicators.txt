@@ -1,23 +1,35 @@
 // indicators
 
+    indicator.weightedMarkets {
+        This indicator weights specific other indicators value between different markets, for example if we pick EMA as an indicator (which works on one market) then we can use this indicator to aggregate value using same EMA but on many markets (on different exchanges)... So using this you can have EMA of say BTC/USD but aggregated for different exchanges such (2 x EMA[BITSTAMP|BTC|USD] + 2 x EMA[BITFINEX|BTC|USD] + 1 x EMA[BTCE|BTC|USD])/5. In this case we gave 2/5 weight to bitstamp and bitfinex and 1/5 weight to btce... Using ML to tune weights will improve this indicators accuracy (but its questionable how to implement actual supervised learning for this).
+
+        todo : consider detecting correlation between different streams before applying in this indicator, the stream that is influencing all other streams must have higher weight.
+
+        todo : most of the indicators can be developed and tested on simulated data based on hypothesis.
+    }
+
+    indicator.pressure {
+        Walls are usually indicating the overall direction of the market, if there is a sell wall, usually that means there buyers are under control and vice versa. When trend is reversing, walls are appearing on the opposite side, although the previous wall is still bigger the growth is stopped and the other side is getting more and more volume...
+    }
+
     indicator.diff {
-        projects price difference between two trade streams
+        Projects price difference between two trade streams.
     }
 
     indicator.mostFrequentMax {
-        calculates most frequent maximum of the chart, recent data has more weight (like EMA)
+        Calculates most frequent maximum of the chart, recent data has more weight (like EMA).
     }
 
     indicator.mostFrequentMin {
-        calculates most frequent minimum of the chart, recent data has more weight (like EMA)
+        Calculates most frequent minimum of the chart, recent data has more weight (like EMA).
     }
 
     indicator.effort{
-        every trade is an effort moving the price in one of the two directions, this indicator shows how much effort is put for one of the sides... each trade is consuming some amount of volume from one of the sides, this aggregates consumed volume for specified perioud of time, giving slightly more value to the recently consumed..
+        Every trade is an effort moving the price in one of the two directions, this indicator shows how much effort is put for one of the sides... each trade is consuming some amount of volume from one of the sides, this aggregates consumed volume for specified perioud of time, giving slightly more value to the recently consumed..
     }
 
     indicator.resistance{
-        compares how much volume needs to be consumed for the same price change to be achieved on ask or bid side...
+        Compares how much volume needs to be consumed for the same price change to be achieved on ask or bid side...
     }
 
     indicator.langProcess{
@@ -25,12 +37,11 @@
     }
     
     indicator.blockchainTracker{
-        This indicator is capable to do various different analysis on actual blockchains.
-        For example it can find and track wallets which hold significant amount of cryptocoins and have been idle for years (dead wallets), as soon as some transaction happens from those wallets this indicator shows that...
-        Or tracks wallets with high rate of transactions (most likely exchange wallets), compares volume of incoming and outgoing coins...
-        Many different useful information can be harvested from blockchain, but to test its usefulness hypothesis must be tested with correlation indicator...
+        This indicator is capable to do various different analysis on actual blockchains. For example it can find and track wallets which hold significant amount of cryptocoins and have been idle for years (dead wallets), as soon as some transaction happens from those wallets this indicator shows that... Or tracks wallets with high rate of transactions (most likely exchange wallets), compares volume of incoming and outgoing coins... Many different useful information can be harvested from blockchain, but to test its usefulness hypothesis must be tested with correlation indicator...
 
-        [ requires block stream ] todo : bitcoinJ
+        [ requires block stream ]
+
+        todo : bitcoinJ
     }
 
     indicator.sleepAwake{
@@ -58,7 +69,7 @@
     }
 
     indicator.userOpinion{
-        this is a manually entered indicator, based on news and different rumors user may describe overall mood about market (value is in range -1, 1), if an operator has good insight in trading market, then strategies that use supervised learning can give more weight to this indicator over time
+        This is a manually entered indicator, based on news and different rumors user may describe overall mood about market (value is in range -1, 1), if an operator has good insight in trading market, then strategies that use supervised learning can give more weight to this indicator over time.
 
         [ requires a human being aware of the industry news, updates and generally community mood ]
     }
@@ -78,7 +89,9 @@
     indicator.googleTrends{
         Data from google trends correlates with trading volumes. Operator can create many instances of indicator with different keywords, like target currencies used in the market, or industries... then use correlation indicator to test how trend affects actual market...
 
-        [ requires google trends data stream ] todo : googleTrends collector
+        [ requires google trends data stream ]
+
+        todo : googleTrends collector
     }
     
     indicator.shazam {
@@ -96,5 +109,7 @@
     indicator.codeForce {
         This indicator tracks git activity of the project, for example one can track bitcoins git repository. This indicator shows how active the repository is...
 
-        [ requires github event stream ] todo : githubCollector
+        [ requires github event stream ]
+
+        todo : githubCollector
     }

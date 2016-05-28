@@ -48,6 +48,10 @@ public final class MutableOption<T> {
     return (T) value;
   }
 
+  public T getNullable() {
+    return (T) value;
+  }
+
   public boolean isPresent() {
     return value != null;
   }

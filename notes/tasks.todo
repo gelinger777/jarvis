@@ -1,6 +1,16 @@
 current tasks:
  ✔ fix project inconsistency @done (16-05-22 15:42)
  ☐ add 5 more clients to top volume exchanges
+   ✔ bitfinex @done (16-05-27 23:12)
+   ☐ bitstamp
+   ☐ coinbase
+   ☐ btce
+   ☐ itbit
+   ☐ kraken
+ ☐ Host Collectors
+   ☐ digitalocean.com     // the actuall collector execution
+   ☐ s3for.me             // storage for historical data
+
  ☐ protobuf/grpc compilation to Java/C#/Node
 
  ☐ java <-> c# <-> node connectivity
@@ -12,7 +22,6 @@ current tasks:
  ☐ d3 charting
  ☐ stocksharp research
  ☐ stocksharp grpc api
-
 
 data collection: 
   ✔ event store service @done (16-05-04 22:54)
@@ -47,6 +56,7 @@ analysis:
    ☐ ...
  ☐ visualization
    ☐ node endpoint
+     ☐ http://techanjs.org/
      ☐ ui build tasks
      ☐ make it talk to java backend using GRPC
    ☐ typescript

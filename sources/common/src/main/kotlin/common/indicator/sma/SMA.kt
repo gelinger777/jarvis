@@ -1,4 +1,4 @@
-package indicator.ohlc
+package common.indicator.ohlc
 
 import common.global.json
 import common.global.protoRandom

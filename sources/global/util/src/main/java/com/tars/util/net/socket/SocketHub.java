@@ -178,7 +178,7 @@ public class SocketHub {
     log.info("shutdown");
     activeClients.values().forEach(SocketClientImpl::stop);
     activeServers.values().forEach(SocketServer::stop);
-    eventLoopTask.reset();
+    eventLoopTask.forceStop();
   }
 
   // event loop logic
@@ -302,7 +302,7 @@ public class SocketHub {
     activeServers.values().forEach(SocketServer::stop);
 
     log.debug("completing the event loop");
-    eventLoopTask.reset();
+    eventLoopTask.forceStop();
   }
 
   // inner implementation of SocketServer interface

@@ -1,4 +1,4 @@
-package internal
+package bitstamp.internal
 
 import common.global.pair
 
