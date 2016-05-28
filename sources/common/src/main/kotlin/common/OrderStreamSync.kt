@@ -1,6 +1,5 @@
 package common
 
-import common.global.order
 import proto.common.Order
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -25,7 +24,10 @@ class OrderStreamSync(val fetcher: () -> Option<OrderBatch>, val delay: Long) {
             name = "snapshot-fetcher",
             task = {
                 log.debug("fetching")
-                fetcher.invoke().ifPresent { snapshot.take(it) }
+                fetcher.invoke().ifPresent {
+                    log.debug("snapshot timestamp : ${it.time}")
+                    snapshot.take(it)
+                }
             },
             delay = delay
     )
@@ -38,7 +40,7 @@ class OrderStreamSync(val fetcher: () -> Option<OrderBatch>, val delay: Long) {
             stream.onNext(order)
         } else {
             log.debug("not synced adding to buffer")
-            println("working with ${order.time}")
+            log.debug("working with ${order.time}")
             buffer.addLast(order)
 
             log.debug("getting the snapshot")
@@ -71,7 +73,7 @@ class OrderStreamSync(val fetcher: () -> Option<OrderBatch>, val delay: Long) {
                 while (buffer.isNotEmpty()) {
                     val bufferedOrder = buffer.pollFirst()
 
-                    if (bufferedOrder.time <= batchTime) {
+                    if (bufferedOrder.time < batchTime) {
                         log.debug("skipping : ${bufferedOrder.time}")
                     } else {
                         log.debug("applying : ${bufferedOrder.time}")
@@ -93,55 +95,3 @@ class OrderStreamSync(val fetcher: () -> Option<OrderBatch>, val delay: Long) {
 
 }
 
-data class OrderBatch(val time: Long, val orders: List<Order>)
-
-fun main(args: Array<String>) {
-
-    val option = MutableOption.empty<OrderBatch>()
-
-    val supplier: () -> Option<OrderBatch> = { option.immutable() }
-
-    val sync = OrderStreamSync(supplier, 2000)
-
-    sync.stream.subscribe { println("ordTime : ${it.time}") }
-
-    println("setting outdated snapshot")
-
-    sync.next(ord(2))
-
-    option.take(
-            OrderBatch(
-                    time = 1,
-                    orders = listOf(
-                            ord(1), ord(1)
-                    )
-            )
-    )
-
-
-
-    sync.next(ord(3))
-
-
-    sync.next(ord(4))
-    sync.next(ord(5))
-    sync.next(ord(6))
-
-    println("setting up to date snapshot")
-
-    option.take(
-            OrderBatch(
-                    time = 4,
-                    orders = listOf(
-                            ord(4), ord(4)
-                    )
-            )
-    )
-    sync.next(ord(7))
-    sync.next(ord(8))
-
-}
-
-fun ord(time: Long): Order {
-    return order(Order.Side.ASK, 450.0, 10.0, time)
-}

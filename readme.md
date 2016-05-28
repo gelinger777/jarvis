@@ -117,6 +117,6 @@ If multiple devices are used to work with the codebase a developer can keep a si
 
 This will merge all work (many commits) from `dev-vach` to `main`, but without committing it. At this point developer can do final polish of the source and make a single commit.
 
-Code quality, readability and modularity is a top priorityfunctions in this project hence in order to separate boilerplate from actual business logic code, we use extensions  in file `/internal/boilerplate.kt` in the root package of each module, each method or object defined in `boilerplate.kt` must have `internal` visibility, this file is only for implementation boilerplate, it shall not contain valuable business logic on its own, usually all the code that one must never read trough must be here...
+Code quality, readability and modularity are a top priority in this project hence in order to separate boilerplate from actual business logic code, we use extensions  in file `/internal/boilerplate.kt` in the root package of each module, each method or object defined in `boilerplate.kt` must have `internal` visibility, this file is only for implementation boilerplate, it shall not contain valuable business logic on its own, usually all the code that one must never read trough must be here...
 
-`internal` package can also be used to hold some sample run scripts that are not valid tests on their own but are valuable for development (for debugging purposes), those are stored in `tryout-this-or-that.kt` files.
+`internal` package can also be used to hold some sample run scripts that are not valid tests on their own but are valuable for development (for debugging purposes), those are stored in `tryout-this-or-that.kt` files and everything inside is declared with internal visibility.

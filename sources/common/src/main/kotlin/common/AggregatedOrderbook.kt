@@ -8,7 +8,8 @@ import java.util.*
 
 /**
  * Aggregated orderbook assumes that all orders fed to it with accept() are aggregated by price,
- * so the matching engine had already aggregated the prices.
+ * so the matching engine had already aggregated the prices. Aggregated means that a single order in this
+ * orderbook might in reality be composed of multiple orders of the same price on the same side...
  */
 class AggregatedOrderbook : IOrderBook {
     internal val asks = TreeMap<Double, Order>(Comparator { o1, o2 -> o1.compareTo(o2) })
