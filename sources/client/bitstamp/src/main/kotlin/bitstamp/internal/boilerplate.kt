@@ -1,14 +1,19 @@
 package bitstamp.internal
 
 import com.google.gson.JsonParser
+import common.OrderBatch
+import common.OrderStreamSync
 import common.global.order
+import common.global.pair
 import proto.common.Order
 import proto.common.Pair
 import util.Option
 import util.net
 
-fun getOrderbookSnapshot(pair: Pair): Option<String> {
+fun getOrderbookSnapshot(pair: Pair): Option<OrderBatch> {
     return net.http.get("https://www.bitstamp.net/api/v2/order_book/${pair.toBitstampKey()}/")
+            .map { parseOrdersFromDiff(it) }
+
 }
 
 
@@ -42,11 +47,9 @@ fun parseOrdersFromDiff(json: String): OrderBatch {
 
 fun main(args: Array<String>) {
 
-//    val pair = pair("btc", "usd")
-//
-//    val fetcher: () -> Option<OrderBatch> = { getOrderbookSnapshot(pair).map { parseOrdersFromDiff(it) } }
-//
-//    val sync = OrderStreamSync()
+    val pair = pair("btc", "usd")
+
+    val sync = OrderStreamSync({ getOrderbookSnapshot(pair) }, 1000);
 //
 //    net.pusher.stream("de504dc5763aeef9ff52", "diff_order_book", "data")
 //            .map { parseOrdersFromDiff(it) }

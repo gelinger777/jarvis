@@ -1,4 +1,4 @@
-package bitstamp.internal
+package common
 
 import common.global.order
 import proto.common.Order
