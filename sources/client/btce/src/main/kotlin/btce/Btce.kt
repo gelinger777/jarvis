@@ -1,17 +1,22 @@
 package btce
 
+import btce.internal.parsePairs
 import common.IAccount
 import common.IExchange
 import common.IMarket
+import proto.bitfinex.ProtoBtce.BtceConfig
 import proto.common.Pair
 
-class Btce : IExchange {
+class Btce(val config : BtceConfig) : IExchange {
     override fun name(): String {
-        throw UnsupportedOperationException()
+        return "BTCE"
     }
 
     override fun pairs(): List<Pair> {
-        throw UnsupportedOperationException()
+        return util.net.http.get("https://btc-e.com/api/3/info")
+                .map { parsePairs(it) }
+                .ifNotPresentCompute { emptyList() }
+                .get()
     }
 
     override fun market(pair: Pair): IMarket {

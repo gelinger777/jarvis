@@ -58,9 +58,9 @@ fun order(side: Order.Side, price: Double, volume: Double, time: Long = System.c
 }
 
 fun String.asPair(): Pair {
-
-    val matcher = Pattern.compile("(.{3})[-|\\||/|-]?(.{3})").matcher(this)
+    val matcher = Pattern.compile("(.{3})[-|\\||_/|-]?(.{3})").matcher(this)
     // BTCUSD
+    // BTC_USD
     // BTC|USD
     // BTC/USD
     // BTC-USD
