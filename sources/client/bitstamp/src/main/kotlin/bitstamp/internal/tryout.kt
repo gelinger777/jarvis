@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
     );
     util.net.pusher.stream("de504dc5763aeef9ff52", "diff_order_book", "data")
             .map { parseOrdersFromDiff(it) }
-            .subscribe { it.orders.forEach { sync.next(it) } }
+            .subscribe { it.all().forEach { sync.next(it) } }
 
     val book = AggregatedOrderbook()
     sync.stream.subscribe { book.accept(it) }

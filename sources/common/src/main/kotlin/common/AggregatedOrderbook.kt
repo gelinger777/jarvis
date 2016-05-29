@@ -12,10 +12,11 @@ import java.util.*
  * orderbook might in reality be composed of multiple orders of the same price on the same side...
  */
 class AggregatedOrderbook : IOrderBook {
-    internal val asks = TreeMap<Double, Order>(Comparator { o1, o2 -> o1.compareTo(o2) })
-    internal val bids = TreeMap<Double, Order>(Comparator { o1, o2 -> o2.compareTo(o1) })
 
-    override fun accept(order: Order) {
+    internal val bids = TreeMap<Double, Order>(Comparator { o1, o2 -> o2.compareTo(o1) })
+    internal val asks = TreeMap<Double, Order>(Comparator { o1, o2 -> o1.compareTo(o2) })
+
+    fun accept(order: Order) {
         if (order.isCanceled()) {
             this.remove(order)
         } else {
@@ -23,13 +24,13 @@ class AggregatedOrderbook : IOrderBook {
         }
     }
 
-    override fun bids(): List<Order> {
-        return bids.map { it.value }.toList()
+    override fun snapshot(): Orderbook {
+        return Orderbook(
+                bids = bids.map { it.value }.toList(),
+                asks = asks.map { it.value }.toList()
+        )
     }
 
-    override fun asks(): List<Order> {
-        return asks.map { it.value }.toList()
-    }
 }
 
 

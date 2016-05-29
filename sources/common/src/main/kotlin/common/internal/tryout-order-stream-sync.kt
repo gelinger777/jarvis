@@ -1,7 +1,7 @@
 package common.internal
 
-import common.OrderBatch
 import common.OrderStreamSync
+import common.Orderbook
 import common.global.order
 import proto.common.Order
 import util.MutableOption
@@ -10,9 +10,9 @@ import util.cpu
 
 internal fun main(args: Array<String>) {
 
-    val option = MutableOption.empty<OrderBatch>()
+    val option = MutableOption.empty<Orderbook>()
 
-    val supplier: () -> Option<OrderBatch> = { option.immutable() }
+    val supplier: () -> Option<Orderbook> = { option.immutable() }
 
     val sync = OrderStreamSync(supplier, 2000)
 
@@ -23,9 +23,9 @@ internal fun main(args: Array<String>) {
     sync.next(ord(2))
 
     option.take(
-            OrderBatch(
+            Orderbook(
                     time = 1,
-                    orders = listOf(
+                    asks = listOf(
                             ord(1), ord(1)
                     )
             )
@@ -42,11 +42,10 @@ internal fun main(args: Array<String>) {
 
     println("setting up to date snapshot")
 
-
     option.take(
-            OrderBatch(
+            Orderbook(
                     time = 4,
-                    orders = listOf(
+                    asks = listOf(
                             ord(4), ord(4)
                     )
             )
@@ -54,6 +53,8 @@ internal fun main(args: Array<String>) {
     cpu.sleep(3000)
     sync.next(ord(7))
     sync.next(ord(8))
+    sync.next(ord(9))
+    sync.next(ord(10))
 
 }
 

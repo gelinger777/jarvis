@@ -70,4 +70,8 @@ object app {
         return unrecoverableErrors;
     }
 
+    fun time() : Long {
+        return System.currentTimeMillis()
+    }
+
 }

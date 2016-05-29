@@ -149,6 +149,9 @@ fun <K, V> Map<K, V>.getMandatory(key: K): V {
     return this[key] ?: whatever { wtf("nothing found for [$key]") }
 }
 
+fun <K, V> Map<K, V>.notContains(key: K): Boolean {
+    return !this.containsKey(key)
+}
 
 fun <K, V> MutableMap<K, V>.removeAndGetMandatory(key: K): V {
     return this.remove(key) ?: whatever { wtf("nothing found for [$key]") }

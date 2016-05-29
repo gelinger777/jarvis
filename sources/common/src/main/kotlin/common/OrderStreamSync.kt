@@ -11,14 +11,14 @@ import util.misc.RefCountSchTask
 import java.util.*
 
 
-class OrderStreamSync(val fetcher: () -> Option<OrderBatch>, val delay: Long) {
+class OrderStreamSync(val fetcher: () -> Option<Orderbook>, val delay: Long) {
 
     val log by logger("orderSync")
 
     val stream = PublishSubject.create<Order>()
     val buffer = LinkedList<Order>()
     var isSynced = false
-    val snapshot = MutableOption.empty<OrderBatch>()
+    val snapshot = MutableOption.empty<Orderbook>()
 
     val fetcherTask = RefCountSchTask(
             name = "snapshot-fetcher",
@@ -56,16 +56,16 @@ class OrderStreamSync(val fetcher: () -> Option<OrderBatch>, val delay: Long) {
                 return
             }
 
-            val (batchTime, batchOrders) = snapshot.get()
+            val book = snapshot.get()
 
-            if (buffer.first.time >= batchTime) {
+            if (buffer.first.time >= book.time) {
                 log.debug("outdated snapshot, skipping...")
             } else {
                 log.debug("up to date snapshot")
                 fetcherTask.forceStop()
 
                 log.debug("emitting the snapshot")
-                batchOrders.forEach { stream.onNext(it) }
+                book.all().forEach { stream.onNext(it) }
                 this.snapshot.clear()
 
                 log.debug("emitting buffered orders")
@@ -73,7 +73,7 @@ class OrderStreamSync(val fetcher: () -> Option<OrderBatch>, val delay: Long) {
                 while (buffer.isNotEmpty()) {
                     val bufferedOrder = buffer.pollFirst()
 
-                    if (bufferedOrder.time < batchTime) {
+                    if (bufferedOrder.time < book.time) {
                         log.debug("skipping : ${bufferedOrder.time}")
                     } else {
                         log.debug("applying : ${bufferedOrder.time}")

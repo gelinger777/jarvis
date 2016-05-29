@@ -2,6 +2,7 @@ package common.global
 
 import com.google.protobuf.MessageOrBuilder
 import com.google.protobuf.util.JsonFormat
+import common.Orderbook
 import io.grpc.stub.StreamObserver
 import proto.bitfinex.ProtoBitfinex.BitfinexConfig
 import proto.common.*
@@ -70,6 +71,16 @@ fun String.asPair(): Pair {
             base = matcher.group(1),
             quote = matcher.group(2)
     )
+}
+
+fun List<Order>.asMap(): MutableMap<Double, Order> {
+    val map = mutableMapOf<Double, Order>()
+    this.forEach { map.put(it.price, it) }
+    return map
+}
+
+fun Orderbook.all(): List<Order> {
+    return bids + asks
 }
 
 fun Pair.asFolderName(): String {

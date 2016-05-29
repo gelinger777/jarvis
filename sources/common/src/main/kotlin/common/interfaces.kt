@@ -2,6 +2,7 @@ package common
 
 import proto.common.*
 import rx.Observable
+import util.app
 
 interface IExchange {
 
@@ -29,13 +30,18 @@ interface IMarket {
 
 }
 
+/**
+ * Immutable representation of an orderbook.
+ */
+data class Orderbook(
+        val bids: List<Order> = emptyList(),
+        val asks: List<Order> = emptyList(),
+        val time: Long = app.time()
+)
+
 interface IOrderBook {
 
-    fun accept(order : Order)
-
-    fun bids(): List<Order>
-
-    fun asks(): List<Order>
+    fun snapshot(): Orderbook
 
 }
 
@@ -58,7 +64,7 @@ interface ICollector {
 
     fun streamTrades(request: StreamTradesReq): Observable<Trade>
 
-    fun streamOrders(request: StreamOrdersReq) : Observable<Order>
+    fun streamOrders(request: StreamOrdersReq): Observable<Order>
 
     fun recordTrades(request: RecordTradesReq): RecordTradesResp
 
@@ -66,5 +72,5 @@ interface ICollector {
 
     fun streamHistoricalTrades(request: StreamHistoricalTradesReq): Observable<Trade>
 
-    fun streamHistoricalOrders(request: StreamHistoricalOrdersReq) : Observable<Order>
+    fun streamHistoricalOrders(request: StreamHistoricalOrdersReq): Observable<Order>
 }
