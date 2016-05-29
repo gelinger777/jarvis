@@ -2,13 +2,13 @@ current tasks:
  ✔ fix project inconsistency @done (16-05-22 15:42)
  ☐ add 5 more clients to top volume exchanges
    ✔ bitfinex @done (16-05-27 23:12)
-   ☐ bitstamp
-   ☐ coinbase
-   ☐ btce
+   ☐ bitstamp (in progress)
+   ☐ coinbase (cant access)
+   ☐ btce      
    ☐ itbit
    ☐ kraken
  ☐ Host Collectors
-   ☐ digitalocean.com     // the actuall collector execution
+   ☐ digitalocean.com     // the actual collector execution
    ☐ s3for.me             // storage for historical data
 
  ☐ protobuf/grpc compilation to Java/C#/Node

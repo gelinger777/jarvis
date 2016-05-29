@@ -231,8 +231,6 @@ project(":eventstore-server") {
         // chronicle
         compile 'net.openhft:chronicle-queue:4.3.2'
     }
-
-
 }
 
 // User Interface================================================================================
@@ -250,46 +248,58 @@ project(":visual") {
     dependencies {
         compile project(":common")
         compile project(":eventstore-client")
-        compile project(":bitfinex-collector-client")
+        compile project(":collector-client")
     }
-
 }
 
 // Clients ======================================================================================
 
 project(":bitfinex-client") {
-    description = "[lib] Bitfinex client library to work with bitfinex exchange."
+    description = "[lib] Client library to work with Bitfinex exchange."
 
     dependencies {
         compile project(":common")
     }
-
 }
 
 
 project(":bitstamp-client") {
-    description = "[lib] Bitstamp client library to work with bitstamp exchange."
+    description = "[lib] Client library to work with Bitstamp exchange."
 
     dependencies {
         compile project(":common")
     }
+}
 
+project(":coinbase-client") {
+    description = "[lib] Client library to work with Coinbase exchange."
+
+    dependencies {
+        compile project(":common")
+    }
+}
+
+project(":btce-client") {
+    description = "[lib] Client library to work with Btce exchange."
+
+    dependencies {
+        compile project(":common")
+    }
 }
 
 // Collectors ===================================================================================
 
 
-project(":bitfinex-collector-client") {
+project(":collector-client") {
 
-    description = "[lib] Bitfinex collector client library allows to connect and work with collector service."
+    description = "[lib] Collector client library that allows to connect and work with collector services."
 
     dependencies {
         compile project(":common")
     }
-
 }
 
-project(":bitfinex-collector-server") {
+project(":bitfinex-collector") {
     apply plugin: 'application'
     mainClassName = "collector.bitfinex.RunBitfinexCollectorServerKt"
 
@@ -307,7 +317,6 @@ project(":bitfinex-collector-server") {
         compile project(":bitfinex-client")
         compile project(":eventstore-client")
     }
-
 }
 
 
