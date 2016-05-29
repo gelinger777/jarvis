@@ -19,14 +19,6 @@ internal class Market(val exchange: Bitstamp, val pair: Pair) : IMarket {
 
     val book = AggregatedOrderbook()
 
-
-    init {
-
-
-
-
-    }
-
     override fun exchange(): IExchange {
         return exchange
     }

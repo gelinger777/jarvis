@@ -146,22 +146,22 @@ public final class MutableOption<T> {
   }
 
   /**
+   * If not present execute action.
+   */
+  public MutableOption<T> ifNotPresent(Runnable action) {
+    if (value == null) {
+      action.run();
+    }
+    return this;
+  }
+
+  /**
    * Throw exception if value is not present.
    */
   public <X extends Throwable> MutableOption<T> ifNotPresentThrow(Supplier<? extends X> exceptionSupplier)
       throws X {
     if (value == null) {
       throw exceptionSupplier.get();
-    }
-    return this;
-  }
-
-  /**
-   * If not present execute action.
-   */
-  public MutableOption<T> ifNotPresent(Runnable action) {
-    if (value == null) {
-      action.run();
     }
     return this;
   }

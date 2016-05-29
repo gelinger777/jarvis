@@ -1,5 +1,6 @@
 package util
 
+import util.global.wtf
 import java.util.function.Consumer
 
 @Suppress("UNCHECKED_CAST")
@@ -116,6 +117,11 @@ class Option<T>(private val value: T?) {
         return this
     }
 
+    fun ifNotPresentWTF(): Option<T> {
+        wtf("option should not be empty")
+        return this
+    }
+
     // equals, hashcode and toString (these are delegated to actual value)
 
     override fun equals(other: Any?): Boolean {
@@ -156,5 +162,6 @@ class Option<T>(private val value: T?) {
         @JvmStatic fun <T> ofNullable(value: T?): Option<T> {
             return Option(value)
         }
+
     }
 }

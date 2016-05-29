@@ -1,26 +1,31 @@
 package btce
 
-import btce.internal.parsePairs
+import btce.internal.pollPairs
 import common.IAccount
 import common.IExchange
 import common.IMarket
 import proto.bitfinex.ProtoBtce.BtceConfig
 import proto.common.Pair
+import util.global.computeIfAbsent
+import util.global.condition
+import util.global.logger
 
 class Btce(val config : BtceConfig) : IExchange {
+    internal val log by logger("btce")
+
+    internal val markets = mutableMapOf<Pair, Market>()
+
     override fun name(): String {
         return "BTCE"
     }
 
     override fun pairs(): List<Pair> {
-        return util.net.http.get("https://btc-e.com/api/3/info")
-                .map { parsePairs(it) }
-                .ifNotPresentCompute { emptyList() }
-                .get()
+        return pollPairs()
     }
 
     override fun market(pair: Pair): IMarket {
-        throw UnsupportedOperationException()
+        condition(pairs().contains(pair))
+        return markets.computeIfAbsent(pair, { Market(this, it) })
     }
 
     override fun account(): IAccount {
