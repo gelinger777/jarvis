@@ -9,6 +9,6 @@ internal fun main(args: Array<String>) {
             .ifPresent {
                 it.all().forEach { println(it.json()) }
             }
-    .ifNotPresentWTF() // todo im here
+    .ifNotPresentWTF()
 
 }

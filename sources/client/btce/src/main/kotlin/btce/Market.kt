@@ -23,7 +23,8 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
         RefCountSchTask(
                 name = "orderbook-poller:${exchange.name()}|${pair.asKey()}",
                 task = {
-                    book.accept(pollOrders())
+                    pollOrders(pair)
+                    .ifPresent { book.accept(it) }
                 },
                 delay = 500
         )

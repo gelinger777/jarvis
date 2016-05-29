@@ -10,7 +10,7 @@ import util.global.computeIfAbsent
 import util.global.condition
 import util.global.logger
 
-class Btce(val config : BtceConfig) : IExchange {
+class Btce(val config: BtceConfig) : IExchange {
     internal val log by logger("btce")
 
     internal val markets = mutableMapOf<Pair, Market>()
@@ -20,7 +20,7 @@ class Btce(val config : BtceConfig) : IExchange {
     }
 
     override fun pairs(): List<Pair> {
-        return pollPairs()
+        return pollPairs().ifNotPresentCompute { emptyList() }.get()
     }
 
     override fun market(pair: Pair): IMarket {
