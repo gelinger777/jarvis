@@ -2,6 +2,7 @@ package bitstamp.internal
 
 import common.AggregatedOrderbook
 import common.OrderStreamSync
+import common.global.all
 import common.global.json
 import common.global.pair
 

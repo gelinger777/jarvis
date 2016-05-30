@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 option java_outer_classname = "ProtoBitfinex";
 
 package proto.bitfinex;
@@ -8,28 +8,28 @@ import "event-store.proto";
 
 
 message BitfinexConfig {
-    string wsURL = 1;
-    string publicKey = 2;
-    string privateKey = 3;
+    required string wsURL = 1;
+    required string publicKey = 2;
+    required string privateKey = 3;
 }
 
 message BitfinexCollectorConfig {
-    proto.common.ServiceAddress eventStoreConfig = 1;
-    int32 port = 2;
-    BitfinexConfig bitfinexConfig = 3;
+    required proto.common.ServiceAddress eventStoreConfig = 1;
+    required int32 port = 2;
+    required BitfinexConfig bitfinexConfig = 3;
     repeated proto.common.Pair trades = 4;
     repeated proto.common.Pair orders = 5;
 }
 
-message Order {
-    enum Side {
-        BID = 0;
-        ASK = 1;
-    }
-
-    int64 time = 1;
-    int64 id = 2;
-    double price = 3;
-    double volume = 4;
-    Side side = 5;
-}
+//message Order {
+//    enum Side {
+//        BID = 0;
+//        ASK = 1;
+//    }
+//
+//    required int64 time = 1;
+//    required int64 id = 2;
+//    required double price = 3;
+//    required double volume = 4;
+//    required Side side = 5;
+//}

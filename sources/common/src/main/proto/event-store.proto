@@ -1,74 +1,79 @@
-syntax = "proto3";
+syntax = "proto2";
 option java_outer_classname = "ProtoES";
 
 package proto.eventstore;
 
-service EventStore{
+service EventStore {
 
-    rpc info(InfoReq) returns (InfoResp){}
+    rpc info (InfoReq) returns (InfoResp) {
+    }
 
-    rpc write(WriteReq) returns (WriteResp){}
+    rpc write (WriteReq) returns (WriteResp) {
+    }
 
-    rpc read(ReadReq) returns (stream DataResp){}
+    rpc read (ReadReq) returns (stream DataResp) {
+    }
 
-    rpc stream(StreamReq) returns (stream DataResp){}
+    rpc stream (StreamReq) returns (stream DataResp) {
+    }
 
-    rpc delete(DelReq) returns (DelResp){}
+    rpc delete (DelReq) returns (DelResp) {
+    }
 }
 
-message InfoReq{
-    string path = 1; // leave blank for all streams
+message InfoReq {
+    required string path = 1; // leave blank for all streams
 }
 
-message InfoResp{
+message InfoResp {
     repeated StreamInfo streams = 1;
 }
 
-message StreamInfo{
-    string path = 1;
-    int64 size = 2;
-    int64 length = 3;
+message StreamInfo {
+    required string path = 1;
+    required int64 size = 2;
+    required int64 length = 3;
 }
 
-message WriteReq{
-    string path = 1;
+message WriteReq {
+    optional string path = 1;
     repeated bytes data = 2;
 }
 
-message WriteResp{
-    bool success = 1;
-    string error = 2;
+message WriteResp {
+    required bool success = 1;
+    optional string error = 2;
 }
 
-message ReadReq{
-    string path = 1;
-    int64 start = 2;
-    int64 end = 3;
+message ReadReq {
+    required string path = 1;
+    optional int64 start = 2;
+    optional int64 end = 3;
 }
-message StreamReq{
-    string path = 1;
+message StreamReq {
+    required string path = 1;
 }
 
-message DataResp{
-    bool success = 1;
+message DataResp {
+    required bool success = 1;
     repeated Event events = 2;
-    string error = 3;
+    optional string error = 3;
 }
 
-message Event{
-    int64 index = 1;
-    bytes data = 2;
+message Event {
+    required int64 index = 1;
+    required bytes data = 2;
 }
 
-message DelReq{
-    string changeMe = 1;
+message DelReq {
+    optional string changeMe = 1;
 }
 
-message DelResp{
-    string changeMe = 1;
+message DelResp {
+    optional string changeMe = 1;
 }
 
-message EventStoreConfig{
-    string path = 1;
-    int32 port = 2;
+message EventStoreConfig {
+    required string path = 1;
+    required int32 port = 2;
 }
