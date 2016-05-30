@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 class RefCountSchTask(
         private val name: String,
         private val task: () -> Unit,
-        private val delay: Long,
+        private @Volatile var delay: Long,
         private val terminationTimeout: Long = 10000) {
 
     private val scheduledTask = {
@@ -36,15 +36,15 @@ class RefCountSchTask(
         refCountTask.decrement()
     }
 
-    fun forceStart(){
+    fun forceStart() {
         refCountTask.forceStart()
     }
 
-    fun forceStop(){
+    fun forceStop() {
         refCountTask.forceStop()
     }
 
-    fun isStarted():Boolean{
+    fun isStarted(): Boolean {
         return refCountTask.isStarted()
     }
 
@@ -58,6 +58,10 @@ class RefCountSchTask(
 
     fun isCurrentThread(): Boolean {
         return refCountTask.isCurrentThread()
+    }
+
+    fun delay(delay: Long) {
+        this.delay = delay
     }
 
 }
