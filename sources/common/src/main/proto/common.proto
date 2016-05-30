@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 option java_multiple_files = true;
 option java_outer_classname = "ProtobufCommon";
 
@@ -42,7 +42,7 @@ message CollInfoReq {
         CURRENT_STREAMS = 2;
         CURRENT_RECORDINGS = 3;
     }
-    Type type = 1;
+    required Type type = 1;
 }
 
 message CollInfoResp {
@@ -52,43 +52,41 @@ message CollInfoResp {
 }
 
 message StreamTradesReq {
-    Pair pair = 1;
+    required Pair pair = 1;
 }
-
 
 message StreamOrdersReq {
-    Pair pair = 1;
+    required Pair pair = 1;
 }
 
-
 message RecordTradesReq {
-    Pair pair = 1;
+    required Pair pair = 1;
 }
 
 message RecordTradesResp {
-    bool success = 1;
-    string error = 2;
+    required bool success = 1;
+    optional string error = 2;
 }
 
 message RecordOrdersReq {
-    Pair pair = 1;
+    required Pair pair = 1;
 }
 
 message RecordOrdersResp {
-    bool success = 1;
-    string error = 2;
+    required bool success = 1;
+    optional string error = 2;
 }
 
 message StreamHistoricalTradesReq {
-    Pair pair = 1;
-    int64 startIndex = 2;
-    int64 endIndex = 3;
+    required Pair pair = 1;
+    optional int64 startIndex = 2;
+    optional int64 endIndex = 3;
 }
 
 message StreamHistoricalOrdersReq {
-    Pair pair = 1;
-    int64 startIndex = 2;
-    int64 endIndex = 3;
+    required Pair pair = 1;
+    optional int64 startIndex = 2;
+    optional int64 endIndex = 3;
 }
 
 // ---------------------------------------------------------------------------
@@ -96,12 +94,12 @@ message StreamHistoricalOrdersReq {
 // ---------------------------------------------------------------------------
 
 message Currency {
-    string symbol = 1;
+    required string symbol = 1;
 }
 
 message Pair {
-    Currency base = 1;
-    Currency quote = 2;
+    required Currency base = 1;
+    required Currency quote = 2;
 }
 
 message Order {
@@ -110,16 +108,16 @@ message Order {
         ASK = 1;
     }
 
-    int64 time = 1;
-    double price = 2;
-    double volume = 3;
-    Side side = 4;
+    required int64 time = 1;
+    required double price = 2;
+    required double volume = 3;
+    required Side side = 4;
 }
 
 message Trade {
-    int64 time = 1;
-    double price = 2;
-    double volume = 3;
+    required int64 time = 1;
+    required double price = 2;
+    required double volume = 3;
 }
 
 // ---------------------------------------------------------------------------
@@ -127,40 +125,39 @@ message Trade {
 // ---------------------------------------------------------------------------
 
 message OHLC {
-    double open = 1;
-    double high = 2;
-    double low = 3;
-    double close = 4;
-    double vol = 5;
-    int64 start = 6;
-    int64 end = 7;
+    required double open = 1;
+    required double high = 2;
+    required double low = 3;
+    required double close = 4;
+    required double vol = 5;
+    required int64 start = 6;
+    required int64 end = 7;
 }
 
 // simple moving average
 message SMA {
-    double price = 1;
-    int64 start = 2;
-    int64 end = 3;
+    required double price = 1;
+    required int64 start = 2;
+    required int64 end = 3;
 }
 
 // exponential moving average
 message EMA {
-    double averagePrice = 1;
-    int64 start = 2;
-    int64 end = 3;
-    bool completed = 4;
+    required double averagePrice = 1;
+    required int64 start = 2;
+    required int64 end = 3;
+    required bool completed = 4;
 }
 
-message MACD{
-
+message MACD {
+    required string placeholder = 1 [default = "todo"];
 }
 
 // ---------------------------------------------------------------------------
 // configuration types
 // ---------------------------------------------------------------------------
 
-
 message ServiceAddress {
-    string host = 1;
-    int32 port = 2;
+    required string host = 1;
+    required int32 port = 2;
 }

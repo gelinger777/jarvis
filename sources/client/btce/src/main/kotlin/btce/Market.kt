@@ -5,11 +5,13 @@ import common.DiffAggregatedOrderbook
 import common.IExchange
 import common.IMarket
 import common.IOrderBook
+import common.global.all
 import common.global.asKey
 import proto.common.Order
 import proto.common.Pair
 import proto.common.Trade
 import rx.Observable
+import util.global.condition
 import util.misc.RefCountSchTask
 
 internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
@@ -18,11 +20,20 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
     val orderFetcher = RefCountSchTask(
             name = "orderbook-poller:${exchange.name()}|${pair.asKey()}",
             task = {
-                pollOrders(pair)
-                        .ifPresent { book.accept(it) }
+                println("--------------------------------------------")
+                pollOrders(pair).ifPresent {
+                    val all = it.all()
+                    book.accept(it)
+
+                    println("verifying")
+
+                    condition(book.snapshot().all().size == all.size)
+                }
+
             },
             delay = 500
     )
+
     init {
 
         // start polling task for orderbook

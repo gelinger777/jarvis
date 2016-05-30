@@ -8,7 +8,7 @@ import util.MutableOption
 import util.Option
 import util.cpu
 
-internal fun main(args: Array<String>) {
+private fun main(args: Array<String>) {
 
     val option = MutableOption.empty<Orderbook>()
 
@@ -58,6 +58,6 @@ internal fun main(args: Array<String>) {
 
 }
 
-internal fun ord(time: Long): Order {
+private fun ord(time: Long): Order {
     return order(Order.Side.ASK, 450.0, 10.0, time)
 }

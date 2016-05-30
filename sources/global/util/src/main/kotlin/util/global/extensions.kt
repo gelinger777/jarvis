@@ -149,7 +149,7 @@ fun <K, V> Map<K, V>.getMandatory(key: K): V {
     return this[key] ?: whatever { wtf("nothing found for [$key]") }
 }
 
-fun <K, V> Map<K, V>.notContains(key: K): Boolean {
+fun <K, V> Map<K, V>.notContainsKey(key: K): Boolean {
     return !this.containsKey(key)
 }
 

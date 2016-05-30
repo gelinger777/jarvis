@@ -7,7 +7,7 @@ import common.global.order
 import proto.common.Order.Side.ASK
 import proto.common.Order.Side.BID
 
-internal fun main(args: Array<String>) {
+private fun main(args: Array<String>) {
     val book = DiffAggregatedOrderbook()
 
     book.stream.subscribe { println(it.json()) }

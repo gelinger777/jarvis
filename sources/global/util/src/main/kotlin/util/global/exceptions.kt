@@ -4,7 +4,7 @@ import util.Option
 import util.app
 import java.util.concurrent.Callable
 
-
+// todo refactor exception handling (direct kill vs subscribed callback killer)
 /**
  * WTFException represents an unrecoverable error, a logical error that is not considered to ever happen in the system.
  */

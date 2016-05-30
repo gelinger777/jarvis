@@ -4,8 +4,9 @@ import common.global.asMap
 import proto.common.Order
 import rx.Observable
 import rx.subjects.PublishSubject
-import util.global.getOptional
-import util.global.notImplemented
+import util.app
+import util.global.notContainsKey
+import util.global.removeAndGetMandatory
 import java.util.*
 
 
@@ -24,43 +25,40 @@ class DiffAggregatedOrderbook : IOrderBook {
     }
 
     private fun diff(book: TreeMap<Double, Order>, newBook: MutableMap<Double, Order>) {
-        book.values.forEach { currentOrder ->
-            newBook.getOptional(currentOrder.price)
-                    .ifPresent { newOrder ->
-                        newBook.remove(newOrder.price)
+        // removals
+        book.keys.filter { newBook.notContainsKey(it) }.toList()
+                .forEach {
+                    val removed = book.removeAndGetMandatory(it)
+                    stream.onNext(removed.toBuilder().setVolume(0.0).build())
+                }
 
-                        // if was edited
-                        if (newOrder.volume != currentOrder.volume) {
-                            // modify current book
-                            book.put(newOrder.price, newOrder)
+        // additions and modifications
+        newBook.forEach {
+            val price = it.key
+            val order = it.value
 
-                            // emit edited order
-                            stream.onNext(newOrder)
-                        } else {
-                            // order was not changed
-                        }
-                    }
-                    .ifNotPresent {
-                        // remove from current book
-                        book.remove(currentOrder.price)
+            val existing = book[price]
 
-                        // emit cancellation
-                        stream.onNext(currentOrder.toBuilder().setVolume(0.0).build())
-                    }
-        }
-
-        newBook.values.forEach {
-            book.put(it.price, it)
-            stream.onNext(it)
+            if(existing != null && existing.volume == order.volume){
+                // order remained unchanged
+            }else{
+                // order was either added or modified
+                book.put(order.price, order)
+                stream.onNext(order)
+            }
         }
 
     }
 
     override fun snapshot(): Orderbook {
-        throw UnsupportedOperationException()
+        return Orderbook(
+                bids = bids.map { it.value }.toList(),
+                asks = asks.map { it.value }.toList(),
+                time = app.time()
+        )
     }
 
     fun stream(): Observable<Order> {
-        return notImplemented()
+        return stream
     }
 }
