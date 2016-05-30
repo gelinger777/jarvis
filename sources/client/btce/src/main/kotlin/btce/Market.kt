@@ -15,19 +15,19 @@ import util.misc.RefCountSchTask
 internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
 
     val book = DiffAggregatedOrderbook()
-
+    val orderFetcher = RefCountSchTask(
+            name = "orderbook-poller:${exchange.name()}|${pair.asKey()}",
+            task = {
+                pollOrders(pair)
+                        .ifPresent { book.accept(it) }
+            },
+            delay = 500
+    )
     init {
 
         // start polling task for orderbook
+        orderFetcher.forceStart()
 
-        RefCountSchTask(
-                name = "orderbook-poller:${exchange.name()}|${pair.asKey()}",
-                task = {
-                    pollOrders(pair)
-                    .ifPresent { book.accept(it) }
-                },
-                delay = 500
-        )
 
         // start polling task for trades
 
