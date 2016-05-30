@@ -1,13 +1,8 @@
 package common
 
-import common.global.asMap
+import common.internal.diff
 import proto.common.Order
 import rx.Observable
-import rx.subjects.PublishSubject
-import util.app
-import util.global.notContainsKey
-import util.global.removeAndGetMandatory
-import java.util.*
 
 
 /**
@@ -15,50 +10,19 @@ import java.util.*
  */
 class DiffAggregatedOrderbook : IOrderBook {
 
-    internal val bids = TreeMap<Double, Order>(Comparator { o1, o2 -> o2.compareTo(o1) })
-    internal val asks = TreeMap<Double, Order>(Comparator { o1, o2 -> o1.compareTo(o2) })
-    internal val stream = PublishSubject.create<Order>()
+    internal val book = AggregatedOrderbook()
 
     fun accept(snapshot: Orderbook) {
-        diff(bids, snapshot.bids.asMap())
-        diff(asks, snapshot.asks.asMap())
-    }
-
-    private fun diff(book: TreeMap<Double, Order>, newBook: MutableMap<Double, Order>) {
-        // removals
-        book.keys.filter { newBook.notContainsKey(it) }.toList()
-                .forEach {
-                    val removed = book.removeAndGetMandatory(it)
-                    stream.onNext(removed.toBuilder().setVolume(0.0).build())
-                }
-
-        // additions and modifications
-        newBook.forEach {
-            val price = it.key
-            val order = it.value
-
-            val existing = book[price]
-
-            if(existing != null && existing.volume == order.volume){
-                // order remained unchanged
-            }else{
-                // order was either added or modified
-                book.put(order.price, order)
-                stream.onNext(order)
-            }
-        }
-
+        // calculate difference and apply
+        book.bids.diff(snapshot.bids).forEach { book.accept(it) }
+        book.asks.diff(snapshot.asks).forEach { book.accept(it) }
     }
 
     override fun snapshot(): Orderbook {
-        return Orderbook(
-                bids = bids.map { it.value }.toList(),
-                asks = asks.map { it.value }.toList(),
-                time = app.time()
-        )
+        return book.snapshot()
     }
 
-    fun stream(): Observable<Order> {
-        return stream
+    override fun stream(): Observable<Order> {
+        return book.stream
     }
 }

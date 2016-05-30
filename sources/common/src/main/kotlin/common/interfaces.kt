@@ -41,7 +41,13 @@ data class Orderbook(
 
 interface IOrderBook {
 
+//    fun bids(): List<Order>
+//
+//    fun asks(): List<Order>
+
     fun snapshot(): Orderbook
+
+    fun stream(): Observable<Order>
 
 }
 

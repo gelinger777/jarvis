@@ -7,10 +7,10 @@ import common.global.order
 import proto.common.Order.Side.ASK
 import proto.common.Order.Side.BID
 
-private fun main(args: Array<String>) {
+internal fun main(args: Array<String>) {
     val book = DiffAggregatedOrderbook()
 
-    book.stream.subscribe { println(it.json()) }
+    book.stream().subscribe { println(it.json()) }
 
     book.accept(
             Orderbook(

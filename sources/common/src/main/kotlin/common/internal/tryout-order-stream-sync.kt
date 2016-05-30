@@ -8,7 +8,7 @@ import util.MutableOption
 import util.Option
 import util.cpu
 
-private fun main(args: Array<String>) {
+internal fun main(args: Array<String>) {
 
     val option = MutableOption.empty<Orderbook>()
 
