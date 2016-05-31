@@ -93,7 +93,7 @@ fun Pair.asKey(): String {
 }
 
 /**
- * Convert to single line json representation
+ * Convert to json
  */
 fun MessageOrBuilder.json(pretty: Boolean = false): String {
     val json = JsonFormat.printer().print(this)
