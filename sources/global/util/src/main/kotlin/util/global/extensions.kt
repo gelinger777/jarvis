@@ -82,6 +82,10 @@ fun <T> Observable<out Collection<T>>.unpack(): Observable<T> {
     })
 }
 
+fun <T> Observable<Option<T>>.filterOptions(): Observable<T> {
+    return this.filter { it.isPresent() }.map { it.get() }
+}
+
 /**
  * Create GRPC compatible StreamObserver which will delegate all calls to this subject.
  */

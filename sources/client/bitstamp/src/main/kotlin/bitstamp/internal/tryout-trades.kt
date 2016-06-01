@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
 
     Bitstamp(ProtoBitstamp.BitstampConfig.getDefaultInstance())
             .market(pair("btc", "usd"))
-            .orders()
+            .trades()
             .map { it.compact(showTime = true) }
             .subscribe { println(it) }
 

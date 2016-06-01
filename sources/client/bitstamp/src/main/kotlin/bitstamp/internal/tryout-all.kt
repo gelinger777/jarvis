@@ -6,13 +6,18 @@ import common.global.pair
 import proto.bitfinex.ProtoBitstamp
 
 fun main(args: Array<String>) {
-
-
-    Bitstamp(ProtoBitstamp.BitstampConfig.getDefaultInstance())
+    val market = Bitstamp(ProtoBitstamp.BitstampConfig.getDefaultInstance())
             .market(pair("btc", "usd"))
+
+    market
             .orders()
             .map { it.compact(showTime = true) }
-            .subscribe { println(it) }
+            .subscribe { println("ORDER : " + it) }
+
+    market
+            .trades()
+            .map { it.compact(showTime = true) }
+            .subscribe { println("TRADE : " + it) }
 
 
     readLine()

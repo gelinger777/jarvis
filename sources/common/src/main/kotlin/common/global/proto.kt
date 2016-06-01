@@ -96,6 +96,14 @@ fun Pair.compact(): String {
     return "${base.symbol}|${quote.symbol}"
 }
 
+fun Trade.compact(showTime: Boolean = false):String{
+    if(showTime) {
+        return "${time.dateTime()} - ${price.roundDown3()}|${volume.roundDown3()}"
+    }else{
+        return "${price.roundDown3()}|${volume.roundDown3()}"
+    }
+}
+
 fun Order.compact(showTime: Boolean = false): String {
 
     if (showTime) {
@@ -118,7 +126,7 @@ fun Double.roundDown7(): Double {
 }
 
 fun Long.dateTime(): String {
-    return DateTimeFormatter.ofPattern("YYY MMM dd, HH:mm:ss").format(ZonedDateTime.ofInstant (Instant.ofEpochMilli(this), ZoneOffset.UTC))
+    return DateTimeFormatter.ofPattern("YYY-MM-dd HH:mm:ss").format(ZonedDateTime.ofInstant (Instant.ofEpochMilli(this), ZoneOffset.UTC))
 }
 
 //fun main(args: Array<String>) {
