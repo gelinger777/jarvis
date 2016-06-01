@@ -1,9 +1,9 @@
 package bitstamp
 
-import common.AggregatedOrderbook
-import common.IExchange
-import common.IMarket
-import common.IOrderBook
+import bitstamp.internal.getOrderbookSnapshot
+import bitstamp.internal.parseOrdersFromDiff
+import common.*
+import common.global.all
 import proto.common.Order
 import proto.common.Pair
 import proto.common.Trade
@@ -19,6 +19,22 @@ internal class Market(val exchange: Bitstamp, val pair: Pair) : IMarket {
 
     val book = AggregatedOrderbook()
 
+    init {
+        // synchronization utility to match snapshots with realtime stream
+        val sync = OrderStreamSync(
+                fetcher = { getOrderbookSnapshot(pair) }, // snapshot callback
+                delay = 3000
+        );
+
+        // start realtime stream
+        util.net.pusher.stream("de504dc5763aeef9ff52", "diff_order_book", "data")
+                .map { parseOrdersFromDiff(it) }
+                .subscribe { it.all().forEach { sync.next(it) } }
+
+        // sending synchronized orders to book
+        sync.stream.subscribe { book.accept(it) }
+    }
+
     override fun exchange(): IExchange {
         return exchange
     }
@@ -32,7 +48,7 @@ internal class Market(val exchange: Bitstamp, val pair: Pair) : IMarket {
     }
 
     override fun orders(): Observable<Order> {
-        return orders
+        return book.stream()
     }
 
     override fun trades(): Observable<Trade> {

@@ -19,6 +19,7 @@ fun main(args: Array<String>) {
             .subscribe { it.all().forEach { sync.next(it) } }
 
     val book = AggregatedOrderbook()
+
     sync.stream.subscribe { book.accept(it) }
     sync.stream.subscribe { println(it.json()) }
 

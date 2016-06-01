@@ -96,13 +96,25 @@ fun Pair.compact(): String {
     return "${base.symbol}|${quote.symbol}"
 }
 
-fun Order.compact(showTime : Boolean = false): String {
+fun Order.compact(showTime: Boolean = false): String {
 
-    if(showTime){
-        return "${time.dateTime()} - $side|$price|$volume"
-    }else{
-        return "$side|$price|$volume"
+    if (showTime) {
+        return "${time.dateTime()} - $side|${price.roundDown3()}|${volume.roundDown3()}"
+    } else {
+        return "$side|${price.roundDown3()}|${volume.roundDown3()}"
     }
+}
+
+fun Double.roundDown3(): Double {
+    return Math.floor(this * 1e3) / 1e3
+}
+
+fun Double.roundDown5(): Double {
+    return Math.floor(this * 1e5) / 1e5
+}
+
+fun Double.roundDown7(): Double {
+    return Math.floor(this * 1e7) / 1e7
 }
 
 fun Long.dateTime(): String {
