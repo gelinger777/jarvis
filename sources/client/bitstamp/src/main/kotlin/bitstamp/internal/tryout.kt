@@ -22,6 +22,5 @@ fun main(args: Array<String>) {
     sync.stream.subscribe { book.accept(it) }
     sync.stream.subscribe { println(it.json()) }
 
-
     readLine()
 }

@@ -5,8 +5,7 @@ import common.global.asMap
 import proto.common.Order
 import util.global.getMandatory
 import util.global.notContainsKey
-import util.global.whatever
-import util.global.wtf
+import util.global.report
 import java.util.*
 
 internal fun Order.isCanceled(): Boolean {
@@ -17,7 +16,7 @@ internal fun AggregatedOrderbook.remove(order: Order) {
     val book = book(order.side)
 
     if (!book.containsKey(order.price)) {
-        wtf("book should have an order with price : ${order.price}")
+        report("book should have an order with price : ${order.price}")
     }
 
     book.remove(order.price)
@@ -31,7 +30,6 @@ internal fun AggregatedOrderbook.book(side: Order.Side): TreeMap<Double, Order> 
     when (side) {
         Order.Side.ASK -> return asks
         Order.Side.BID -> return bids
-        else -> return whatever { wtf("this shouldn't happen") }
     }
 }
 

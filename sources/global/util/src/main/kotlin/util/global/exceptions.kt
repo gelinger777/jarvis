@@ -62,7 +62,7 @@ fun wtf(cause: Throwable, message: String) {
 /**
  * Logs an exception to general error log and returns without throwing it further.
  */
-fun report(cause: Throwable, message: String = "unexpected exception"): Throwable {
+fun report(cause: Throwable): Throwable {
     app.reportedErrors.onNext(cause)
     return cause
 }
@@ -71,7 +71,7 @@ fun report(cause: Throwable, message: String = "unexpected exception"): Throwabl
  * Logs an exception to general error log and returns without throwing it further.
  */
 fun report(message: String): Throwable {
-    return report(RuntimeException(message), message)
+    return report(RuntimeException(message))
 }
 
 private fun reportAndKill(cause: Throwable) {

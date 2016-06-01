@@ -7,6 +7,10 @@ import io.grpc.stub.StreamObserver
 import proto.bitfinex.ProtoBitfinex.BitfinexConfig
 import proto.common.*
 import util.global.condition
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Pattern
 
@@ -75,7 +79,7 @@ fun String.asPair(): Pair {
 
 fun List<Order>.asMap(): MutableMap<Double, Order> {
     val map = mutableMapOf<Double, Order>()
-    this.forEach { map.put(it.price, it) }
+    forEach { map.put(it.price, it) }
     return map
 }
 
@@ -85,12 +89,29 @@ fun Orderbook.all(): List<Order> {
 
 fun Pair.asFolderName(): String {
     // btc-usd
-    return "${this.base.symbol.toLowerCase()}-${this.quote.symbol.toLowerCase()}"
+    return "${base.symbol.toLowerCase()}-${quote.symbol.toLowerCase()}"
 }
 
-fun Pair.asKey(): String {
-    return "${this.base.symbol}|${this.quote.symbol}"
+fun Pair.compact(): String {
+    return "${base.symbol}|${quote.symbol}"
 }
+
+fun Order.compact(showTime : Boolean = false): String {
+
+    if(showTime){
+        return "${time.dateTime()} - $side|$price|$volume"
+    }else{
+        return "$side|$price|$volume"
+    }
+}
+
+fun Long.dateTime(): String {
+    return DateTimeFormatter.ofPattern("YYY MMM dd, HH:mm:ss").format(ZonedDateTime.ofInstant (Instant.ofEpochMilli(this), ZoneOffset.UTC))
+}
+
+//fun main(args: Array<String>) {
+//    order(Order.Side.BID, 405.0, 10.2).compact(true).apply { println(this) }
+//}
 
 /**
  * Convert to json
@@ -149,5 +170,5 @@ fun respondRecordOrders(observer: StreamObserver<RecordOrdersResp>, success: Boo
 }
 
 fun OHLC.haveSameTimeRange(other: OHLC): Boolean {
-    return this.start == other.start && this.end == other.end
+    return start == other.start && end == other.end
 }

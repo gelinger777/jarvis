@@ -6,7 +6,7 @@ import common.IExchange
 import common.IMarket
 import common.IOrderBook
 import common.global.all
-import common.global.asKey
+import common.global.compact
 import proto.common.Order
 import proto.common.Pair
 import proto.common.Trade
@@ -18,7 +18,7 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
 
     val book = DiffAggregatedOrderbook()
     val orderFetcher = RefCountSchTask(
-            name = "orderbook-poller:${exchange.name()}|${pair.asKey()}",
+            name = "orderbook-poller:${exchange.name()}|${pair.compact()}",
             task = {
                 println("--------------------------------------------")
                 pollOrders(pair).ifPresent {

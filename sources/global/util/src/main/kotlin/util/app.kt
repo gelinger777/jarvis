@@ -26,15 +26,15 @@ object app {
         when (profile) {
             "dev" -> {
                 onReportedFailure {
-                    log.info("REPORTED ERROR", it)
+                    exceptionLogger.info("REPORTED ERROR", it)
                 }
                 onUnrecoverableFailure {
-                    log.info("UNRECOVERABLE ERROR", it)
+                    exceptionLogger.info("UNRECOVERABLE ERROR", it)
                 }
             }
             "prod" -> {
                 onReportedFailure {
-                    log.info("REPORTED ERROR", it)
+                    exceptionLogger.info("REPORTED ERROR", it)
 
                     net.mail.send(
                             subject = "reported error",
@@ -43,7 +43,7 @@ object app {
                 }
 
                 onUnrecoverableFailure {
-                    log.info("UNRECOVERABLE ERROR", it)
+                    exceptionLogger.info("UNRECOVERABLE ERROR", it)
 
                     net.mail.send(
                             subject = "unrecoverable error",

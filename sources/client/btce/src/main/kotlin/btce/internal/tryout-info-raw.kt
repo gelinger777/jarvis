@@ -1,9 +1,9 @@
 package btce.internal
 
-import common.global.asKey
+import common.global.compact
 
 internal fun main(args: Array<String>) {
     pollPairs()
             .get()
-            .forEach { println(it.asKey()) }
+            .forEach { println(it.compact()) }
 }

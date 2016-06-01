@@ -2,7 +2,7 @@ package bitfinex.internal
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonParser
-import common.global.asKey
+import common.global.compact
 import common.global.asPair
 import common.global.order
 import common.global.trade
@@ -144,9 +144,9 @@ internal fun subscribeOrdersCommand(pair: Pair): String {
 // util
 
 internal fun Pair.asTradeKey(): String {
-    return "TRADE|${this.asKey()}";
+    return "TRADE|${this.compact()}";
 }
 
 internal fun Pair.asBookKey(): String {
-    return "BOOK|${this.asKey()}";
+    return "BOOK|${this.compact()}";
 }
