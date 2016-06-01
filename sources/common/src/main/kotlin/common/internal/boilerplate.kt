@@ -6,6 +6,7 @@ import proto.common.Order
 import util.global.getMandatory
 import util.global.notContainsKey
 import util.global.report
+import util.global.wth
 import java.util.*
 
 internal fun Order.isCanceled(): Boolean {
@@ -30,6 +31,7 @@ internal fun AggregatedOrderbook.book(side: Order.Side): TreeMap<Double, Order> 
     when (side) {
         Order.Side.ASK -> return asks
         Order.Side.BID -> return bids
+        else -> return wth()
     }
 }
 

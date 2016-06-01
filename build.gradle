@@ -290,6 +290,16 @@ project(":btce-client") {
 // Collectors ===================================================================================
 
 
+project(":collector-common") {
+
+    description = "[lib] Common collector functionality that is used by specific collector apps."
+
+    dependencies {
+        compile project(":common")
+        compile project(":eventstore-client")
+    }
+}
+
 project(":collector-client") {
 
     description = "[lib] Collector client library that allows to connect and work with collector services."
@@ -301,7 +311,7 @@ project(":collector-client") {
 
 project(":bitfinex-collector") {
     apply plugin: 'application'
-    mainClassName = "collector.bitfinex.RunBitfinexCollectorServerKt"
+    mainClassName = "collector.bitfinex.bitfinexCollectorKt"
 
     applicationDefaultJvmArgs = [
             '-DbitfinexCollectorConfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
@@ -311,11 +321,31 @@ project(":bitfinex-collector") {
 
     installDist.destinationDir = rootProject.file("dist/app/${project.name}")
 
-    description = "[app] Bitfinex collector server collects trade and orderbook data to a persistent store."
+    description = "[app] Collects trade and orderbook data for Bitfinex exchange."
 
     dependencies {
+        compile project(":collector-common")
         compile project(":bitfinex-client")
-        compile project(":eventstore-client")
+    }
+}
+
+project(":bitstamp-collector") {
+    apply plugin: 'application'
+    mainClassName = "collector.bitstamp.bitstampCollectorKt"
+
+//    applicationDefaultJvmArgs = [
+//            '-DbitfinexCollectorConfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
+//            '-DlogPath=/Users/vach/workspace/jarvis/dist/logs/bitfinex-collector',
+//            '-Dprofile=dev'
+//    ]
+
+    installDist.destinationDir = rootProject.file("dist/app/${project.name}")
+
+    description = "[app] Collects trade and orderbook data for Bitstamp exchange."
+
+    dependencies {
+        compile project(":collector-common")
+        compile project(":bitstamp-client")
     }
 }
 

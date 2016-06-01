@@ -15,6 +15,10 @@ fun <T> notImplemented(): T {
     return whatever { wtf("this shouldn't happen") }
 }
 
+fun <T> wth(): T {
+    return whatever { wtf("this code should be unreachable") }
+}
+
 fun <T> consumer(consumer: Consumer<T>): (T) -> Unit {
     return { value: T -> consumer.accept(value) }
 }

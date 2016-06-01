@@ -1,9 +1,7 @@
-
-import common.global.address
 import eventstore.client.EventStoreClient
 
 fun main(args: Array<String>) {
-    val esc = EventStoreClient(address("localhost", 9151))
+    val esc = EventStoreClient(host = "localhost", port = 9151)
 
     val es = esc.getStream("demo/test")
 

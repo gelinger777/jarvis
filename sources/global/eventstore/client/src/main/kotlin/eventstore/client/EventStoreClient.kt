@@ -1,15 +1,14 @@
 package eventstore.client
 
-import proto.common.ServiceAddress
 import proto.eventstore.EventStoreGrpc
 import util.global.computeIfAbsent
 import util.global.logger
 
-class EventStoreClient(val address : ServiceAddress) {
+class EventStoreClient(val host: String, val port: Int) {
 
     val log by logger("event-store-client")
 
-    val channel = util.net.grpc.channel(address.host, address.port)
+    val channel = util.net.grpc.channel(host, port)
     val asyncStub = EventStoreGrpc.newStub(channel)
     val blockStub = EventStoreGrpc.newBlockingStub(channel)
 

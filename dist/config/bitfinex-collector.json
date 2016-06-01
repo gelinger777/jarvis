@@ -1,27 +1,7 @@
 {
   "port": 9152,
-  "trades": [
-    {
-      "base": {
-        "symbol": "BTC"
-      },
-      "quote": {
-        "symbol": "USD"
-      }
-    }
-  ],
-  "orders": [
-    {
-      "base": {
-        "symbol": "BTC"
-      },
-      "quote": {
-        "symbol": "USD"
-      }
-    }
-  ],
   "bitfinexConfig": {
-    "websocketConnectionURL": "wss://api2.bitfinex.com:3000/ws",
+    "wsURL": "wss://api2.bitfinex.com:3000/ws",
     "publicKey": "8SOAdEL7gPLgB0zz7KiqdOqmIHMw5vfgRnVlFbytfKa",
     "privateKey": "a9pZv0zDvprfK0PvUF7wKZGzeU16m06ZvM7CHQRfncY"
   },

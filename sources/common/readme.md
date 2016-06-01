@@ -1,3 +1,3 @@
 # :common [lib]
 
-Contains all the codebase that is shared across different modules.
+Contains all the codebase that is shared across different modules like generic interfaces, project specific utilities etc...

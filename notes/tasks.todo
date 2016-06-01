@@ -1,18 +1,28 @@
 current tasks:
- ✔ fix project inconsistency @done (16-05-22 15:42)
  ☐ add 5 more clients to top volume exchanges
    ✔ bitfinex @done (16-05-27 23:12)
-   ☐ bitstamp (in progress)
+   ✔ bitstamp (in progress) @done (16-06-01 22:46)
    ☐ coinbase (cant access)
    ☐ btce      
    ☐ itbit
    ☐ kraken
- ☐ Host Collectors
+ ☐ add collectors for all clients
+   ✔ bitfinex @done (16-06-01 22:46)
+   ☐ bitstamp
+   ☐ coinbase
+   ☐ btce
+   ☐ itbit
+   ☐ kraken
+ ☐ event store
+   ☐ support rolling files
+   ☐ upload to dedicated cold storage
+   ☐ ability to download from cold storage
+ ☐ host collectors
    ☐ digitalocean.com     // the actual collector execution
    ☐ s3for.me             // storage for historical data
 
+stocksharp integration :
  ☐ protobuf/grpc compilation to Java/C#/Node
-
  ☐ java <-> c# <-> node connectivity
  ☐ node <-> ui websocket connectivity
  ☐ web build scripts
@@ -22,27 +32,6 @@ current tasks:
  ☐ d3 charting
  ☐ stocksharp research
  ☐ stocksharp grpc api
-
-data collection: 
-  ✔ event store service @done (16-05-04 22:54)
-    ✔ initial prototype  @done (16-05-02 00:12)
-    ✔ testing @done (16-05-02 00:12)
-    ✔ upgrade chronicle-queue @done (16-05-12 14:02)
-    // note : when subscribing to a stream that is written by busy loop observer fails, consider internal ring buffer 
-    // note : http://www.s3for.me/ can be useful to backup all the data
-    // note : we can omit using chronicle at all... just append to a file.
-  ☐ collectors
-    ☐ bitfinex
-      ✔ tune logging and alert emails @done (16-05-12 15:26)
-      ✔ separate logging locations per app @done (16-05-12 15:26)
-    ☐ bitstamp
-  ☐ deployment
-    ☐ use kotlin for gradle https://github.com/gradle/gradle-script-kotlin/tree/master/samples
-    ✔ gradle application plugin @done (16-05-05 18:41)
-    ☐ gradle proguard (optional)
-    ☐ aws ec2 / elb
-  ☐ stocksharp
-    ☐ create java api with grpc
 
 analysis:
 

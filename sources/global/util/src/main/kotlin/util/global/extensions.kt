@@ -14,7 +14,7 @@ import rx.Scheduler
 import rx.Subscriber
 import rx.subjects.PublishSubject
 import util.Option
-import util.app
+import util.app.log
 import util.cpu
 import java.io.File
 import java.io.PrintWriter
@@ -251,16 +251,15 @@ fun <T> Consumer<T>.andThen(after: Consumer<T>): Consumer<T> {
 fun <T : Message.Builder> T.readFromFS(propertyName: String): T {
     return this.apply {
         executeMandatory {
-
-            app.log.info("getting location of configuration : $propertyName")
+            log.info("getting location of configuration : $propertyName")
             val path = System.getProperty(propertyName)
 
             condition(notNullOrEmpty(path), "property was not provided")
 
-            app.log.info("reading configuration from : $path")
+            log.info("reading configuration from : $path")
             val json = FileUtils.readFileToString(File(path))
 
-            app.log.info("merging configuration")
+            log.info("merging configuration")
             JsonFormat.parser().merge(json, this)
         }
     }

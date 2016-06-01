@@ -1,4 +1,4 @@
-package collector.bitfinex.server.recorder
+package collector.common.server
 
 import com.google.protobuf.GeneratedMessage
 import eventstore.client.EventStoreClient

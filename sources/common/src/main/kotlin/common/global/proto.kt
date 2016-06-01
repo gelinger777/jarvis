@@ -3,7 +3,6 @@ package common.global
 import com.google.protobuf.MessageOrBuilder
 import com.google.protobuf.util.JsonFormat
 import common.Orderbook
-import io.grpc.stub.StreamObserver
 import proto.bitfinex.ProtoBitfinex.BitfinexConfig
 import proto.common.*
 import util.global.condition
@@ -87,11 +86,6 @@ fun Orderbook.all(): List<Order> {
     return bids + asks
 }
 
-fun Pair.asFolderName(): String {
-    // btc-usd
-    return "${base.symbol.toLowerCase()}-${quote.symbol.toLowerCase()}"
-}
-
 fun Pair.compact(): String {
     return "${base.symbol}|${quote.symbol}"
 }
@@ -160,35 +154,4 @@ fun bitfinexConfig(wsUrl: String, publicKey: String, privateKey: String): Bitfin
             .setPublicKey(publicKey)
             .setPrivateKey(privateKey)
             .build()
-}
-
-// request
-
-fun requestStreamTrades(pair: Pair): StreamTradesReq {
-    return StreamTradesReq.newBuilder().setPair(pair).build()
-}
-
-fun requestStreamOrders(pair: Pair): StreamOrdersReq {
-    return StreamOrdersReq.newBuilder().setPair(pair).build()
-}
-
-// response
-
-fun respondCollInfo(observer: StreamObserver<CollInfoResp>, accessiblePairs: List<Pair>) {
-    observer.onNext(CollInfoResp.newBuilder().addAllAccessibleMarketPairs(accessiblePairs).build());
-    observer.onCompleted()
-}
-
-fun respondRecordTrades(observer: StreamObserver<RecordTradesResp>, success: Boolean) {
-    observer.onNext(RecordTradesResp.newBuilder().setSuccess(success).build());
-    observer.onCompleted()
-}
-
-fun respondRecordOrders(observer: StreamObserver<RecordOrdersResp>, success: Boolean) {
-    observer.onNext(RecordOrdersResp.newBuilder().setSuccess(success).build());
-    observer.onCompleted()
-}
-
-fun OHLC.haveSameTimeRange(other: OHLC): Boolean {
-    return start == other.start && end == other.end
 }

@@ -37,9 +37,15 @@ project(':btce-client').projectDir = "$rootDir/sources/client/btce" as File
 
 // collectors
 
+
+include ":collector-common"
+project(':collector-common').projectDir = "$rootDir/sources/collector/common" as File
+
 include ":collector-client"
 project(':collector-client').projectDir = "$rootDir/sources/collector/client" as File
 
-
 include ":bitfinex-collector"
 project(':bitfinex-collector').projectDir = "$rootDir/sources/collector/bitfinex" as File
+
+include ":bitstamp-collector"
+project(':bitstamp-collector').projectDir = "$rootDir/sources/collector/bitstamp" as File

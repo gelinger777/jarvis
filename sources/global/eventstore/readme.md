@@ -1,3 +1,6 @@
 # :global:eventstore [app]
 
-Main characteristics of this service
+EventStore is a separate microservice for persisting event streams, those are trade, orderbook stream.
+
+It provides api to query existing data using streaming api...
+
