@@ -22,17 +22,17 @@ project(':visual').projectDir = "$rootDir/sources/visual" as File
 // clients
 
 
-include ":bitfinex-client"
-project(':bitfinex-client').projectDir = "$rootDir/sources/client/bitfinex" as File
+include ":client-bitfinex"
+project(':client-bitfinex').projectDir = "$rootDir/sources/client/bitfinex" as File
 
-include ":bitstamp-client"
-project(':bitstamp-client').projectDir = "$rootDir/sources/client/bitstamp" as File
+include ":client-bitstamp"
+project(':client-bitstamp').projectDir = "$rootDir/sources/client/bitstamp" as File
 
-include ":coinbase-client"
-project(':coinbase-client').projectDir = "$rootDir/sources/client/coinbase" as File
+include ":client-coinbase"
+project(':client-coinbase').projectDir = "$rootDir/sources/client/coinbase" as File
 
-include ":btce-client"
-project(':btce-client').projectDir = "$rootDir/sources/client/btce" as File
+include ":client-btce"
+project(':client-btce').projectDir = "$rootDir/sources/client/btce" as File
 
 
 // collectors
@@ -44,8 +44,8 @@ project(':collector-common').projectDir = "$rootDir/sources/collector/common" as
 include ":collector-client"
 project(':collector-client').projectDir = "$rootDir/sources/collector/client" as File
 
-include ":bitfinex-collector"
-project(':bitfinex-collector').projectDir = "$rootDir/sources/collector/bitfinex" as File
+include ":collector-bitfinex"
+project(':collector-bitfinex').projectDir = "$rootDir/sources/collector/bitfinex" as File
 
-include ":bitstamp-collector"
-project(':bitstamp-collector').projectDir = "$rootDir/sources/collector/bitstamp" as File
+include ":collector-bitstamp"
+project(':collector-bitstamp').projectDir = "$rootDir/sources/collector/bitstamp" as File

@@ -254,7 +254,7 @@ project(":visual") {
 
 // Clients ======================================================================================
 
-project(":bitfinex-client") {
+project(":client-bitfinex") {
     description = "[lib] Client library to work with Bitfinex exchange."
 
     dependencies {
@@ -262,8 +262,7 @@ project(":bitfinex-client") {
     }
 }
 
-
-project(":bitstamp-client") {
+project(":client-bitstamp") {
     description = "[lib] Client library to work with Bitstamp exchange."
 
     dependencies {
@@ -271,7 +270,7 @@ project(":bitstamp-client") {
     }
 }
 
-project(":coinbase-client") {
+project(":client-coinbase") {
     description = "[lib] Client library to work with Coinbase exchange."
 
     dependencies {
@@ -279,7 +278,7 @@ project(":coinbase-client") {
     }
 }
 
-project(":btce-client") {
+project(":client-btce") {
     description = "[lib] Client library to work with Btce exchange."
 
     dependencies {
@@ -292,7 +291,7 @@ project(":btce-client") {
 
 project(":collector-common") {
 
-    description = "[lib] Common collector functionality that is used by specific collector apps."
+    description = "[lib] Common collector functionality that is reused across collectors."
 
     dependencies {
         compile project(":common")
@@ -302,20 +301,20 @@ project(":collector-common") {
 
 project(":collector-client") {
 
-    description = "[lib] Collector client library that allows to connect and work with collector services."
+    description = "[lib] Collector client library that allows to connect and work with any collector."
 
     dependencies {
         compile project(":common")
     }
 }
 
-project(":bitfinex-collector") {
+project(":collector-bitfinex") {
     apply plugin: 'application'
     mainClassName = "collector.bitfinex.bitfinexCollectorKt"
 
     applicationDefaultJvmArgs = [
             '-Dconfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
-            '-DlogPath=/Users/vach/workspace/jarvis/dist/logs/bitfinex-collector',
+            "-DlogPath=/Users/vach/workspace/jarvis/dist/app/${project.name}/logs",
             '-Dprofile=dev'
     ]
 
@@ -325,11 +324,11 @@ project(":bitfinex-collector") {
 
     dependencies {
         compile project(":collector-common")
-        compile project(":bitfinex-client")
+        compile project(":client-bitfinex")
     }
 }
 
-project(":bitstamp-collector") {
+project(":collector-bitfinex") {
     apply plugin: 'application'
     mainClassName = "collector.bitstamp.bitstampCollectorKt"
 
@@ -345,7 +344,7 @@ project(":bitstamp-collector") {
 
     dependencies {
         compile project(":collector-common")
-        compile project(":bitstamp-client")
+        compile project(":client-bitstamp")
     }
 }
 
