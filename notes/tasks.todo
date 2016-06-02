@@ -15,11 +15,13 @@ current tasks:
    ☐ kraken
  ☐ event store
    ☐ support rolling files
-   ☐ upload to dedicated cold storage
-   ☐ ability to download from cold storage
+   ☐ storage-service
+      ☐ upload to dedicated cold storage
+      ☐ ability to download from cold storage
+   ☐ manage local machine storage use storage service
  ☐ host collectors
-   ☐ digitalocean.com     // the actual collector execution
-   ☐ s3for.me             // storage for historical data
+   ☐ digitalocean.com         // the actual collector execution
+   ☐ s3for.me or amazon s3    // storage for historical data
 
 stocksharp integration :
  ☐ protobuf/grpc compilation to Java/C#/Node

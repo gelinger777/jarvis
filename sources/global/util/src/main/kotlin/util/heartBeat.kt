@@ -54,7 +54,7 @@ object heartBeat {
         val pulse = registry[name] ?: throw IllegalArgumentException("no heartbeat is registered under [$name]")
         pulse.lastBeat.set(System.currentTimeMillis())
 
-        log.info("beat on : $name")
+        log.debug("beat on : $name")
     }
 
     data class Pulse(val name: String, val timeout: Long, val callback: () -> Unit, val lastBeat: AtomicLong = AtomicLong(System.currentTimeMillis()))

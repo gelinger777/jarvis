@@ -47,8 +47,8 @@ message WriteResp {
 
 message ReadReq {
     required string path = 1;
-    optional int64 start = 2;
-    optional int64 end = 3;
+    optional int64 start = 2 [default = -1];
+    optional int64 end = 3 [ default = -1];
 }
 message StreamReq {
     required string path = 1;

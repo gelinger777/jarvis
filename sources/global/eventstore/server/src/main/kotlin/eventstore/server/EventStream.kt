@@ -28,10 +28,8 @@ internal class EventStream(val name: String, val path: String) {
             val index = appender.write(bytes)
 
             // async notify observers about this write
-            if (writeSubject.hasObservers()) {
-                log.info("broadcasting")
-                writeSubject.onNext(index to bytes)
-            }
+            log.info("broadcasting")
+            writeSubject.onNext(index to bytes)
 
             return index
         })
@@ -47,9 +45,7 @@ internal class EventStream(val name: String, val path: String) {
                 val index = appender.write(it)
 
                 // async notify observers about this write
-                if (writeSubject.hasObservers()) {
-                    writeSubject.onNext(index to it)
-                }
+                writeSubject.onNext(index to it)
             }
 
         })
@@ -69,16 +65,16 @@ internal class EventStream(val name: String, val path: String) {
 
                 while (subscriber.isSubscribed() && tailer.readBytes(buffer)) {
                     // if there is data
-                        val index = tailer.index()
+                    val index = tailer.index()
 
-                        if (index > end) {
-                            break
-                        }
+                    if (index > end) {
+                        break
+                    }
 
-                        val data = buffer.toByteArray()
-                        buffer.clear()
+                    val data = buffer.toByteArray()
+                    buffer.clear()
 
-                        subscriber.onNext(index to data)
+                    subscriber.onNext(index to data)
                 }
             } else {
                 while (subscriber.isSubscribed() && tailer.readBytes(buffer)) {

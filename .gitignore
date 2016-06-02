@@ -23,3 +23,6 @@ dist/data/
 bin/
 lib/
 dist/logs/
+
+!/.idea/runConfigurations/
+!/.idea/dictionaries/

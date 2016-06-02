@@ -213,12 +213,12 @@ project(":eventstore-client") {
 project(":eventstore-server") {
     apply plugin: 'application'
 
-    mainClassName = "eventstore.RunEventStoreServerKt"
+    mainClassName = "eventstore.server.RunEventStoreKt"
 
     applicationDefaultJvmArgs = [
-            '-DeventStoreConfig=/Users/vach/workspace/jarvis/dist/config/event-store.json',
-            '-DlogPath=/Users/vach/workspace/jarvis/dist/logs/event-store',
-            '-Dprofile=dev'
+            "-Dconfig=/Users/vach/workspace/jarvis/dist/config/event-store.json",
+            "-DlogPath=/Users/vach/workspace/jarvis/dist/app/${project.name}/logs",
+            "-Dprofile=dev"
     ]
 
     installDist.destinationDir = rootProject.file("dist/app/${project.name}")
@@ -314,7 +314,7 @@ project(":bitfinex-collector") {
     mainClassName = "collector.bitfinex.bitfinexCollectorKt"
 
     applicationDefaultJvmArgs = [
-            '-DbitfinexCollectorConfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
+            '-Dconfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
             '-DlogPath=/Users/vach/workspace/jarvis/dist/logs/bitfinex-collector',
             '-Dprofile=dev'
     ]

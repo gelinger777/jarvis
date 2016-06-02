@@ -56,9 +56,7 @@ interface IAccount {
 }
 
 /**
- * Common interface for all collector services.
- *
- * Clients are implementing this interface, Servers implement CollectorGrpc.Collector interface.
+ * CollectorClient interface.
  */
 interface ICollector {
 

@@ -13,7 +13,7 @@ object cleanupTasks {
 
     init {
         Runtime.getRuntime().addShutdownHook(Thread({
-            log.info("executing cleanup tasks")
+            log.debug("executing cleanup tasks")
 
             // user code tasks
             tasks.entries.asSequence()

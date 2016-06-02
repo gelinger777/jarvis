@@ -1,6 +1,10 @@
+package eventstore.client.internal
 import eventstore.client.EventStoreClient
 
-fun main(args: Array<String>) {
+/**
+ *
+ */
+internal fun main(args: Array<String>) {
     val esc = EventStoreClient(host = "localhost", port = 9151)
 
     val es = esc.getStream("demo/test")

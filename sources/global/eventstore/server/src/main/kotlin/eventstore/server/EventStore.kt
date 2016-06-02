@@ -1,17 +1,16 @@
 package eventstore.server
 
-import com.google.protobuf.ByteString
+import eventstore.server.internal.asEvent
+import eventstore.server.internal.toDataResponse
+import eventstore.server.internal.validate
 import io.grpc.stub.StreamObserver
 import proto.eventstore.EventStoreGrpc
 import proto.eventstore.ProtoES.*
 import util.global.*
 
-internal object EventStore : EventStoreGrpc.EventStore {
-
+internal class EventStore(val rootPath: String) : EventStoreGrpc.EventStore {
 
     val log by logger("event-store-server")
-
-    val conf = readConfiguration("eventStoreConfig");
     val streams = mutableMapOf<String, EventStream>()
 
     override fun info(request: InfoReq, responseObserver: StreamObserver<InfoResp>) {
@@ -22,7 +21,6 @@ internal object EventStore : EventStoreGrpc.EventStore {
         try {
             observer.subscribe(
                     readRequest
-                            .validate()
                             .path.getEventStream()
                             .observe(readRequest.start, readRequest.end)
                             .map { it.asEvent() }
@@ -94,58 +92,10 @@ internal object EventStore : EventStoreGrpc.EventStore {
         throw UnsupportedOperationException() // todo
     }
 
-    // stuff
 
-    private fun ReadReq.validate(): ReadReq {
-        condition(notNullOrEmpty(this.path), "path must be provided")
-
-        if (this.start < 0) {
-            condition(this.start == -1L)
-        }
-
-        if (this.end < 0) {
-            condition(this.end == -1L)
-        } else {
-            condition(this.start < this.end)
-        }
-        return this;
-    }
-
-    private fun StreamReq.validate(): StreamReq {
-        condition(notNullOrEmpty(this.path), "path must be provided")
-        return this;
-    }
-
-    private fun readConfiguration(propertyName: String): EventStoreConfig {
-        log.info("reading the configuration")
-        return EventStoreConfig.newBuilder().readFromFS(propertyName).build();
-    }
-
-    private fun toAbsolutePath(relative: String): String {
-        return conf.path + relative
-    }
-
-    private @Synchronized fun String.getEventStream(): EventStream {
+    internal @Synchronized fun String.getEventStream(): EventStream {
         condition(notNullOrEmpty(this))
-        return streams.computeIfAbsent(this, { EventStream(it, toAbsolutePath(it)) })
-    }
-
-    private fun ByteArray.toByteString(): ByteString {
-        return ByteString.copyFrom(this)
-    }
-
-    private fun Collection<Event>.toDataResponse(): DataResp {
-        return DataResp.newBuilder()
-                .setSuccess(true)
-                .addAllEvents(this)
-                .build()
-    }
-
-    private fun Pair<Long, ByteArray>.asEvent(): Event {
-        return Event.newBuilder()
-                .setIndex(this.first)
-                .setData(ByteString.copyFrom(this.second))
-                .build();
+        return streams.computeIfAbsent(this, { EventStream(it, "$rootPath$it") })
     }
 
 }

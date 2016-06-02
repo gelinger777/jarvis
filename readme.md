@@ -47,7 +47,7 @@ make sure the following plugins are installed
 We use latest stable versions of the best tools available relevant for the tasks we solve.
 
 * Backend
-    * `Java 8 / Kotlin` - main programming languages
+    * `Java 8 / Kotlin` - eventstore.client.internal.main programming languages
     * `Gradle` - for all the complex build tasks
     * `Protobuf` - to generate all data structures
     * `GRPC` - to define interfaces of all services
@@ -56,7 +56,7 @@ We use latest stable versions of the best tools available relevant for the tasks
 
 * Frontend
     * `Node` - as endpoint for ui websocket communication
-    * `Angular 2` - main framework for ui
+    * `Angular 2` - eventstore.client.internal.main framework for ui
     * `Material Components` - material design as base
     * `TypeScript` - better js and default for angular 2
     * `D3` - for charts
@@ -109,13 +109,13 @@ Shell scripts under `/bin` directory have default environment variables describe
 
 ## Contributing
 
-If multiple devices are used to work with the codebase a developer can keep a single dev branch on remote repo like `dev-vach` and all the unfinished work is being committed to that branch when changing different development environments... When a feature is complete `squash` command can be used to merge all changes to the `main` branch.
+If multiple devices are used to work with the codebase a developer can keep a single dev branch on remote repo like `dev-vach` and all the unfinished work is being committed to that branch when changing different development environments... When a feature is complete `squash` command can be used to merge all changes to the `eventstore.client.internal.main` branch.
 
 ```
     git merge --squash dev-vach
 ```
 
-This will merge all work (many commits) from `dev-vach` to `main`, but without committing it. At this point developer can do final polish of the source and make a single commit.
+This will merge all work (many commits) from `dev-vach` to `eventstore.client.internal.main`, but without committing it. At this point developer can do final polish of the source and make a single commit.
 
 Code quality, readability and modularity are a top priority in this project hence in order to separate boilerplate from actual business logic code, we use extensions  in file `/internal/boilerplate.kt` in the root package of each module, each method or object defined in `boilerplate.kt` must have `internal` visibility, this file is only for implementation boilerplate, it shall not contain valuable business logic on its own, usually all the code that one must never read trough must be here...
 

@@ -22,10 +22,10 @@ object cpu {
     }
 
     init {
-        log.info("init")
+        log.debug("init")
 
         cleanupTasks.internalAdd({
-            log.info("shutdown");
+            log.debug("shutdown");
 
             // common pool doesn't need shutdown
             executors.io.shutdown()

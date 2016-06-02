@@ -6,12 +6,12 @@ import eventstore.client.EventStoreClient
 import proto.bitfinex.ProtoBitfinex.BitfinexCollectorConfig
 import proto.common.CollectorGrpc
 import util.app.log
-import util.global.readFromFS
+import util.global.readConfig
 
 fun main(args: Array<String>) {
     log.info("starting Bitfinex collector")
     val config = BitfinexCollectorConfig.newBuilder()
-            .readFromFS("bitfinexCollectorConfig")
+            .readConfig("bitfinexCollectorConfig")
             .build()
 
     log.info("instantiating BitfinexClient")

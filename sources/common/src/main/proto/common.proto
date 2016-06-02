@@ -36,13 +36,6 @@ service Collector {
 // ---------------------------------------------------------------------------
 
 message CollInfoReq {
-    enum Type {
-        ALL = 0;
-        ACCESSIBLE_MARKET_PAIRS = 1;
-        CURRENT_STREAMS = 2;
-        CURRENT_RECORDINGS = 3;
-    }
-    required Type type = 1;
 }
 
 message CollInfoResp {
