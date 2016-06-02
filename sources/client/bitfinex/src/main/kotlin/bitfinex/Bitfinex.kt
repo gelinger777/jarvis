@@ -4,10 +4,8 @@ import common.IAccount
 import common.IExchange
 import common.IMarket
 import common.global.asPair
-import common.global.pair
 import proto.bitfinex.ProtoBitfinex.BitfinexConfig
 import proto.common.Pair
-import util.app
 import util.global.computeIfAbsent
 import util.global.condition
 import util.global.logger
@@ -26,15 +24,15 @@ class Bitfinex(val config: BitfinexConfig) : IExchange {
     override fun pairs(): List<Pair> {
         log.info("getting accessible market pairs")
 
-        if (app.isDevProfile()) {
-            return mutableListOf(
-                    pair("btc", "usd"),
-                    pair("ltc", "usd"),
-                    pair("ltc", "btc"),
-                    pair("eth", "usd"),
-                    pair("eth", "btc")
-            )
-        } else {
+//        if (app.isDevProfile()) {
+//            return mutableListOf(
+//                    pair("btc", "usd"),
+//                    pair("ltc", "usd"),
+//                    pair("ltc", "btc"),
+//                    pair("eth", "usd"),
+//                    pair("eth", "btc")
+//            )
+//        } else {
             return net.http.get("https://api.bitfinex.com/v1/symbols")
                     .map { response ->
                         response.replace(Regex("\\[|\\]|\\n|\""), "")
@@ -44,7 +42,7 @@ class Bitfinex(val config: BitfinexConfig) : IExchange {
                     }
                     .ifNotPresentCompute { emptyList<Pair>() }
                     .get()
-        }
+//        }
     }
 
     override @Synchronized fun market(pair: Pair): IMarket {

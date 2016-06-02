@@ -2,8 +2,8 @@ package bitfinex.internal
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonParser
-import common.global.compact
 import common.global.asPair
+import common.global.compact
 import common.global.order
 import common.global.trade
 import proto.common.Order

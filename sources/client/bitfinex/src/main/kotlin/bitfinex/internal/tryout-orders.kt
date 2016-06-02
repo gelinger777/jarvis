@@ -2,7 +2,7 @@ package bitfinex.internal
 
 import bitfinex.Bitfinex
 import common.global.bitfinexConfig
-import common.global.json
+import common.global.compact
 import common.global.pair
 
 internal fun main(args: Array<String>) {
@@ -14,13 +14,9 @@ internal fun main(args: Array<String>) {
             )
     )
 
-//    bitfinex.pairs().forEach { println(it.asKey()) }
-
-
     val market = bitfinex.market(pair("btc", "usd"))
 
-    market.orders().subscribe { println("order : " + it.json()) }
-//    bitfinex.market(pair("btc", "usd")).trades().subscribe { println("trade : " + it.json()) }
+    market.orders().subscribe { println("order : " + it.compact(showTime = true)) }
 
     readLine()
 

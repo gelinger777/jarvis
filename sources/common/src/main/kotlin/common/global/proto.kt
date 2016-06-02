@@ -92,18 +92,18 @@ fun Pair.compact(): String {
 
 fun Trade.compact(showTime: Boolean = false):String{
     if(showTime) {
-        return "${time.dateTime()} - ${price.roundDown3()}|${volume.roundDown3()}"
+        return "${time.dateTime()} - ${price.roundDown3()} | ${volume.roundDown3()}"
     }else{
-        return "${price.roundDown3()}|${volume.roundDown3()}"
+        return "${price.roundDown3()} | ${volume.roundDown3()}"
     }
 }
 
 fun Order.compact(showTime: Boolean = false): String {
 
     if (showTime) {
-        return "${time.dateTime()} - $side|${price.roundDown3()}|${volume.roundDown3()}"
+        return "${time.dateTime()} - $side | ${price.roundDown3()} | ${volume.roundDown3()}"
     } else {
-        return "$side|${price.roundDown3()}|${volume.roundDown3()}"
+        return "$side | ${price.roundDown3()} | ${volume.roundDown3()}"
     }
 }
 

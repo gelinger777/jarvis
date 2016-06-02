@@ -26,7 +26,8 @@ class Bitstamp(val config: BitstampConfig) : IExchange {
 
             return mutableListOf(
                     pair("btc", "usd"),
-                    pair("btc", "eur")
+                    pair("btc", "eur"),
+                    pair("eur", "usd")
             )
     }
 
