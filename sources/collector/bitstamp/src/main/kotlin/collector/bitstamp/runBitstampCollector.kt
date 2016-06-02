@@ -7,6 +7,7 @@ import proto.bitstamp.ProtoBitstamp.BitstampCollectorConfig
 import proto.common.CollectorGrpc
 import util.app.log
 import util.global.readConfig
+import util.net
 
 fun main(args: Array<String>) {
     log.info("starting Bitstamp collector")
@@ -30,7 +31,10 @@ fun main(args: Array<String>) {
     )
 
     log.info("publishing collector via grpc")
-    val server = util.net.grpc.server(config.port, CollectorGrpc.bindService(collector))
+    val server = net.grpc.server(
+            config.port,
+            CollectorGrpc.bindService(collector)
+    ).start()
 
 
     log.info("enter to terminate")

@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
     val server = net.grpc.server(
             port = config.port,
             service = EventStoreGrpc.bindService(eventStore)
-    )
+    ).start()
 
     log.info("enter to terminate")
     readLine()

@@ -5,7 +5,10 @@ import eventstore.client.EventStoreClient
  *
  */
 internal fun main(args: Array<String>) {
-    val esc = EventStoreClient(host = "localhost", port = 9151)
+    val esc = EventStoreClient(
+            host = "localhost",
+            port = 9151
+    )
 
     val es = esc.getStream("demo/test")
 
