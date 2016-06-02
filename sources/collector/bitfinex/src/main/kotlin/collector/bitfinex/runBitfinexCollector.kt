@@ -14,7 +14,7 @@ fun main(args: Array<String>) {
             .readConfig("bitfinexCollectorConfig")
             .build()
 
-    log.info("instantiating BitfinexClient")
+    log.info("creating Bitfinex client")
     val bitfinex = Bitfinex(config.bitfinexConfig)
 
     log.info("connecting to EventStore")
@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
             eventStore = eventStore
     )
 
-    log.info("starting grpc service")
+    log.info("publishing collector via grpc")
     val grpcServer = util.net.grpc.server(config.port, CollectorGrpc.bindService(collector))
 
     grpcServer.start().blockForTermination()

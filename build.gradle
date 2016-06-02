@@ -328,7 +328,7 @@ project(":collector-bitfinex") {
     }
 }
 
-project(":collector-bitfinex") {
+project(":collector-bitstamp") {
     apply plugin: 'application'
     mainClassName = "collector.bitstamp.bitstampCollectorKt"
 
