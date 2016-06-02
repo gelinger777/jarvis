@@ -68,10 +68,9 @@ We use latest stable versions of the best tools available relevant for the tasks
 * `/sources` contains all the source files for all the modules without any build configurations and scripts
 * `/notes` general notes about different aspects of the project, `.todo` files
 are used with `sublime text` (with `PlainTasks` plugin enabled)
-* `/dist` all the artifacts from build
-    * `/app` binary distributions of different services
-    * `/config` all the configurations for different services
-    * `/data` this is the convention for storage location, all the data streams persisted by eventstore are located here by default
+* `/dist` default location for all the artifacts
+    * `/bin` binary distributions of different services
+    * `/conf` all the configurations for different services
 
 
 ## Conventions

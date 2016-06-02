@@ -13,7 +13,10 @@ build/
 
 
 # JetBrains
-.idea/
+.idea/*
+!/.idea/runConfigurations/
+!/.idea/dictionaries/
+
 /out/
 
 # custom stuff
@@ -24,5 +27,3 @@ bin/
 lib/
 dist/logs/
 
-!/.idea/runConfigurations/
-!/.idea/dictionaries/
