@@ -1,6 +1,9 @@
 package common
 
-import proto.common.*
+import proto.common.Currency
+import proto.common.Order
+import proto.common.Pair
+import proto.common.Trade
 import rx.Observable
 import util.app
 
@@ -53,24 +56,4 @@ interface IAccount {
 
     fun balances(): Map<Currency, Double>
 
-}
-
-/**
- * CollectorClient interface.
- */
-interface ICollector {
-
-    fun info(request: CollInfoReq): CollInfoResp
-
-    fun streamTrades(request: StreamTradesReq): Observable<Trade>
-
-    fun streamOrders(request: StreamOrdersReq): Observable<Order>
-
-    fun recordTrades(request: RecordTradesReq): RecordTradesResp
-
-    fun recordOrders(request: RecordOrdersReq): RecordOrdersResp
-
-    fun streamHistoricalTrades(request: StreamHistoricalTradesReq): Observable<Trade>
-
-    fun streamHistoricalOrders(request: StreamHistoricalOrdersReq): Observable<Order>
 }

@@ -1,10 +1,12 @@
 package collector.common.server
 
-import collector.common.internal.*
+import collector.common.internal.ordersDataPathFor
+import collector.common.internal.tradeDataPathFor
 import common.IExchange
 import eventstore.client.EventStoreClient
 import io.grpc.stub.StreamObserver
 import proto.common.*
+import util.global.complete
 import util.global.computeIfAbsent
 import util.global.subscribe
 
@@ -12,15 +14,12 @@ class CollectorService(val client: IExchange, val eventStore: EventStoreClient) 
     val recorders = mutableMapOf<String, Any>()
 
     override fun info(request: CollInfoReq, observer: StreamObserver<CollInfoResp>) {
-        respondCollInfo(observer, client.pairs())
-    }
-
-    override fun streamTrades(request: StreamTradesReq, observer: StreamObserver<Trade>) {
-        observer.subscribe(client.market(request.pair).trades())
-    }
-
-    override fun streamOrders(request: StreamOrdersReq, observer: StreamObserver<Order>) {
-        observer.subscribe(client.market(request.pair).orders())
+        observer.complete(
+                CollInfoResp.newBuilder()
+                        .addAllAccessibleMarketPairs(client.pairs())
+                        .addAllCurrentStreams(recorders.keys)
+                        .build()
+        )
     }
 
     override fun recordTrades(request: RecordTradesReq, observer: StreamObserver<RecordTradesResp>) {
@@ -31,7 +30,11 @@ class CollectorService(val client: IExchange, val eventStore: EventStoreClient) 
                     .apply { this.subscribe(client.market(request.pair).trades()) }
         })
 
-        respondRecordTrades(observer, success = true)
+        observer.complete(
+                RecordTradesResp.newBuilder()
+                        .setSuccess(true)
+                        .build()
+        )
     }
 
     override fun recordOrders(request: RecordOrdersReq, observer: StreamObserver<RecordOrdersResp>) {
@@ -42,7 +45,11 @@ class CollectorService(val client: IExchange, val eventStore: EventStoreClient) 
                     .apply { this.subscribe(client.market(request.pair).orders()) }
         })
 
-        respondRecordOrders(observer, success = true)
+        observer.complete(
+                RecordOrdersResp.newBuilder()
+                        .setSuccess(true)
+                        .build()
+        )
     }
 
     override fun streamHistoricalTrades(request: StreamHistoricalTradesReq, observer: StreamObserver<Trade>) {

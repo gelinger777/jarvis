@@ -14,24 +14,6 @@ class CollectorClient(val host: String, val port: Int) {
         return blockingStub.info(CollInfoReq.getDefaultInstance())
     }
 
-    fun streamTrades(pair: Pair): Observable<Trade> {
-        return PublishSubject.create<Trade>().apply {
-            asyncStub.streamTrades(
-                    StreamTradesReq.newBuilder().setPair(pair).build(),
-                    this.asGrpcObserver()
-            )
-        }
-    }
-
-    fun streamOrders(pair: Pair): Observable<Order> {
-        return PublishSubject.create<Order>().apply {
-            asyncStub.streamOrders(
-                    StreamOrdersReq.newBuilder().setPair(pair).build(),
-                    this.asGrpcObserver()
-            )
-        }
-    }
-
     fun recordTrades(pair: Pair): RecordTradesResp {
         return blockingStub.recordTrades(
                 RecordTradesReq.newBuilder().setPair(pair).build()
