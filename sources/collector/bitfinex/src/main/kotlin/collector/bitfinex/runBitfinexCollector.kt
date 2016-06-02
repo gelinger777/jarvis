@@ -11,7 +11,7 @@ import util.global.readConfig
 fun main(args: Array<String>) {
     log.info("starting Bitfinex collector")
     val config = BitfinexCollectorConfig.newBuilder()
-            .readConfig("bitfinexCollectorConfig")
+            .readConfig("conf")
             .build()
 
     log.info("creating Bitfinex client")
@@ -30,7 +30,9 @@ fun main(args: Array<String>) {
     )
 
     log.info("publishing collector via grpc")
-    val grpcServer = util.net.grpc.server(config.port, CollectorGrpc.bindService(collector))
+    val server = util.net.grpc.server(config.port, CollectorGrpc.bindService(collector))
 
-    grpcServer.start().blockForTermination()
+    log.info("enter to terminate")
+    readLine()
+    server.stop()
 }

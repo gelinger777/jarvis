@@ -34,13 +34,13 @@ class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
         server.shutdown()
     }
 
-    fun blockForTermination() {
-        log.info("awaiting for termination of ${service.name}")
-        if (server != null) {
-            try {
-                server.awaitTermination()
-            } catch (ignored: InterruptedException) {
-            }
-        }
-    }
+//    fun blockForTermination() {
+//        log.info("awaiting for termination of ${service.name}")
+//        if (server != null) {
+//            try {
+//                server.awaitTermination()
+//            } catch (ignored: InterruptedException) {
+//            }
+//        }
+//    }
 }

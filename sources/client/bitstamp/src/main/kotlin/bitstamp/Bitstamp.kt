@@ -4,7 +4,7 @@ import common.IAccount
 import common.IExchange
 import common.IMarket
 import common.global.pair
-import proto.bitfinex.ProtoBitstamp.BitstampConfig
+import proto.bitstamp.ProtoBitstamp.BitstampConfig
 import proto.common.Pair
 import util.global.computeIfAbsent
 import util.global.condition

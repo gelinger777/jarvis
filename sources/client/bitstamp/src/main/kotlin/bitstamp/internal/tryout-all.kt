@@ -3,10 +3,11 @@ package bitstamp.internal
 import bitstamp.Bitstamp
 import common.global.compact
 import common.global.pair
-import proto.bitfinex.ProtoBitstamp
+import proto.bitstamp.ProtoBitstamp
+import proto.bitstamp.ProtoBitstamp.BitstampConfig
 
 fun main(args: Array<String>) {
-    val market = Bitstamp(ProtoBitstamp.BitstampConfig.getDefaultInstance())
+    val market = Bitstamp(BitstampConfig.getDefaultInstance())
             .market(pair("btc", "usd"))
 
     market

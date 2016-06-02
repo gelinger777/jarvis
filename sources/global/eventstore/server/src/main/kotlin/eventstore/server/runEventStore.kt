@@ -11,10 +11,11 @@ fun main(args: Array<String>) {
 
     log.info("starting EventStore server")
     val config = EventStoreConfig.newBuilder()
-            .readConfig("config")
+            .readConfig("conf")
             .build();
 
     log.info("instantiating EventStore")
+    log.debug("data root is at : ${config.path}")
     val eventStore = EventStore(config.path)
 
     log.info("starting grpc service")
@@ -23,5 +24,7 @@ fun main(args: Array<String>) {
             service = EventStoreGrpc.bindService(eventStore)
     )
 
-    server.start().blockForTermination()
+    log.info("enter to terminate")
+    readLine()
+    server.stop()
 }

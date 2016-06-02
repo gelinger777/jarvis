@@ -1,5 +1,14 @@
 description = "Fully autonomous algorithmic trading environment."
 
+/**
+ * Global build script configurations, these are used to generate,
+ * default environment variables in shell scripts. Feel free to
+ * adjust to your working environment.
+ */
+def confRoot = "/Users/vach/workspace/jarvis/dist/conf"
+def distRoot = "/Users/vach/workspace/jarvis/dist/bin"
+def profile = "dev"
+
 buildscript {
     repositories {
         mavenCentral()
@@ -212,16 +221,17 @@ project(":eventstore-client") {
 
 project(":eventstore-server") {
     apply plugin: 'application'
-
     mainClassName = "eventstore.server.RunEventStoreKt"
 
+    def dest = "${distRoot}/eventstore"
+
     applicationDefaultJvmArgs = [
-            "-Dconfig=/Users/vach/workspace/jarvis/dist/config/event-store.json",
-            "-DlogPath=/Users/vach/workspace/jarvis/dist/app/${project.name}/logs",
-            "-Dprofile=dev"
+            "-Dconf=${confRoot}/eventstore.json",
+            "-DlogPath=${dest}/logs",
+            "-Dprofile=${profile}"
     ]
 
-    installDist.destinationDir = rootProject.file("dist/app/${project.name}")
+    installDist.destinationDir = file(dest)
 
     description = "[app] Event Store server."
 
@@ -310,15 +320,17 @@ project(":collector-client") {
 
 project(":collector-bitfinex") {
     apply plugin: 'application'
-    mainClassName = "collector.bitfinex.bitfinexCollectorKt"
+    mainClassName = "collector.bitfinex.RunBitfinexCollectorKt"
+
+    def dest = "${distRoot}/bitfinex"
 
     applicationDefaultJvmArgs = [
-            '-Dconfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
-            "-DlogPath=/Users/vach/workspace/jarvis/dist/app/${project.name}/logs",
-            '-Dprofile=dev'
+            "-Dconf=${confRoot}/collector/bitfinex.json",
+            "-DlogPath=${dest}/logs",
+            "-Dprofile=${profile}"
     ]
 
-    installDist.destinationDir = rootProject.file("dist/app/${project.name}")
+    installDist.destinationDir = file(dest)
 
     description = "[app] Collects trade and orderbook data for Bitfinex exchange."
 
@@ -330,15 +342,17 @@ project(":collector-bitfinex") {
 
 project(":collector-bitstamp") {
     apply plugin: 'application'
-    mainClassName = "collector.bitstamp.bitstampCollectorKt"
+    mainClassName = "collector.bitstamp.RunBitstampCollectorKt"
 
-//    applicationDefaultJvmArgs = [
-//            '-DbitfinexCollectorConfig=/Users/vach/workspace/jarvis/dist/config/bitfinex-collector.json',
-//            '-DlogPath=/Users/vach/workspace/jarvis/dist/logs/bitfinex-collector',
-//            '-Dprofile=dev'
-//    ]
+    def dest = "${distRoot}/bitstamp"
 
-    installDist.destinationDir = rootProject.file("dist/app/${project.name}")
+    applicationDefaultJvmArgs = [
+            "-Dconf=${confRoot}/collector/bitstamp.json",
+            "-DlogPath=${dest}/logs",
+            "-Dprofile=${profile}"
+    ]
+
+    installDist.destinationDir = file(dest)
 
     description = "[app] Collects trade and orderbook data for Bitstamp exchange."
 
@@ -358,7 +372,5 @@ task wrapper(type: Wrapper) {
 }
 
 task cleanOutput() {
-    delete "${projectDir}/dist/app"
-    delete "${projectDir}/dist/data"
-    delete "${projectDir}/dist/logs"
+    delete distRoot
 }
