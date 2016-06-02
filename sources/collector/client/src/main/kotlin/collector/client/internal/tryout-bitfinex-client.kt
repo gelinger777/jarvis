@@ -1,7 +1,7 @@
 package collector.client.internal
 
 import collector.client.CollectorClient
-import common.global.json
+import common.global.compact
 import common.global.pair
 
 fun main(args: Array<String>) {
@@ -9,7 +9,7 @@ fun main(args: Array<String>) {
 
     val streamOrders = client.streamOrders(pair("BTC", "USD"))
 
-    streamOrders.subscribe { println(it.json()) }
+    streamOrders.subscribe { println(it.compact(showTime = true)) }
 
     readLine()
 }
