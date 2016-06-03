@@ -19,6 +19,6 @@ executed in right order...
 * `app` will initialize default logger for application, and read conventional properties
 from environment variables such as `profile` and `logPath`
 
-Fail fast approach is enforced using `wtf()` methods which throw an exception that inevitably
-triggers the system to shut down and execute registered cleanup tasks. For more information
-see `util.global.exceptions.kt`
+We favour fail fast approach, if any unexpected behaviour of the application is taking place we kill and report the cause of the failure (for example email to developer).
+
+Fail fast approach is enforced using `wtf()` methods which throw an exception that inevitably triggers the system to shut down and execute registered cleanup tasks see `util.global.exceptions.kt`

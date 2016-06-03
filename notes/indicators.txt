@@ -1,5 +1,9 @@
 // indicators
 
+    indicator.change {
+        This indicator projects the change over defined amount of time for any numeric source. It can be configured as "last N time" or "each N time"...
+    }
+
     indicator.weightedMarkets {
         This indicator weights specific other indicators value between different markets, for example if we pick EMA as an indicator (which works on one market) then we can use this indicator to aggregate value using same EMA but on many markets (on different exchanges)... So using this you can have EMA of say BTC/USD but aggregated for different exchanges such (2 x EMA[BITSTAMP|BTC|USD] + 2 x EMA[BITFINEX|BTC|USD] + 1 x EMA[BTCE|BTC|USD])/5. In this case we gave 2/5 weight to bitstamp and bitfinex and 1/5 weight to btce... Using ML to tune weights will improve this indicators accuracy (but its questionable how to implement actual supervised learning for this).
 

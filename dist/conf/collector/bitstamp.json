@@ -2,8 +2,8 @@
   "port": 9153,
   "bitstampConfig": {
     "pusherKey": "de504dc5763aeef9ff52",
-    "publicKey": "",
-    "privateKey": ""
+    "publicKey": "change me",
+    "privateKey": "change me"
   },
   "eventStoreConfig": {
     "host": "localhost",
