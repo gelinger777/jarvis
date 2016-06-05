@@ -1,8 +1,11 @@
 current tasks:
+ ☐ test bitfinex and bitstamp collectors
+ ☐ implement coinbase client
+
  ☐ add 5 more clients to top volume exchanges
    ✔ bitfinex @done (16-05-27 23:12)
    ✔ bitstamp (in progress) @done (16-06-01 22:46)
-   ☐ coinbase (cant access)
+   ☐ coinbase
    ☐ btce      
    ☐ itbit
    ☐ kraken

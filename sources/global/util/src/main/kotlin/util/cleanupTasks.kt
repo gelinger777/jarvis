@@ -62,7 +62,8 @@ object cleanupTasks {
      * Key must be unique to the task, if a task already exists under that key it will be replaced.
      * Priority must be positive integer or zero.
      */
-    @Synchronized internal fun internalAdd(task: () -> Unit, priority: Int = 0, key: String = UUID.randomUUID().toString()) {
+    // todo : make this internal when jetbrains fixes the method not found bug
+    @Synchronized fun internalAdd(task: () -> Unit, priority: Int = 0, key: String = UUID.randomUUID().toString()) {
         condition(priority >= 0)
         internalTasks.put(key, priority to task)
     }

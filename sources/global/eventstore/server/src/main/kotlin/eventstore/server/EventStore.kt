@@ -93,7 +93,7 @@ internal class EventStore(val rootPath: String) : EventStoreGrpc.EventStore {
     }
 
 
-    internal @Synchronized fun String.getEventStream(): EventStream {
+    private @Synchronized fun String.getEventStream(): EventStream {
         condition(notNullOrEmpty(this))
         return streams.computeIfAbsent(this, { EventStream(it, "$rootPath$it") })
     }

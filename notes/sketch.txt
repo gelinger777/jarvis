@@ -1,0 +1,93 @@
+-------------------------------------------------------------------------------
+Collectors
+-------------------------------------------------------------------------------
+
+eventstore cli {
+
+    info
+
+    read /path -
+
+    stop
+}
+
+collector cli {
+    
+    info
+        exchange name
+        accessible pairs
+        streams that are currently recording
+
+    info name
+        exchange name
+
+    info pairs
+        accessible pairs
+
+    info streams
+        streams that are currently recording
+
+    record trades btc-usd
+
+    record orders btc-usd
+
+    stop
+
+    // there is no api to stop recording or release some resources... it complicates the whole thing, so we will skip that as we might never need such functionality in real usage
+}
+
+
+
+-------------------------------------------------------------------------------
+S3 as long term storage
+-------------------------------------------------------------------------------
+
+Collectors record with this pattern to eventstore
+
+
+bitstamp-collector-v1/bitstamp/btc-usd/trades/
+bitstamp-collector-v2/bitstamp/btc-usd/orders/
+
+
+Eventstore will automatically rollup those to daily snapshots, and upload them to permanent s3 storage
+
+
+bitstamp-collector-v1/bitstamp/btc-usd/trades/13-04-2015
+bitstamp-collector-v2/bitstamp/btc-usd/orders/13-04-2015-part // means not full day was recorded
+
+
+storing historical data
+storing buckets...
+
+
+
+
+
+-------------------------------------------------------------------------------
+CLI interface for jarvis
+-------------------------------------------------------------------------------
+
+each service must have a CLI interface to interact with it
+
+eventstore {
+    
+    info{
+
+    }
+
+    
+}
+
+
+signature
+
+command arg1 arg2 arg3 arg4
+
+
+
+
+jarvis
+    collectors
+        bitfinex
+        bitstamp
+    bots
