@@ -1,5 +1,6 @@
 package common
 
+import common.global.all
 import common.internal.isCanceled
 import common.internal.place
 import common.internal.remove
@@ -19,23 +20,40 @@ class AggregatedOrderbook : IOrderBook {
     internal val stream = PublishSubject.create<Order>()
 
     fun accept(order: Order) {
-        if (order.isCanceled()) {
-            this.remove(order)
-        } else {
-            this.place(order)
-        }
-        stream.onNext(order)
+
+        synchronized(stream, {
+
+            if (order.isCanceled()) {
+                this.remove(order)
+            } else {
+                this.place(order)
+            }
+            stream.onNext(order)
+        })
     }
 
     override fun snapshot(): Orderbook {
-        return Orderbook(
-                bids = bids.map { it.value }.toList(),
-                asks = asks.map { it.value }.toList()
-        )
+        synchronized(stream, {
+            return Orderbook(
+                    bids = bids.map { it.value }.toList(),
+                    asks = asks.map { it.value }.toList()
+            )
+        })
     }
 
+    /**
+     * Streams current orderbook and all orders after that
+     */
     override fun stream(): Observable<Order> {
-        return stream
+        return Observable.create { subscriber ->
+            synchronized(stream, {
+                // stream existing orders
+                snapshot().all().forEach { subscriber.onNext(it) }
+
+                // stream from realtime stream
+                stream.subscribe(subscriber)
+            })
+        }
     }
 }
 
