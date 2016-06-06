@@ -12,26 +12,29 @@ import proto.common.Pair
 import proto.common.Trade
 import rx.Observable
 import util.global.condition
+import util.global.logger
 import util.misc.RefCountSchTask
 
 internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
+
+    val log by logger("btce")
 
     val book = DiffAggregatedOrderbook()
     val orderFetcher = RefCountSchTask(
             name = "orderbook-poller:${exchange.name()}|${pair.compact()}",
             task = {
-                println("--------------------------------------------")
+                log.debug("--------------------------------------------")
                 pollOrders(pair).ifPresent {
                     val all = it.all()
                     book.accept(it)
 
-                    println("verifying")
+                    log.debug("verifying")
 
                     condition(book.snapshot().all().size == all.size)
                 }
 
             },
-            delay = 500
+            delay = 420
     )
 
     init {

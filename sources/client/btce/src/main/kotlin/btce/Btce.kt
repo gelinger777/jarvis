@@ -4,14 +4,13 @@ import btce.internal.pollPairs
 import common.IAccount
 import common.IExchange
 import common.IMarket
-import proto.bitfinex.ProtoBtce.BtceConfig
 import proto.common.Pair
 import util.global.computeIfAbsent
 import util.global.condition
 import util.global.logger
 
-class Btce(val config: BtceConfig) : IExchange {
-    internal val log by logger("btce")
+class Btce() : IExchange {
+    val log by logger("btce")
 
     internal val markets = mutableMapOf<Pair, Market>()
 
