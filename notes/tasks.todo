@@ -1,7 +1,8 @@
 current tasks:
  ✔ make market orders() stream initial orderbook first, for each subscriber @done (16-06-06 14:35)
- ☐ test bitfinex and bitstamp collectors
- ☐ implement coinbase client
+ ✔ test bitfinex and bitstamp collectors @done (16-06-06 19:28)
+ ☐ implement btce client and collector
+ ☐ implement coinbase client and collector
 
  ☐ add 5 more clients to top volume exchanges
    ✔ bitfinex @done (16-05-27 23:12)

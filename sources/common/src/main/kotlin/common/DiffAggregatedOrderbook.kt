@@ -6,7 +6,8 @@ import rx.Observable
 
 
 /**
- * This orderbook is taking full orderbook snapshots, and calculates the diffs. This orderbook is specifically for idiotic exchange apis like Bitstamp...
+ * This orderbook is taking full orderbook snapshots, and calculates the diffs.
+ * This is specifically for idiotic exchanges like BTCe where people don't know how to write api...
  */
 class DiffAggregatedOrderbook : IOrderBook {
 

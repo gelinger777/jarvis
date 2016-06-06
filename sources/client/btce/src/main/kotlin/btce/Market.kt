@@ -30,7 +30,7 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
 
                     log.debug("verifying")
 
-                    condition(book.snapshot().all().size == all.size)
+                    condition(book.snapshot().all().size == all.size, "orderbooks must perfectly match")
                 }
 
             },

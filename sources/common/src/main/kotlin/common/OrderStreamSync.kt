@@ -12,6 +12,14 @@ import util.misc.RefCountSchTask
 import java.util.*
 
 
+/**
+ * This synchronization utility takes a fetching logic that polls a snapshot of orderbook,
+ * and accepts realtime orders using next() method. It will keep polling snapshot until its
+ * newer than the oldest buffered realtime order. Then it will stream the snapshot then the buffered orders,
+ * and after that the actual realtime stream...
+ *
+ * Idiotic exchanges like Bitstamp, will have order misses so
+ */
 class OrderStreamSync(val fetcher: () -> Option<Orderbook>, val delay: Long) {
 
     val log by logger("orderSync")
@@ -22,9 +30,9 @@ class OrderStreamSync(val fetcher: () -> Option<Orderbook>, val delay: Long) {
     val snapshot = MutableOption.empty<Orderbook>()
 
     val fetcherTask = RefCountSchTask(
-            name = "snapshot-fetcher",
+            name = "order-fetcher",
             task = {
-                log.debug("fetching")
+                log.debug("polling")
                 fetcher.invoke().ifPresent {
                     log.debug("snapshot timestamp : ${it.time}")
                     snapshot.take(it)
