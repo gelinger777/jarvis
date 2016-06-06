@@ -2,17 +2,14 @@ package eventstore.client
 
 import proto.eventstore.EventStoreGrpc
 import util.global.computeIfAbsent
-import util.global.logger
 
 class EventStoreClient(val host: String, val port: Int) {
 
-    val log by logger("event-store-client")
+    private val channel = util.net.grpc.channel(host, port)
+    private val streams = mutableMapOf<String, EventStream>()
 
-    val channel = util.net.grpc.channel(host, port)
-    val asyncStub = EventStoreGrpc.newStub(channel)
-    val blockStub = EventStoreGrpc.newBlockingStub(channel)
-
-    val streams = mutableMapOf<String, EventStream>()
+    internal val asyncStub = EventStoreGrpc.newStub(channel)
+    internal val blockStub = EventStoreGrpc.newBlockingStub(channel)
 
     @Synchronized fun getStream(path: String): EventStream {
         return streams.computeIfAbsent(path, { EventStream(it, this) })

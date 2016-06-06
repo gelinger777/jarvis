@@ -5,7 +5,7 @@ import common.OrderStreamSync
 import common.global.all
 import common.global.json
 import common.global.pair
-import util.global.filterOptions
+import util.global.filterEmptyOptionals
 
 fun main(args: Array<String>) {
 
@@ -17,7 +17,7 @@ fun main(args: Array<String>) {
     );
     util.net.pusher.stream("de504dc5763aeef9ff52", "diff_order_book", "data")
             .map { parseOrdersFromDiff(it) }
-            .filterOptions()
+            .filterEmptyOptionals()
             .subscribe { it.all().forEach { sync.next(it) } }
 
     val book = AggregatedOrderbook()

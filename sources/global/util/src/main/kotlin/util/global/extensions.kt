@@ -82,7 +82,7 @@ fun <T> Observable<out Collection<T>>.unpack(): Observable<T> {
     })
 }
 
-fun <T> Observable<Option<T>>.filterOptions(): Observable<T> {
+fun <T> Observable<Option<T>>.filterEmptyOptionals(): Observable<T> {
     return this.filter { it.isPresent() }.map { it.get() }
 }
 

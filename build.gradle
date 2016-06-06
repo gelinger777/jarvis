@@ -376,6 +376,24 @@ project(":collector-bitstamp") {
 }
 
 
+// jarvis
+
+
+project(":engine") {
+
+    dependencies {
+        // event store
+        compile project(":eventstore-server")
+        compile project(":eventstore-client")
+
+        // collectors
+        compile project(":collector-bitfinex")
+        compile project(":collector-bitstamp")
+        compile project(":collector-client")
+    }
+}
+
+
 // Stuff =======================================================================================
 
 

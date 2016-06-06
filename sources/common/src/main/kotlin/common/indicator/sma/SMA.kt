@@ -52,7 +52,7 @@ fun Observable<OHLC>.SMA(count: Int): Observable<SMA> {
 
 fun main(args: Array<String>) {
 
-    protoRandom.trades()
+    protoRandom.trades
             .doOnNext { app.log.info("TRADE : ${it.json()}") }
             .OHLC(3)
             .doOnNext { app.log.info("OHLC : ${it.json()}") }

@@ -5,6 +5,7 @@ import com.google.protobuf.util.JsonFormat
 import common.Orderbook
 import proto.bitfinex.ProtoBitfinex.BitfinexConfig
 import proto.common.*
+import proto.eventstore.ProtoES
 import util.global.condition
 import java.time.Instant
 import java.time.ZoneOffset
@@ -90,10 +91,10 @@ fun Pair.compact(): String {
     return "${base.symbol}|${quote.symbol}"
 }
 
-fun Trade.compact(showTime: Boolean = false):String{
-    if(showTime) {
+fun Trade.compact(showTime: Boolean = false): String {
+    if (showTime) {
         return "${time.dateTime()} - ${price.roundDown3()} | ${volume.roundDown3()}"
-    }else{
+    } else {
         return "${price.roundDown3()} | ${volume.roundDown3()}"
     }
 }
@@ -126,6 +127,18 @@ fun Long.dateTime(): String {
 //fun main(args: Array<String>) {
 //    order(Order.Side.BID, 405.0, 10.2).compact(true).apply { println(this) }
 //}
+
+fun ProtoES.Event.bytes(): ByteArray {
+    return data.toByteArray()
+}
+
+fun ProtoES.Event.parseTrade(): Trade {
+    return Trade.parseFrom(data.toByteArray())
+}
+
+fun ProtoES.Event.parseOrder(): Order {
+    return Order.parseFrom(data.toByteArray())
+}
 
 /**
  * Convert to json

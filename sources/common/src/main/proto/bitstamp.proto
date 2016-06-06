@@ -8,9 +8,8 @@ import "event-store.proto";
 
 
 message BitstampConfig {
-    required string pusherKey = 1;
-    required string publicKey = 2;
-    required string privateKey = 3;
+    required string publicKey = 1;
+    required string privateKey = 2;
 }
 
 message BitstampCollectorConfig {

@@ -9,8 +9,8 @@ import javax.annotation.concurrent.ThreadSafe
  */
 @ThreadSafe
 class RefCountToggle(
-        private val on: () -> Unit,
-        private val off: () -> Unit) {
+        private val on: () -> Unit = {},
+        private val off: () -> Unit = {}) {
 
 
     private var refCount = 0

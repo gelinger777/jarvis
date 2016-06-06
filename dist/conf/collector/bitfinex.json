@@ -1,7 +1,6 @@
 {
   "port": 9152,
   "bitfinexConfig": {
-    "wsURL": "wss://api2.bitfinex.com:3000/ws",
     "publicKey": "change me",
     "privateKey": "change me"
   },

@@ -1,29 +1,41 @@
 package common.global
 
+import proto.common.Order
 import proto.common.Trade
-import rx.Observable
 import rx.subjects.PublishSubject
-import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 
 object protoRandom {
 
-    private val random = Random()
-    private val trades = PublishSubject.create<Trade>()
+    val trades = PublishSubject.create<Trade>()
+    val orders = PublishSubject.create<Order>()
 
-    val supplier = { trade(random.nextDouble(), random.nextDouble(), System.currentTimeMillis()) }
-    var lastPrice = random.nextDouble()
+    fun randomTrade(): Trade = trade(
+            price = randomPrice(),
+            volume = randomVolume(),
+            time = randomTime()
+    )
 
-    fun nextTrade(
-            price: Double = Math.abs(lastPrice + (random.nextDouble() - 0.5)),
-            volume: Double = random.nextDouble(),
-            time: Long = System.currentTimeMillis()
-    ) {
-        trade(price, volume, time)
-                .apply { lastPrice = this.price }
-                .apply { trades.onNext(this) }
-    }
+    fun nextTrade(price: Double = randomPrice(), volume: Double = randomVolume(), time: Long = randomTime()) = trades.onNext(trade(price, volume, time))
 
-    fun trades(): Observable<Trade> {
-        return trades;
-    }
+    fun randomOrder(): Order = order(
+            side = randomSide(),
+            price = randomPrice(),
+            volume = randomVolume(),
+            time = randomTime()
+    )
+
+    fun nextOrder(side: Order.Side = randomSide(), price: Double = randomPrice(), volume: Double = randomVolume(), time: Long = randomTime()) = orders.onNext(order(side, price, volume, time))
+
+    // stuff
+
+    private fun randomSide(): Order.Side = if (random().nextDouble() > 0.5) Order.Side.BID else Order.Side.ASK
+
+    private fun randomPrice(): Double = random().nextDouble(410.0, 420.0)
+
+    private fun randomVolume(): Double = random().nextDouble(1.0, 10.0)
+
+    private fun randomTime(): Long = System.currentTimeMillis()
+
+    private fun random(): ThreadLocalRandom = ThreadLocalRandom.current()
 }

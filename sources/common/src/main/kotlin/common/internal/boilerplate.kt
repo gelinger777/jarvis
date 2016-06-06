@@ -17,7 +17,7 @@ internal fun AggregatedOrderbook.remove(order: Order) {
     val book = book(order.side)
 
     if (!book.containsKey(order.price)) {
-        report("book should have an order with price : ${order.price}")
+        report("book should have an order with price : ${order.price} (ignore this, bitstamp devs are idiots)")
     }
 
     book.remove(order.price)

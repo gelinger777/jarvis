@@ -49,3 +49,10 @@ project(':collector-bitfinex').projectDir = "$rootDir/sources/collector/bitfinex
 
 include ":collector-bitstamp"
 project(':collector-bitstamp').projectDir = "$rootDir/sources/collector/bitstamp" as File
+
+
+// jarvis
+
+
+include ":engine"
+project(':engine').projectDir = "$rootDir/sources/engine" as File

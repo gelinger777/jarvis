@@ -1,7 +1,6 @@
 {
   "port": 9153,
   "bitstampConfig": {
-    "pusherKey": "de504dc5763aeef9ff52",
     "publicKey": "change me",
     "privateKey": "change me"
   },

@@ -4,7 +4,6 @@ import common.IAccount
 import common.IExchange
 import common.IMarket
 import common.global.asPair
-import proto.bitfinex.ProtoBitfinex.BitfinexConfig
 import proto.common.Pair
 import util.global.computeIfAbsent
 import util.global.condition
@@ -12,7 +11,7 @@ import util.global.logger
 import util.global.notImplemented
 import util.net
 
-class Bitfinex(val config: BitfinexConfig) : IExchange {
+class Bitfinex() : IExchange {
     internal val log by logger("bitfinex")
 
     internal val markets = mutableMapOf<Pair, Market>()
@@ -24,25 +23,15 @@ class Bitfinex(val config: BitfinexConfig) : IExchange {
     override fun pairs(): List<Pair> {
         log.info("getting accessible market pairs")
 
-//        if (app.isDevProfile()) {
-//            return mutableListOf(
-//                    pair("btc", "usd"),
-//                    pair("ltc", "usd"),
-//                    pair("ltc", "btc"),
-//                    pair("eth", "usd"),
-//                    pair("eth", "btc")
-//            )
-//        } else {
-            return net.http.get("https://api.bitfinex.com/v1/symbols")
-                    .map { response ->
-                        response.replace(Regex("\\[|\\]|\\n|\""), "")
-                                .split(",")
-                                .map { str -> str.asPair() }
-                                .toList()
-                    }
-                    .ifNotPresentCompute { emptyList<Pair>() }
-                    .get()
-//        }
+        return net.http.get("https://api.bitfinex.com/v1/symbols")
+                .map { response ->
+                    response.replace(Regex("\\[|\\]|\\n|\""), "")
+                            .split(",")
+                            .map { str -> str.asPair() }
+                            .toList()
+                }
+                .ifNotPresentCompute { emptyList<Pair>() }
+                .get()
     }
 
     override @Synchronized fun market(pair: Pair): IMarket {

@@ -56,11 +56,11 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
         return book
     }
 
-    override fun trades(): Observable<Trade> {
-        throw UnsupportedOperationException()
-    }
-
     override fun orders(): Observable<Order> {
         return book.stream()
+    }
+
+    override fun trades(): Observable<Trade> {
+        throw UnsupportedOperationException()
     }
 }

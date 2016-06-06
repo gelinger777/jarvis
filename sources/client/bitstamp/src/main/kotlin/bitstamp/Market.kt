@@ -8,39 +8,50 @@ import proto.common.Pair
 import proto.common.Trade
 import rx.Observable
 import rx.subjects.PublishSubject
-import util.global.filterOptions
+import util.global.filterEmptyOptionals
 import util.global.logger
+import util.misc.RefCountToggle
 
 internal class Market(val exchange: Bitstamp, val pair: Pair) : IMarket {
     internal val log by logger("bitstamp")
 
     val trades = PublishSubject.create<Trade>()
-    val orders = PublishSubject.create<Order>()
-
     val book = AggregatedOrderbook()
 
-    init {
-        // synchronization utility to match snapshots with realtime stream
-        val sync = OrderStreamSync(
-                fetcher = { getOrderbookSnapshot(pair) }, // snapshot callback
-                delay = 3000
-        );
+    val tradesToggle = RefCountToggle(
+            on = {
+                // stream trades
+                log.info("subscribing to trade stream")
+                util.net.pusher.stream("de504dc5763aeef9ff52", pair.bitstampTradeStreamKey(), "trade")
+                        .map { parseTrade(it) }
+                        .filterEmptyOptionals()
+                        .subscribe { trades.onNext(it) }
+            }
+    )
 
-        // start realtime stream
-        util.net.pusher.stream("de504dc5763aeef9ff52", pair.bitstampOrderStreamKey(), "data")
-                .map { parseOrdersFromDiff(it) }
-                .filterOptions()
-                .subscribe { it.all().forEach { sync.next(it) } }
 
-        // sending synchronized orders to book
-        sync.stream.subscribe { book.accept(it) }
-
-        // stream trades
-        util.net.pusher.stream("de504dc5763aeef9ff52", pair.bitstampTradeStreamKey(), "trade")
-                .map { parseTrade(it) }
-                .filterOptions()
-                .subscribe { trades.onNext(it) }
+    /**
+     * Synchronization mechanism, this will keep querying snapshots of orderbook with 3 second delay,
+     * until first snapshot that is younger than the first streamed order, then it will synchronize and
+     * stream snapshot orders first and buffered orders after it...
+     */
+    val sync = OrderStreamSync(
+            fetcher = { getOrderbookSnapshot(pair) }, // snapshot callback
+            delay = 3000
+    ).apply {
+        stream.forEach { book.accept(it) }
     }
+
+    val ordersToggle = RefCountToggle(
+            on = {
+                // stream orders
+                log.info("subscribing to order stream")
+                util.net.pusher.stream("de504dc5763aeef9ff52", pair.bitstampOrderStreamKey(), "data")
+                        .map { parseOrdersFromDiff(it) }
+                        .filterEmptyOptionals()
+                        .subscribe { it.all().forEach { sync.next(it) } }
+            }
+    )
 
     override fun exchange(): IExchange {
         return exchange
@@ -55,10 +66,12 @@ internal class Market(val exchange: Bitstamp, val pair: Pair) : IMarket {
     }
 
     override fun orders(): Observable<Order> {
+        ordersToggle.increment()
         return book.stream()
     }
 
     override fun trades(): Observable<Trade> {
+        tradesToggle.increment()
         return trades
     }
 

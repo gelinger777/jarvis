@@ -13,6 +13,7 @@ import rx.Observable
 import rx.subjects.PublishSubject
 import util.global.logger
 import util.global.wtf
+import util.misc.RefCountToggle
 
 internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
     internal val log by logger("bitfinex")
@@ -22,9 +23,11 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
 
     val book = AggregatedOrderbook()
 
-    val ws = util.net.ws.client(exchange.config.wsURL)
+    val ws = util.net.ws.client("wss://api2.bitfinex.com:3000/ws")
     val channels = mutableMapOf<Any, (JsonArray) -> Unit>()
 
+    val tradesToggle = RefCountToggle(on = { ws.send(subscribeTradesCommand(pair)) })
+    val ordersToggle = RefCountToggle(on = { ws.send(subscribeOrdersCommand(pair)) })
 
     init {
         orders.subscribe { book.accept(it) }
@@ -50,14 +53,10 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
                     log.error("ws client got unexpected exception", it)
                     wtf(it)
                 },
-                {
-                    log.info("websocket client completed")
-                }
+                { log.info("websocket client completed") }
         )
 
         ws.start()
-        ws.send(subscribeTradesCommand(pair))
-        ws.send(subscribeOrdersCommand(pair))
     }
 
     override fun exchange(): IExchange {
@@ -73,10 +72,12 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
     }
 
     override fun orders(): Observable<Order> {
-        return orders
+        ordersToggle.increment()
+        return book.stream()
     }
 
     override fun trades(): Observable<Trade> {
+        tradesToggle.increment()
         return trades
     }
 
