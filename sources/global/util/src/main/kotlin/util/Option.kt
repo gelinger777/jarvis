@@ -119,7 +119,7 @@ class Option<T>(private val value: T?) {
 
     fun ifNotPresentWTF(): Option<T> {
         if (value == null) {
-            wtf("option should not be empty")
+            wtf("this should not happen")
         }
         return this
     }

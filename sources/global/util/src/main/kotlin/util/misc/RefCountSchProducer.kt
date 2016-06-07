@@ -1,27 +1,25 @@
 package util.misc
 
+import rx.Observable
+import rx.subjects.PublishSubject
 import util.cpu
-import util.global.executeSilent
+import util.global.executeAndGetSilent
 import util.global.notInterrupted
 
-/**
- * Scheduled Reference Counting Task is extended version of RefCountTask, except it expects the task,
- * to complete without interruption, in which case after specified delay it will reschedule the same
- * task again (while reference count is positive).
- */
-class RefCountSchTask(
+class RefCountSchProducer<T>(
         private val name: String,
-        private val task: () -> Unit,
+        private val producer: () -> T,
         private @Volatile var delay: Long,
         private val terminationTimeout: Long = 10000) {
 
+    private val observable = PublishSubject.create<T>()
+
     private val scheduledTask = {
         while (Thread.currentThread().notInterrupted()) {
-            executeSilent(task)
+            executeAndGetSilent(producer).ifPresent { observable.onNext(it) }
             cpu.sleep(delay)
         }
     }
-
 
     private val refCountTask = RefCountTask(name, scheduledTask, terminationTimeout)
 
@@ -59,6 +57,10 @@ class RefCountSchTask(
 
     fun delay(delay: Long) {
         this.delay = delay
+    }
+
+    fun stream(): Observable<T> {
+        return observable
     }
 
 }

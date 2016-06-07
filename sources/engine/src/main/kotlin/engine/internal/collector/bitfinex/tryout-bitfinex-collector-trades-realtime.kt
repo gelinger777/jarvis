@@ -34,7 +34,7 @@ internal fun main(args: Array<String>) {
     eventStoreClient.getStream("bitfinex/btc-usd/trades")
             .stream()
             .forEach {
-                println(it.parseTrade().compact(showTime = true))
+                println(it.parseTrade().compact())
             }
 
     readLine()

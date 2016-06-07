@@ -91,7 +91,7 @@ fun Pair.compact(): String {
     return "${base.symbol}|${quote.symbol}"
 }
 
-fun Trade.compact(showTime: Boolean = false): String {
+fun Trade.compact(showTime: Boolean = true): String {
     if (showTime) {
         return "${time.dateTime()} - ${price.roundDown3()} | ${volume.roundDown3()}"
     } else {
@@ -99,8 +99,7 @@ fun Trade.compact(showTime: Boolean = false): String {
     }
 }
 
-fun Order.compact(showTime: Boolean = false): String {
-
+fun Order.compact(showTime: Boolean = true): String {
     if (showTime) {
         return "${time.dateTime()} - $side | ${price.roundDown3()} | ${volume.roundDown3()}"
     } else {

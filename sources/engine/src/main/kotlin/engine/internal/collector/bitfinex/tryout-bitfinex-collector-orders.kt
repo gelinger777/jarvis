@@ -28,7 +28,7 @@ internal fun main(args: Array<String>) {
     readLine()
 
     bitfinexCollectorClient.streamHistoricalOrders(pair("btc", "usd"))
-            .forEach { println(it.compact(showTime = true)) }
+            .forEach { println(it.compact()) }
 
     readLine()
 

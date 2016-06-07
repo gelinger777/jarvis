@@ -32,9 +32,9 @@ class OrderStreamSync(val fetcher: () -> Option<Orderbook>, val delay: Long) {
     val fetcherTask = RefCountSchTask(
             name = "order-fetcher",
             task = {
-                log.debug("polling")
+                log.trace("polling")
                 fetcher.invoke().ifPresent {
-                    log.debug("snapshot timestamp : ${it.time}")
+                    log.trace("snapshot timestamp : ${it.time}")
                     snapshot.take(it)
                 }
             },
@@ -45,47 +45,47 @@ class OrderStreamSync(val fetcher: () -> Option<Orderbook>, val delay: Long) {
     fun next(order: Order) {
 
         if (isSynced) {
-            log.debug("synced, emitting")
+            log.trace("synced, emitting")
             stream.onNext(order)
         } else {
-            log.debug("not synced adding to buffer")
-            log.debug("working with ${order.time}")
+            log.trace("not synced adding to buffer")
+            log.trace("working with ${order.time}")
             buffer.addLast(order)
 
-            log.debug("getting the snapshot")
+            log.trace("getting the snapshot")
 
             if(!fetcherTask.isStarted()){
-                fetcherTask.forceStart()
+                fetcherTask.increment()
             }
 
             val snapshot = snapshot.immutable()
 
             if (snapshot.isNotPresent()) {
-                log.debug("no snapshot, skipping...")
+                log.trace("no snapshot, skipping...")
                 return
             }
 
             val book = snapshot.get()
 
             if (buffer.first.time >= book.time) {
-                log.debug("outdated snapshot, skipping...")
+                log.trace("outdated snapshot, skipping...")
             } else {
-                log.debug("up to date snapshot")
+                log.trace("up to date snapshot")
                 fetcherTask.forceStop()
 
-                log.debug("emitting the snapshot")
+                log.trace("emitting the snapshot")
                 book.all().forEach { stream.onNext(it) }
                 this.snapshot.clear()
 
-                log.debug("emitting buffered orders")
+                log.trace("emitting buffered orders")
 
                 while (buffer.isNotEmpty()) {
                     val bufferedOrder = buffer.pollFirst()
 
                     if (bufferedOrder.time < book.time) {
-                        log.debug("skipping : ${bufferedOrder.time}")
+                        log.trace("skipping : ${bufferedOrder.time}")
                     } else {
-                        log.debug("applying : ${bufferedOrder.time}")
+                        log.trace("applying : ${bufferedOrder.time}")
                         stream.onNext(bufferedOrder)
                     }
                 }

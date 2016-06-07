@@ -7,7 +7,7 @@ internal fun main(args: Array<String>) {
     util.net.pusher.stream("de504dc5763aeef9ff52", "live_trades", "trade")
             .map { parseTrade(it) }
             .filterEmptyOptionals()
-            .map { it.compact(showTime = true) }
+            .map { it.compact() }
             .subscribe { println(it) }
 
     readLine()

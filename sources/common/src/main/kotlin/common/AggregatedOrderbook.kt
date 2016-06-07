@@ -15,8 +15,8 @@ import java.util.*
  * orderbook might in reality be composed of multiple orders of the same price on the same side...
  */
 class AggregatedOrderbook : IOrderBook {
-    internal val bids = TreeMap<Double, Order>(Comparator { o1, o2 -> o2.compareTo(o1) })
-    internal val asks = TreeMap<Double, Order>(Comparator { o1, o2 -> o1.compareTo(o2) })
+    val bids = TreeMap<Double, Order>(Comparator { o1, o2 -> o2.compareTo(o1) })
+    val asks = TreeMap<Double, Order>(Comparator { o1, o2 -> o1.compareTo(o2) })
     internal val stream = PublishSubject.create<Order>()
 
     fun accept(order: Order) {

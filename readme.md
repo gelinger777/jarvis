@@ -78,6 +78,8 @@ All services follow some conventions that proved to be good practice over time. 
 
 All the text in `readme` files or `notes` are single line per paragraph, make sure to turn on `soft wrap` line breaks for the `idea` and `sublime` to automatically adjust to your screen size.
 
+For faster code assistance in `Editor > General > Code Completion` set case sensitive completion to all, autopopup times to 1ms...
+
 By default generated binary distribution for services are stored in `/dist/bin`, and configurations in `/dist/conf` folder, those can be overridden in `build.gradle`. Feel free to customize those folders to fit your workspace and use your api keys in config json files, these changes shall never be pushed to remote repositories but must be kept in your private development branch...
 
 Each `app` expects following environment variables to be provided :

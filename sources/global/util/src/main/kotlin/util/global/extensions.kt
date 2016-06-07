@@ -275,3 +275,11 @@ fun Long.inRange(start: Long, end: Long): Boolean {
 fun Thread.notInterrupted(): Boolean {
     return !this.isInterrupted
 }
+
+fun <T> Iterator<T>.optionalNext() : Option<T> {
+    if(hasNext()){
+        return Option.of(next())
+    }else{
+        return Option.empty()
+    }
+}

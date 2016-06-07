@@ -1,6 +1,7 @@
 <component name="ProjectDictionaryState">
   <dictionary name="vach">
     <words>
+      <w>autopopup</w>
       <w>backtesting</w>
       <w>bitcoin</w>
       <w>blockchain</w>
@@ -18,6 +19,7 @@
       <w>microservice</w>
       <w>ohlc</w>
       <w>orderbooks</w>
+      <w>poller</w>
       <w>proguard</w>
       <w>protonate</w>
       <w>shazam</w>
