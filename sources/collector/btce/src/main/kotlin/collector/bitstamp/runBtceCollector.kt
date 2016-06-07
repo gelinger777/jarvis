@@ -1,9 +1,9 @@
-package collector.bitfinex
+package collector.bitstamp
 
-import bitfinex.Bitfinex
+import btce.Btce
 import collector.common.server.CollectorService
 import eventstore.client.EventStoreClient
-import proto.bitstamp.ProtoCollector.BitfinexCollectorConfig
+import proto.bitstamp.ProtoCollector.BtceCollectorConfig
 import proto.common.CollectorGrpc
 import util.app
 import util.app.log
@@ -11,20 +11,20 @@ import util.cleanupTasks
 import util.global.readConfig
 import util.net
 
-fun startBitfinexCollectorService(port : Int, eventStoreHost:String, eventStorePort:Int){
+fun startBtceCollectorService(port :Int, eventStoreHost:String, eventStorePort:Int){
     log.info("connecting to EventStore")
     val eventStore = EventStoreClient(
             host = eventStoreHost,
             port = eventStorePort
     )
 
-    log.info("creating Bitfinex client")
-    val bitfinex = Bitfinex()
+    log.info("creating Btce client")
+    val bitstamp = Btce()
 
 
     log.info("creating the collector")
     val collector = CollectorService(
-            client = bitfinex,
+            client = bitstamp,
             eventStore = eventStore
     )
 
@@ -35,22 +35,23 @@ fun startBitfinexCollectorService(port : Int, eventStoreHost:String, eventStoreP
     ).start()
 
     cleanupTasks.add(
-            key = "bitfinex-collector",
+            key = "bitstamp-collector",
             task = { server.stop() }
     )
 }
 
 fun main(args: Array<String>) {
     app.log.info("reading the configuration")
-    val config = BitfinexCollectorConfig.newBuilder()
+    val config = BtceCollectorConfig.newBuilder()
             .readConfig("conf")
             .build()
 
-    startBitfinexCollectorService(
+    startBtceCollectorService(
             port = config.port,
             eventStoreHost = config.eventStoreConfig.host,
             eventStorePort = config.eventStoreConfig.port
     )
+
 
     log.info("enter to terminate")
     readLine()

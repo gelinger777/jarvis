@@ -3,7 +3,7 @@ package collector.bitstamp
 import bitstamp.Bitstamp
 import collector.common.server.CollectorService
 import eventstore.client.EventStoreClient
-import proto.bitstamp.ProtoBitstamp.BitstampCollectorConfig
+import proto.bitstamp.ProtoCollector.BitstampCollectorConfig
 import proto.common.CollectorGrpc
 import util.app
 import util.app.log

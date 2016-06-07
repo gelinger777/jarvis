@@ -239,15 +239,15 @@ project(":eventstore-server") {
     apply plugin: 'application'
     mainClassName = "eventstore.server.RunEventStoreKt"
 
-    def dest = "${distRoot}/eventstore"
+    def destination = "${distRoot}/eventstore"
 
     applicationDefaultJvmArgs = [
             "-Dconf=${confRoot}/eventstore.json",
-            "-DlogPath=${dest}/logs",
+            "-DlogPath=${destination}/logs",
             "-Dprofile=${profile}"
     ]
 
-    installDist.destinationDir = file(dest)
+    installDist.destinationDir = file(destination)
 
     description = "[app] Event Store server."
 
@@ -343,15 +343,15 @@ project(":collector-bitfinex") {
     apply plugin: 'application'
     mainClassName = "collector.bitfinex.RunBitfinexCollectorKt"
 
-    def dest = "${distRoot}/bitfinex"
+    def destination = "${distRoot}/bitfinex"
 
     applicationDefaultJvmArgs = [
             "-Dconf=${confRoot}/collector/bitfinex.json",
-            "-DlogPath=${dest}/logs",
+            "-DlogPath=${destination}/logs",
             "-Dprofile=${profile}"
     ]
 
-    installDist.destinationDir = file(dest)
+    installDist.destinationDir = file(destination)
 
     description = "[app] Collects trade and orderbook data for Bitfinex exchange."
 
@@ -365,21 +365,43 @@ project(":collector-bitstamp") {
     apply plugin: 'application'
     mainClassName = "collector.bitstamp.RunBitstampCollectorKt"
 
-    def dest = "${distRoot}/bitstamp"
+    def destination = "${distRoot}/bitstamp"
 
     applicationDefaultJvmArgs = [
             "-Dconf=${confRoot}/collector/bitstamp.json",
-            "-DlogPath=${dest}/logs",
+            "-DlogPath=${destination}/logs",
             "-Dprofile=${profile}"
     ]
 
-    installDist.destinationDir = file(dest)
+    installDist.destinationDir = file(destination)
 
     description = "[app] Collects trade and orderbook data for Bitstamp exchange."
 
     dependencies {
         compile project(":collector-common")
         compile project(":client-bitstamp")
+    }
+}
+
+project(":collector-btce") {
+    apply plugin: 'application'
+    mainClassName = "collector.btce.RunBtceCollectorKt"
+
+    def destination = "${distRoot}/btce"
+
+    applicationDefaultJvmArgs = [
+            "-Dconf=${confRoot}/collector/btce.json",
+            "-DlogPath=${destination}/logs",
+            "-Dprofile=${profile}"
+    ]
+
+    installDist.destinationDir = file(destination)
+
+    description = "[app] Collects trade and orderbook data for Btce exchange."
+
+    dependencies {
+        compile project(":collector-common")
+        compile project(":client-btce")
     }
 }
 
@@ -397,6 +419,7 @@ project(":engine") {
         // collectors
         compile project(":collector-bitfinex")
         compile project(":collector-bitstamp")
+        compile project(":collector-btce")
         compile project(":collector-client")
     }
 }

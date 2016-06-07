@@ -25,6 +25,7 @@ internal fun main(args: Array<String>) {
     }
 
     readLine()
+
     stream.read().forEach { log.info("${it.index} : ${String(it.bytes())}") }
 
     readLine()

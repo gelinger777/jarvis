@@ -1,9 +1,0 @@
-syntax = "proto2";
-option java_outer_classname = "ProtoBtce";
-
-package proto.bitfinex;
-
-message BtceConfig {
-    required string publicKey = 2;
-    required string privateKey = 3;
-}

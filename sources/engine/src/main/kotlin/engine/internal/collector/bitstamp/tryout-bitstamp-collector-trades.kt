@@ -15,12 +15,12 @@ internal fun main(args: Array<String>) {
     )
 
     startBitstampCollectorService(
-            port = 9152,
+            port = 9153,
             eventStoreHost = "localhost",
             eventStorePort = 9151
     )
 
-    val bitstampCollectorClient = CollectorClient("localhost", 9152)
+    val bitstampCollectorClient = CollectorClient("localhost", 9153)
 
     bitstampCollectorClient.recordTrades(pair("btc", "usd"))
 

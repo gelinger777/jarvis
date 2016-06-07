@@ -1,6 +1,6 @@
-package engine.internal.collector.bitstamp
+package engine.internal.collector.btce
 
-import collector.bitstamp.startBitstampCollectorService
+import collector.bitstamp.startBtceCollectorService
 import collector.client.CollectorClient
 import common.global.compact
 import common.global.pair
@@ -14,13 +14,13 @@ internal fun main(args: Array<String>) {
             port = 9151
     )
 
-    startBitstampCollectorService(
-            port = 9153,
+    startBtceCollectorService(
+            port = 9154,
             eventStoreHost = "localhost",
             eventStorePort = 9151
     )
 
-    val bitstampCollectorClient = CollectorClient("localhost", 9153)
+    val bitstampCollectorClient = CollectorClient("localhost", 9154)
 
     bitstampCollectorClient.recordOrders(pair("btc", "usd"))
 

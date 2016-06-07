@@ -3,8 +3,10 @@ package common.global
 import com.google.protobuf.MessageOrBuilder
 import com.google.protobuf.util.JsonFormat
 import common.Orderbook
-import proto.bitfinex.ProtoBitfinex.BitfinexConfig
-import proto.common.*
+import proto.common.Currency
+import proto.common.Order
+import proto.common.Pair
+import proto.common.Trade
 import proto.eventstore.ProtoES
 import util.global.condition
 import java.time.Instant
@@ -149,21 +151,4 @@ fun MessageOrBuilder.json(pretty: Boolean = false): String {
         return json.replace(Regex("[ |\\n]+"), " ")
     }
     return json
-}
-
-// services ============================================================================
-
-fun address(host: String, port: Int): ServiceAddress {
-    return ServiceAddress.newBuilder()
-            .setHost(host)
-            .setPort(port)
-            .build()
-}
-
-fun bitfinexConfig(wsUrl: String, publicKey: String, privateKey: String): BitfinexConfig {
-    return BitfinexConfig.newBuilder()
-            .setWsURL(wsUrl)
-            .setPublicKey(publicKey)
-            .setPrivateKey(privateKey)
-            .build()
 }

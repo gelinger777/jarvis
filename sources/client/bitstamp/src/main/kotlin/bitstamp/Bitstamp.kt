@@ -23,7 +23,7 @@ class Bitstamp() : IExchange {
     override fun pairs(): List<Pair> {
         log.info("getting accessible market pairs")
 
-        // todo : figure out dynamic way of getting these
+        // todo : figure out dynamic way of getting these (idiots at bitstamp don't provide api to get supported market pairs)
 
         return mutableListOf(
                 pair("btc", "usd"),
