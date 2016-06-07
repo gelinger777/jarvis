@@ -151,6 +151,7 @@ class Option<T>(private val value: T?) {
         val empty = Option<Any>(null)
 
         @JvmStatic fun <T> empty(): Option<T> {
+            @Suppress("CAST_NEVER_SUCCEEDS")
             return empty as Option<T>
         }
 

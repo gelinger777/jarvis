@@ -1,7 +1,5 @@
 package util.global
 
-// extension convenience functions
-
 import com.google.protobuf.Message
 import com.google.protobuf.util.JsonFormat
 import com.tars.util.misc.BatchOperator
@@ -19,34 +17,9 @@ import util.cpu
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
-import java.util.*
+import java.nio.charset.StandardCharsets.UTF_8
 import java.util.function.Consumer
 
-
-fun consoleStream(): Observable<String> {
-    return Observable.create(object : Observable.OnSubscribe<String> {
-
-        override fun call(subscriber: Subscriber<in String>) {
-            if (subscriber.isUnsubscribed) {
-                return;
-            }
-
-            val scanner = Scanner(System.`in`);
-            var line = "";
-            while (!subscriber.isUnsubscribed) {
-                line = scanner.nextLine();
-
-                if (line != "close") {
-                    subscriber.onNext(line);
-                } else {
-                    break
-                }
-            }
-
-            subscriber.onCompleted();
-        }
-    })
-}
 
 // observable
 
@@ -257,7 +230,7 @@ fun <T : Message.Builder> T.readConfig(propertyName: String): T {
             condition(notNullOrEmpty(path), "property was not provided")
 
             log.debug("reading configuration from : $path")
-            val json = FileUtils.readFileToString(File(path))
+            val json = FileUtils.readFileToString(File(path), UTF_8)
 
             log.debug("merging configuration")
             JsonFormat.parser().merge(json, this)
@@ -276,10 +249,10 @@ fun Thread.notInterrupted(): Boolean {
     return !this.isInterrupted
 }
 
-fun <T> Iterator<T>.optionalNext() : Option<T> {
-    if(hasNext()){
+fun <T> Iterator<T>.optionalNext(): Option<T> {
+    if (hasNext()) {
         return Option.of(next())
-    }else{
+    } else {
         return Option.empty()
     }
 }

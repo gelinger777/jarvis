@@ -5,7 +5,20 @@ import common.IExchange
 import common.IMarket
 import proto.common.Pair
 
-class Coinbase : IExchange {
+class Gdax : IExchange {
+    // Sandbox
+    val sandbox = "https://public.sandbox.gdax.com"
+
+    // REST API
+    val rest = "https://api-public.sandbox.gdax.com"
+
+    // Websocket Feed
+    val ws = "wss://ws-feed-public.sandbox.gdax.com"
+
+    // FIX API
+    val fix = "https://fix-public.sandbox.gdax.com"
+
+
     override fun name(): String {
         throw UnsupportedOperationException()
     }

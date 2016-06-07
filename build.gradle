@@ -300,16 +300,16 @@ project(":client-bitstamp") {
     }
 }
 
-project(":client-coinbase") {
-    description = "[lib] Client library to work with Coinbase exchange."
+project(":client-btce") {
+    description = "[lib] Client library to work with Btce exchange."
 
     dependencies {
         compile project(":common")
     }
 }
 
-project(":client-btce") {
-    description = "[lib] Client library to work with Btce exchange."
+project(":client-gdax") {
+    description = "[lib] Client library to work with GDAX (Coinbase) exchange."
 
     dependencies {
         compile project(":common")

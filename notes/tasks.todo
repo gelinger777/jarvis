@@ -1,26 +1,15 @@
 current tasks:
- ✔ make market orders() stream initial orderbook first, for each subscriber @done (16-06-06 14:35)
- ✔ test bitfinex and bitstamp collectors @done (16-06-06 19:28)
- ☐ implement btce client and collector
- ☐ implement coinbase client and collector
-
- ☐ add 5 more clients to top volume exchanges
+ ☐ add 5 more clients and collectors to top volume exchanges
    ✔ bitfinex @done (16-05-27 23:12)
    ✔ bitstamp (in progress) @done (16-06-01 22:46)
-   ☐ coinbase
-   ☐ btce      
-   ☐ itbit
-   ☐ kraken
- ☐ add collectors for all clients
-   ✔ bitfinex @done (16-06-01 22:46)
-   ☐ bitstamp
-   ☐ coinbase
-   ☐ btce
+   ✔ btce       @done (16-06-07 17:33)
+   ☐ gdax
+   ☐ btcc
    ☐ itbit
    ☐ kraken
  ☐ event store
-   ☐ add tryout scripts
-   ☐ support rolling files
+   ✔ add tryout scripts @done (16-06-07 17:33)
+   ✔ support rolling files @done (16-06-07 17:33)
    ☐ storage-service
       ☐ upload to dedicated cold storage
       ☐ ability to download from cold storage

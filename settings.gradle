@@ -28,11 +28,11 @@ project(':client-bitfinex').projectDir = "$rootDir/sources/client/bitfinex" as F
 include ":client-bitstamp"
 project(':client-bitstamp').projectDir = "$rootDir/sources/client/bitstamp" as File
 
-include ":client-coinbase"
-project(':client-coinbase').projectDir = "$rootDir/sources/client/coinbase" as File
-
 include ":client-btce"
 project(':client-btce').projectDir = "$rootDir/sources/client/btce" as File
+
+include ":client-gdax"
+project(':client-gdax').projectDir = "$rootDir/sources/client/gdax" as File
 
 
 // collectors
@@ -43,6 +43,7 @@ project(':collector-common').projectDir = "$rootDir/sources/collector/common" as
 
 include ":collector-client"
 project(':collector-client').projectDir = "$rootDir/sources/collector/client" as File
+
 
 include ":collector-bitfinex"
 project(':collector-bitfinex').projectDir = "$rootDir/sources/collector/bitfinex" as File
