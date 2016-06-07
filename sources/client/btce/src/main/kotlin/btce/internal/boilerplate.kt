@@ -123,6 +123,7 @@ internal fun List<Trade>.filterNewTrades(batch: List<Trade>): Option<List<Trade>
 
     return Option.empty()
 }
+
 //
 //fun main(args: Array<String>) {
 //
