@@ -316,6 +316,14 @@ project(":client-gdax") {
     }
 }
 
+project(":client-btcc") {
+    description = "[lib] Client library to work with BtcChina exchange."
+
+    dependencies {
+        compile project(":common")
+    }
+}
+
 
 // Collectors ===================================================================================
 

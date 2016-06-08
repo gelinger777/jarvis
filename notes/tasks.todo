@@ -3,8 +3,8 @@ current tasks:
    ✔ bitfinex @done (16-05-27 23:12)
    ✔ bitstamp (in progress) @done (16-06-01 22:46)
    ✔ btce       @done (16-06-07 17:33)
-   ☐ gdax
    ☐ btcc
+   ☐ gdax
    ☐ itbit
    ☐ kraken
  ☐ event store
@@ -15,8 +15,8 @@ current tasks:
       ☐ ability to download from cold storage
    ☐ manage local machine storage use storage service
  ☐ host collectors
-   ☐ digitalocean.com         // the actual collector execution
-   ☐ s3for.me or amazon s3    // storage for historical data
+   ☐ digitalocean.com       // the actual collector execution
+   ☐ amazon glaicer         // storage for historical data
 
 stocksharp integration :
  ☐ protobuf/grpc compilation to Java/C#/Node

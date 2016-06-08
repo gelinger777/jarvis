@@ -34,6 +34,9 @@ project(':client-btce').projectDir = "$rootDir/sources/client/btce" as File
 include ":client-gdax"
 project(':client-gdax').projectDir = "$rootDir/sources/client/gdax" as File
 
+include ":client-btcc"
+project(':client-btcc').projectDir = "$rootDir/sources/client/btcc" as File
+
 
 // collectors
 

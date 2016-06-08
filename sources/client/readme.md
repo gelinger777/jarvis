@@ -1,3 +1,3 @@
 # Clients package
 
-Contains libraries for different exchanges, these libraries are translating specific exchange APIs to generic api that we use in the system and store data.
+Contains client libraries for different exchanges, these libraries are translating specific exchange API to generic API that we use throughout the system.
