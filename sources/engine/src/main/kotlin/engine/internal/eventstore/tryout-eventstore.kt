@@ -13,12 +13,8 @@ internal fun main(args: Array<String>) {
     )
 
     val client = EventStoreClient("localhost", 9151)
-
-
     val stream = client.getStream("test/tryout")
-
     val log = logger("test")
-
 
     for(i in 0..10){
         stream.write("ping".toByteArray())

@@ -31,8 +31,13 @@ message InfoResp {
 
 message StreamInfo {
     required string path = 1;
+
     required int64 size = 2;
-    required int64 length = 3;
+    required int64 count = 3;
+    required double avgEventSize = 4;
+
+    required int64 firstWriteTime = 5;
+    required int64 lastWriteTime = 6;
 }
 
 message WriteReq {

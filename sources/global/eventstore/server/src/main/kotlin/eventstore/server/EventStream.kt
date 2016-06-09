@@ -17,6 +17,11 @@ internal class EventStream(val name: String, val path: String) {
     private val writeSubject = PublishSubject.create<Pair<Long, ByteArray>>()
     private val writeStream = writeSubject.observeOn(cpu.schedulers.io)
 
+    // some statistics
+    private var totalBytes = 0
+    private var totalEvents = 0
+    private var lastWrite = 0
+
     /**
      * Append a new event to the stream.
      */
