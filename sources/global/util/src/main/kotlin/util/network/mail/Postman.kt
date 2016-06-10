@@ -9,7 +9,7 @@ class Postman(
         val apiKey: String = "key-e3151e2169e042de2bf2c21d05171cb8"
 ) {
 
-    private val log by logger()
+    private val log by lazyLogger()
 
     val config = Configuration()
             .domain(domain)

@@ -14,7 +14,7 @@ import util.global.logger
  * HttpHub provides interface for interacting with http protocol.
  */
 class HttpHub {
-    internal val log by logger("http")
+    internal val log by lazyLogger("http")
     internal val hc = HttpClients.createDefault().apply { cleanupTasks.internalAdd({ this.close() }, 1, "http-client") }
 
     // interface

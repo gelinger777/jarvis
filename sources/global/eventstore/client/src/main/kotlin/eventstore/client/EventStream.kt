@@ -14,7 +14,7 @@ import util.global.*
 
 class EventStream(val path: String, val client: EventStoreClient) {
 
-    val log by logger("client-event-stream")
+    val log by lazyLogger("client-event-stream")
     val writeStream = PublishSubject.create<ByteArray>()
 
     init {

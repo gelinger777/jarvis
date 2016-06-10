@@ -1,12 +1,14 @@
 current tasks:
+ ☐ use chronicle logger
+    ☐ use centralized logging configuration
+    
  ☐ event store 
-   ☐ find out if chronicle indexes are time dependant
-   ✔ add tryout scripts @done (16-06-07 17:33)
-   ✔ support rolling files @done (16-06-07 17:33)
-   ☐ storage-service
-      ☐ upload to dedicated cold storage
-      ☐ ability to download from cold storage
-   ☐ manage local machine storage use storage service
+    ☐ StreamWriter
+    ☐ StreamReader
+    ☐ StreamUploader
+    ☐ StreamPoller
+    ☐ TradeStreamReader
+    ☐ OrderStreamReader
 
  ☐ add 5 more clients and collectors to top volume exchanges
    ✔ bitfinex @done (16-05-27 23:12)

@@ -1,6 +1,5 @@
-package engine.internal.eventstore.chronicle
+package eventstore.tools.internal
 
-import net.openhft.chronicle.queue.ChronicleQueueBuilder
 import net.openhft.chronicle.queue.RollCycles
 import util.cpu
 import java.time.Instant
@@ -9,14 +8,11 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 internal fun main(args: Array<String>) {
-    val ch = ChronicleQueueBuilder
-            .single("/Users/vach/workspace/jarvis/dist/data/temp")
-            .rollCycle(RollCycles.MINUTELY)
-            .build()
+    val ch = queue("/Users/vach/workspace/jarvis/dist/data/temp", RollCycles.MINUTELY)
 
     val ap = ch.createAppender()
 
-    while(true){
+    while (true) {
 
         val current = current()
 

@@ -263,10 +263,7 @@ project(":eventstore-server") {
     description = "[app] Event Store server."
 
     dependencies {
-        compile project(":common")
-
-        // chronicle
-        compile 'net.openhft:chronicle-queue:4.3.2'
+        compile project(":eventstore-tools")
     }
 }
 

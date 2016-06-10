@@ -10,7 +10,7 @@ import util.global.*
 
 internal class EventStore(val rootPath: String) : EventStoreGrpc.EventStore {
 
-    val log by logger("event-store-server")
+    val log by lazyLogger("event-store-server")
     val streams = mutableMapOf<String, EventStream>()
 
     override fun info(request: InfoReq, responseObserver: StreamObserver<InfoResp>) {

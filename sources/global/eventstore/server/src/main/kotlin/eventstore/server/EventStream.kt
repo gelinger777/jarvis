@@ -1,8 +1,8 @@
 package eventstore.server
 
+import eventstore.tools.write
 import net.openhft.chronicle.bytes.Bytes
 import net.openhft.chronicle.queue.ChronicleQueueBuilder
-import net.openhft.chronicle.queue.ExcerptAppender
 import rx.Observable
 import rx.subjects.PublishSubject
 import util.app
@@ -11,7 +11,7 @@ import util.global.isSubscribed
 import util.global.logger
 
 internal class EventStream(val name: String, val path: String) {
-    private val log by logger("server-event-stream")
+    private val log by lazyLogger("server-event-stream")
     private val chronicle = ChronicleQueueBuilder.single(path).build()
     private val appender = chronicle.createAppender()
 
@@ -102,10 +102,6 @@ internal class EventStream(val name: String, val path: String) {
 
     fun realtime(): Observable<Pair<Long, ByteArray>> {
         return writeStream
-    }
-
-    fun ExcerptAppender.write(bytes: ByteArray): Long {
-        return this.apply { writeBytes(Bytes.wrapForRead(bytes)) }.lastIndexAppended()
     }
 
 }

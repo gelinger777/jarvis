@@ -10,7 +10,7 @@ import util.global.condition
 import util.global.logger
 
 class Btce() : IExchange {
-    val log by logger("btce")
+    val log by lazyLogger("btce")
 
     internal val markets = mutableMapOf<Pair, Market>()
 

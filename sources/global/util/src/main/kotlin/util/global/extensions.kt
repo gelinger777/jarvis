@@ -102,14 +102,14 @@ fun <T> StreamObserver<T>.complete(lastValue: T) {
 /**
  * Lazily get logger.
  */
-fun <R : Any> R.logger(): Lazy<Logger> {
+fun <R : Any> R.lazyLogger(): Lazy<Logger> {
     return lazy { LoggerFactory.getLogger(this.javaClass.name) }
 }
 
 /**
  * Lazily get logger.
  */
-fun <R : Any> R.logger(name: String): Lazy<Logger> {
+fun <R : Any> R.lazyLogger(name: String): Lazy<Logger> {
     return lazy { LoggerFactory.getLogger(name) }
 }
 

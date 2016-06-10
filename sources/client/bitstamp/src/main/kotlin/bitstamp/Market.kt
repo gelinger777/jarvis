@@ -13,7 +13,7 @@ import util.global.logger
 import util.misc.RefCountToggle
 
 internal class Market(val exchange: Bitstamp, val pair: Pair) : IMarket {
-    val log by logger("bitstamp")
+    val log by lazyLogger("bitstamp")
 
     val trades = PublishSubject.create<Trade>()
     val book = AggregatedOrderbook()

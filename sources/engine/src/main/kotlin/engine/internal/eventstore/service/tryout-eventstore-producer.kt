@@ -1,4 +1,4 @@
-package engine.internal.eventstore.independent
+package engine.internal.eventstore.service
 
 import eventstore.client.EventStoreClient
 import util.cpu

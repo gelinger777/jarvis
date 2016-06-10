@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
 object heartBeat {
-    private val log by logger("heartbeat")
+    private val log by lazyLogger("heartbeat")
     private val registry = ConcurrentHashMap<String, Pulse>()
     private val watchDogTask = RefCountSchTask(
             name = "heartbeat-watchdog",

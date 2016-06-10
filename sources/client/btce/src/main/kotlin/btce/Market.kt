@@ -18,7 +18,7 @@ import util.misc.RefCountSchProducer
 
 internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
 
-    val log by logger("btce")
+    val log by lazyLogger("btce")
 
     val tradePollTask = RefCountSchProducer(
             name = "trades-producer:${exchange.name()}|${pair.compact()}",

@@ -1,44 +1,4 @@
 -------------------------------------------------------------------------------
-Collectors
--------------------------------------------------------------------------------
-
-eventstore cli {
-
-    info
-
-    read /path -
-
-    stop
-}
-
-collector cli {
-    
-    info
-        exchange name
-        accessible pairs
-        streams that are currently recording
-
-    info name
-        exchange name
-
-    info pairs
-        accessible pairs
-
-    info streams
-        streams that are currently recording
-
-    record trades btc-usd
-
-    record orders btc-usd
-
-    stop
-
-    // there is no api to stop recording or release some resources... it complicates the whole thing, so we will skip that as we might never need such functionality in real usage
-}
-
-
-
--------------------------------------------------------------------------------
 S3 as long term storage
 -------------------------------------------------------------------------------
 
@@ -58,10 +18,6 @@ bitstamp-collector-v2/bitstamp/btc-usd/orders/13-04-2015-part // means not full 
 
 storing historical data
 storing buckets...
-
-
-
-
 
 -------------------------------------------------------------------------------
 CLI interface for jarvis
