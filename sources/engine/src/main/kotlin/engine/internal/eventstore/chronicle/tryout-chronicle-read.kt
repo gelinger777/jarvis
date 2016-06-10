@@ -15,11 +15,32 @@ internal fun main(args: Array<String>) {
 
     val tl = ch.createTailer()
 
+    var lastCycle = -1;
+
+
+
+
+
     while (true) {
 
-        val message = tl.readText() ?: break
+        // todo : time delay problem, events written to the cycle N might belong to cycle N-1
+        // todo : order stream does not make sense without streaming snapshot
 
-        println(message)
+        // todo : find out how to calculate right id for given long timestamp
+        val message = tl.readText() ?: break
+        val cycle = tl.cycle()
+        if (lastCycle != cycle) {
+            println("cycle : " + RollCycles.MINUTELY.toIndex(tl.cycle(), 0))
+            lastCycle = cycle
+        }
+        println("${tl.cycle()} : ${tl.index()} : $message")
     }
 
+
+
+}
+
+
+fun RollCycles.firstIdOfCycleContaining(timestamp: Long): Int {
+    return 0
 }

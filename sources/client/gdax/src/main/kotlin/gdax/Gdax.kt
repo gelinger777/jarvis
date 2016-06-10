@@ -1,4 +1,4 @@
-package coinbase
+package gdax
 
 import common.IAccount
 import common.IExchange
