@@ -27,6 +27,6 @@ internal fun main(args: Array<String>) {
 
 }
 
-fun current(): String {
+private fun current(): String {
     return DateTimeFormatter.ofPattern("YYY-MM-dd HH:mm:ss").format(ZonedDateTime.ofInstant (Instant.now(), ZoneOffset.UTC))
 }

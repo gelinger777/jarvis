@@ -225,6 +225,17 @@ project(":common") {
 
 // Event Store ==================================================================================
 
+project(":eventstore-tools") {
+
+    description = "[lib] Tools for event stream persistence and processing."
+
+    dependencies {
+        compile project(":common")
+
+        // chronicle
+        compile 'net.openhft:chronicle-queue:4.3.2'
+    }
+}
 
 project(":eventstore-client") {
 

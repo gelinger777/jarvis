@@ -5,6 +5,7 @@ import net.openhft.chronicle.queue.ChronicleQueueBuilder
 import net.openhft.chronicle.queue.ExcerptAppender
 import rx.Observable
 import rx.subjects.PublishSubject
+import util.app
 import util.cpu
 import util.global.isSubscribed
 import util.global.logger
@@ -20,7 +21,8 @@ internal class EventStream(val name: String, val path: String) {
     // some statistics
     private var totalBytes = 0
     private var totalEvents = 0
-    private var lastWrite = 0
+    private var created = -1L
+    private var lastWrite = 0L
 
     /**
      * Append a new event to the stream.
@@ -31,6 +33,10 @@ internal class EventStream(val name: String, val path: String) {
         synchronized(appender, {
             // write bytes and get the index
             val index = appender.write(bytes)
+
+            totalBytes += bytes.size
+            totalEvents++
+            lastWrite = app.time()
 
             // async notify observers about this write
             log.info("broadcasting")

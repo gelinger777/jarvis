@@ -1,5 +1,6 @@
 package common.global
 
+import com.google.protobuf.ByteString
 import com.google.protobuf.MessageOrBuilder
 import com.google.protobuf.util.JsonFormat
 import common.Orderbook
@@ -151,4 +152,8 @@ fun MessageOrBuilder.json(pretty: Boolean = false): String {
         return json.replace(Regex("[ |\\n]+"), " ")
     }
     return json
+}
+
+fun ByteArray.toByteString(): ByteString {
+    return ByteString.copyFrom(this)
 }

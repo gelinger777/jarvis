@@ -1,7 +1,12 @@
 package eventstore.client
 
 import com.google.protobuf.ByteString
-import proto.eventstore.ProtoES.*
+import common.global.toByteString
+import eventstore.client.internal.readReq
+import eventstore.client.internal.streamReq
+import eventstore.client.internal.writeReq
+import proto.eventstore.ProtoES.DataResp
+import proto.eventstore.ProtoES.Event
 import rx.Observable
 import rx.Observer
 import rx.subjects.PublishSubject
@@ -18,14 +23,8 @@ class EventStream(val path: String, val client: EventStoreClient) {
                 .batch()
                 .subscribe(object : Observer<Collection<ByteString>> {
                     override fun onNext(batch: Collection<ByteString>) {
-                        // compose write request with batch of data
-                        val writeRequest = WriteReq.newBuilder()
-                                .setPath(path)
-                                .addAllData(batch)
-                                .build()
-
                         // execute a write
-                        val response = client.blockStub.write(writeRequest)
+                        val response = client.blockStub.write(writeReq(path, batch))
 
                         if (response.success) {
                             log.debug("successfully wrote batch of size ${batch.size}")
@@ -52,11 +51,7 @@ class EventStream(val path: String, val client: EventStoreClient) {
         val observer = PublishSubject.create<DataResp>()
 
         client.asyncStub.read(
-                ReadReq.newBuilder()
-                        .setPath(path)
-                        .setStart(start)
-                        .setEnd(end)
-                        .build(),
+                readReq(path, start, end),
                 observer.asGrpcObserver()
         )
 
@@ -70,9 +65,7 @@ class EventStream(val path: String, val client: EventStoreClient) {
         val observer = PublishSubject.create<DataResp>()
 
         client.asyncStub.stream(
-                StreamReq.newBuilder()
-                        .setPath(path)
-                        .build(),
+                streamReq(path),
                 observer.asGrpcObserver()
         )
 
@@ -80,12 +73,6 @@ class EventStream(val path: String, val client: EventStoreClient) {
                 .map { it.eventsList }
                 .doOnNext { log.debug("observing batch of size : ${it.size}") }
                 .unpack()
-    }
-
-    // stuff
-
-    fun ByteArray.toByteString(): ByteString {
-        return ByteString.copyFrom(this)
     }
 
 }

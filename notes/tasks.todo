@@ -1,4 +1,13 @@
 current tasks:
+ ☐ event store 
+   ☐ find out if chronicle indexes are time dependant
+   ✔ add tryout scripts @done (16-06-07 17:33)
+   ✔ support rolling files @done (16-06-07 17:33)
+   ☐ storage-service
+      ☐ upload to dedicated cold storage
+      ☐ ability to download from cold storage
+   ☐ manage local machine storage use storage service
+
  ☐ add 5 more clients and collectors to top volume exchanges
    ✔ bitfinex @done (16-05-27 23:12)
    ✔ bitstamp (in progress) @done (16-06-01 22:46)
@@ -7,13 +16,7 @@ current tasks:
    ☐ gdax
    ☐ itbit
    ☐ kraken
- ☐ event store
-   ✔ add tryout scripts @done (16-06-07 17:33)
-   ✔ support rolling files @done (16-06-07 17:33)
-   ☐ storage-service
-      ☐ upload to dedicated cold storage
-      ☐ ability to download from cold storage
-   ☐ manage local machine storage use storage service
+ 
  ☐ host collectors
    ☐ digitalocean.com       // the actual collector execution
    ☐ amazon glaicer         // storage for historical data

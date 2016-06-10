@@ -7,6 +7,9 @@ project(':common').projectDir = "$rootDir/sources/common" as File
 include ":util"
 project(':util').projectDir = "$rootDir/sources/global/util" as File
 
+include ":eventstore-tools"
+project(':eventstore-tools').projectDir = "$rootDir/sources/global/eventstore/tools" as File
+
 include ":eventstore-client"
 project(':eventstore-client').projectDir = "$rootDir/sources/global/eventstore/client" as File
 
