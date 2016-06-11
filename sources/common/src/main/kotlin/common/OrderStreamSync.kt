@@ -22,7 +22,7 @@ import java.util.*
  */
 class OrderStreamSync(val fetcher: () -> Option<Orderbook>, val delay: Long) {
 
-    val log by lazyLogger("orderSync")
+    val log = logger("orderSync")
 
     val stream = PublishSubject.create<Order>()
     val buffer = LinkedList<Order>()

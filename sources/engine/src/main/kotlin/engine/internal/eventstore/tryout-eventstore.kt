@@ -5,6 +5,7 @@ import eventstore.client.EventStoreClient
 import eventstore.server.startEventStoreService
 import util.global.logger
 
+
 internal fun main(args: Array<String>) {
 
     startEventStoreService(

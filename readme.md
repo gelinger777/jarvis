@@ -39,6 +39,9 @@ make sure the following plugins are installed
  * `strategies` may use indicators to generate trading signals, these contain decision making logic based on information that is being provided by some set of indicators, each strategy defines required set of indicators. Strategy may also use historical data to learn and optimize for specific market.
  * `other` components such as `eventstore` are there to facilitate work of the logical components.
 
+Intention is to keep them so small and simple that it is not necessary to write complex tests and very easy to maintain/test using few scripts. This is why we use `internal/tryout-*.kt` files in each project.
+
+All the logging configuration for all project is centralized to one configuration, no matter what project you run make sure that environment variable `log4j.configuration` is passed in environment variables.
 
 ## Technological Stack
 

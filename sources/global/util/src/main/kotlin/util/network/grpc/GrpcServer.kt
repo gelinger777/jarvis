@@ -7,7 +7,7 @@ import util.cpu
 import util.global.logger
 
 class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
-    val log by lazyLogger()
+    val log = logger("GrpcServer")
 
     private val server = ServerBuilder
             .forPort(port)

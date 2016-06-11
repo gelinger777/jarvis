@@ -5,8 +5,8 @@ import com.google.protobuf.util.JsonFormat
 import com.tars.util.misc.BatchOperator
 import io.grpc.stub.StreamObserver
 import org.apache.commons.io.FileUtils
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import rx.Observable
 import rx.Scheduler
 import rx.Subscriber
@@ -19,6 +19,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.function.Consumer
+import java.util.function.Supplier
 
 
 // observable
@@ -99,22 +100,22 @@ fun <T> StreamObserver<T>.complete(lastValue: T) {
 
 // logger
 
-/**
- * Lazily get logger.
- */
-fun <R : Any> R.lazyLogger(): Lazy<Logger> {
-    return lazy { LoggerFactory.getLogger(this.javaClass.name) }
-}
-
-/**
- * Lazily get logger.
- */
-fun <R : Any> R.lazyLogger(name: String): Lazy<Logger> {
-    return lazy { LoggerFactory.getLogger(name) }
-}
+///**
+// * Lazily get logger.
+// */
+//fun <R : Any> R.lazyLogger(): Lazy<Logger> {
+//    return lazy { LoggerFactory.getLogger(this.javaClass.name) }
+//}
+//
+///**
+// * Lazily get logger.
+// */
+//fun <R : Any> R.lazyLogger(name: String): Lazy<Logger> {
+//    return lazy { LoggerFactory.getLogger(name) }
+//}
 
 fun logger(name: String): Logger {
-    return LoggerFactory.getLogger(name)
+    return LogManager.getLogger(name)
 }
 
 // mutable map

@@ -12,7 +12,7 @@ import util.global.notImplemented
 
 
 class Bitstamp() : IExchange {
-    internal val log by lazyLogger("bitstamp")
+    internal val log = logger("bitstamp")
 
     internal val markets = mutableMapOf<Pair, Market>()
 

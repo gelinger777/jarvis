@@ -11,7 +11,7 @@ import util.global.isSubscribed
 import util.global.logger
 
 internal class EventStream(val name: String, val path: String) {
-    private val log by lazyLogger("server-event-stream")
+    private val log = logger("server-event-stream")
     private val chronicle = ChronicleQueueBuilder.single(path).build()
     private val appender = chronicle.createAppender()
 

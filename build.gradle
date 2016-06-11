@@ -22,9 +22,7 @@ buildscript {
     }
 }
 
-
 // Global =======================================================================================
-
 
 subprojects {
     apply plugin: 'java'
@@ -81,10 +79,15 @@ subprojects {
 
         // logging
         compile('org.slf4j:slf4j-api:1.7.19') { force = true }
-        compile('org.slf4j:slf4j-log4j12:1.7.19') { force = true }
+//        compile('org.slf4j:slf4j-log4j12:1.7.19') { force = true }
         compile('org.slf4j:jcl-over-slf4j:1.7.19') { force = true }
         compile('org.slf4j:jul-to-slf4j:1.7.21') { force = true }
-        runtime('log4j:log4j:1.2.17') { force = true }
+//        compile('log4j:log4j:1.2.17') { force = true }
+        compile('org.apache.logging.log4j:log4j-api:2.6') { force = true }
+        compile('org.apache.logging.log4j:log4j-core:2.6') { force = true }
+        compile('org.apache.logging.log4j:log4j-slf4j-impl:2.6') { force = true }
+        // enable for async loggers (note : async loggers will lose callers info
+//        compile 'com.lmax:disruptor:3.3.4'
 
         // test
         testCompile "org.jetbrains.kotlin:kotlin-test:1.0.2"
@@ -175,9 +178,7 @@ subprojects {
     }
 }
 
-
 // Util =========================================================================================
-
 
 project(":util") {
 
@@ -207,9 +208,7 @@ project(":util") {
     }
 }
 
-
 // Common =======================================================================================
-
 
 project(":common") {
 
@@ -221,7 +220,6 @@ project(":common") {
 
     enableProto()
 }
-
 
 // Event Store ==================================================================================
 
@@ -253,9 +251,11 @@ project(":eventstore-server") {
     def destination = "${distRoot}/eventstore"
 
     applicationDefaultJvmArgs = [
-            "-Dconf=${confRoot}/eventstore.json",
             "-DlogPath=${destination}/logs",
-            "-Dprofile=${profile}"
+            "-Dlog4j.configurationFile=${confRoot}/logging/log4j2.xml",
+//            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
+            "-Dprofile=${profile}",
+            "-Dconf=${confRoot}/eventstore.json"
     ]
 
     installDist.destinationDir = file(destination)
@@ -267,9 +267,7 @@ project(":eventstore-server") {
     }
 }
 
-
 // User Interface ===============================================================================
-
 
 project(":visual") {
 
@@ -288,9 +286,7 @@ project(":visual") {
     }
 }
 
-
 // Clients ======================================================================================
-
 
 project(":client-bitfinex") {
     description = "[lib] Client library to work with Bitfinex exchange."
@@ -332,9 +328,7 @@ project(":client-btcc") {
     }
 }
 
-
 // Collectors ===================================================================================
-
 
 project(":collector-common") {
 
@@ -362,9 +356,11 @@ project(":collector-bitfinex") {
     def destination = "${distRoot}/bitfinex"
 
     applicationDefaultJvmArgs = [
-            "-Dconf=${confRoot}/collector/bitfinex.json",
             "-DlogPath=${destination}/logs",
-            "-Dprofile=${profile}"
+            "-Dlog4j.configurationFile=${confRoot}/logging/log4j2.xml",
+//            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
+            "-Dprofile=${profile}",
+            "-Dconf=${confRoot}/collector/bitfinex.json"
     ]
 
     installDist.destinationDir = file(destination)
@@ -384,9 +380,11 @@ project(":collector-bitstamp") {
     def destination = "${distRoot}/bitstamp"
 
     applicationDefaultJvmArgs = [
-            "-Dconf=${confRoot}/collector/bitstamp.json",
             "-DlogPath=${destination}/logs",
-            "-Dprofile=${profile}"
+            "-Dlog4j.configurationFile=${confRoot}/logging/log4j2.xml",
+//            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
+            "-Dprofile=${profile}",
+            "-Dconf=${confRoot}/collector/bitstamp.json"
     ]
 
     installDist.destinationDir = file(destination)
@@ -406,9 +404,11 @@ project(":collector-btce") {
     def destination = "${distRoot}/btce"
 
     applicationDefaultJvmArgs = [
-            "-Dconf=${confRoot}/collector/btce.json",
             "-DlogPath=${destination}/logs",
-            "-Dprofile=${profile}"
+            "-Dlog4j.configurationFile=${confRoot}/logging/log4j2.xml",
+//            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
+            "-Dprofile=${profile}",
+            "-Dconf=${confRoot}/collector/btce.json"
     ]
 
     installDist.destinationDir = file(destination)
@@ -421,9 +421,7 @@ project(":collector-btce") {
     }
 }
 
-
 // jarvis
-
 
 project(":engine") {
 
@@ -440,9 +438,7 @@ project(":engine") {
     }
 }
 
-
 // Stuff =======================================================================================
-
 
 // ./gradlew wrapper --gradle-version=2.13
 

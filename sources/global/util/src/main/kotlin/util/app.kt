@@ -5,8 +5,8 @@ import rx.subjects.PublishSubject
 import util.global.*
 
 object app {
-    val log by lazyLogger("app")
-    val exceptionLogger by lazyLogger("exc")
+    val log = logger("app")
+    val exceptionLogger = logger("exc")
     val profile: String
 
     internal val unrecoverableErrors = PublishSubject.create<Throwable>()

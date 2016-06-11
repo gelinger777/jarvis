@@ -4,6 +4,7 @@ import proto.eventstore.EventStoreGrpc
 import proto.eventstore.ProtoES.EventStoreConfig
 import util.app
 import util.cleanupTasks
+
 import util.global.logger
 import util.global.readConfig
 import util.net

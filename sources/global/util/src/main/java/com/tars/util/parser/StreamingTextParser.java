@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  *
  * This class is not thread safe (for parallel processing thread confinement via ThreadLocals is preferred).
  */
-public class StreamingTextParser {
+class StreamingTextParser {
 
   private final Set<String> eventTypes;
   private final Map<String, Handler> handlerMap;
@@ -146,3 +146,22 @@ public class StreamingTextParser {
     }
   }
 }
+
+//public class StreamingTextParserTest {
+//
+//  @Test
+//  public void testParse() throws Exception {
+//    StreamingTextParser.builder()
+//        .registerHandler("be", StreamingTextParserTest.this::check)
+//        .registerHandler("not", StreamingTextParserTest.this::check)
+//        .registerHandler("question", StreamingTextParserTest.this::check)
+//        .build()
+//        .parse("To be, or not to be: that is the question");
+//  }
+//
+//  private LinkedList<String> matchesInRightOrder = new LinkedList<>(Arrays.asList("be", "not", "be", "question"));
+//
+//  private void check(Matcher matcher){
+//    assert matcher.group().equals(matchesInRightOrder.pollFirst());
+//  }
+//}

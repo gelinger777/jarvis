@@ -12,7 +12,7 @@ import util.global.notImplemented
 import util.net
 
 class Bitfinex() : IExchange {
-    internal val log by lazyLogger("bitfinex")
+    internal val log = logger("bitfinex")
 
     internal val markets = mutableMapOf<Pair, Market>()
 

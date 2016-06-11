@@ -16,7 +16,7 @@ import util.global.wtf
 import util.misc.RefCountToggle
 
 internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
-    internal val log by lazyLogger("bitfinex")
+    internal val log = logger("bitfinex")
 
     val trades = PublishSubject.create<Trade>()
     val orders = PublishSubject.create<Order>()

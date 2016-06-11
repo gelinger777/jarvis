@@ -7,7 +7,7 @@ import util.global.toClosure
 import java.util.*
 
 object cleanupTasks {
-    val log by lazyLogger("maid")
+    val log = logger("maid")
     val tasks = mutableMapOf<String, Pair<Int, () -> Unit>>()
     internal val internalTasks = mutableMapOf<String, Pair<Int, () -> Unit>>()
 

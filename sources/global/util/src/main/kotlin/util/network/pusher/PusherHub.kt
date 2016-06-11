@@ -9,7 +9,7 @@ import util.global.logger
 
 class PusherHub {
 
-    private val log by lazyLogger("pusher")
+    private val log = logger("pusher")
 
     fun stream(pusherKey: String, channelKey: String, eventType: String): Observable<String> {
         val pusher = Pusher(pusherKey)

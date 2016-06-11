@@ -1,3 +1,10 @@
+// default environment variables for kotlin configs
+
+-Dlog4j.configuration=/Users/vach/workspace/jarvis/dist/conf/logging/log4j.properties
+-DlogPath=/Users/vach/workspace/jarvis/dist/logs
+-Dprofile=dev
+
+
 -------------------------------------------------------------------------------
 S3 as long term storage
 -------------------------------------------------------------------------------
