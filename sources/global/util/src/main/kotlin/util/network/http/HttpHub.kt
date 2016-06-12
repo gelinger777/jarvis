@@ -28,7 +28,7 @@ class HttpHub {
     }
 
     fun getString(request: HttpUriRequest): Option<String> {
-        log.debug("requesting {}", request)
+        log.debug { "requesting ${request.uri}" }
         return executeAndGetSilent { EntityUtils.toString(hc.execute(request).entity) }
     }
 

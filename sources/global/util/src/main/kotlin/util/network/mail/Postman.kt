@@ -20,7 +20,7 @@ class Postman(
              senderName: String = "Jarvis",
              senderAddress: String = "jarvis@jarvis.com"
     ) {
-        log.info("sending an email to [$destination]");
+        log.info { "sending an email to [$destination]" }
 
         MailBuilder.using(config)
                 .from(senderName, senderAddress)

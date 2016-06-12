@@ -15,7 +15,7 @@ object heartBeat {
             task = {
                 // iterate over all monitored instances
                 for (pulse in registry.values) {
-                    log.trace("checking : {}", pulse.name)
+                    log.trace { "checking : ${pulse.name}" }
                     // filter those who violated the timeout
                     if ((System.currentTimeMillis() - pulse.lastBeat.get()) > pulse.timeout) {
                         println(System.currentTimeMillis())
@@ -24,7 +24,7 @@ object heartBeat {
 
 
                         // schedule the callback execution
-                        log.warn("heartbeat violation : {}", pulse.name)
+                        log.warn { "heartbeat violation : ${pulse.name}" }
                         io.execute(pulse.callback)
                         stop(pulse.name)
                     }
@@ -38,7 +38,7 @@ object heartBeat {
 
         registry.put(name, Pulse(name, timeout, callback))
         watchDogTask.increment()
-        log.info("started heartbeat : $name")
+        log.info { "started heartbeat : $name" }
     }
 
     fun stop(name: String) {
@@ -47,14 +47,14 @@ object heartBeat {
         registry.remove(name)
         watchDogTask.decrement()
 
-        log.info("stopped heartbeat : $name")
+        log.info { "stopped heartbeat : $name" }
     }
 
     fun beat(name: String) {
         val pulse = registry[name] ?: throw IllegalArgumentException("no heartbeat is registered under [$name]")
         pulse.lastBeat.set(System.currentTimeMillis())
 
-        log.debug("beat on : $name")
+        log.debug { "beat on : $name" }
     }
 
     data class Pulse(val name: String, val timeout: Long, val callback: () -> Unit, val lastBeat: AtomicLong = AtomicLong(System.currentTimeMillis()))

@@ -8,7 +8,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 internal fun main(args: Array<String>) {
-    val ch = queue("/Users/vach/workspace/jarvis/dist/data/temp", RollCycles.MINUTELY)
+    val ch = queue("/Users/vach/workspace/jarvis/dist/data/test-cycles", RollCycles.MINUTELY)
 
     val ap = ch.createAppender()
 
@@ -20,7 +20,6 @@ internal fun main(args: Array<String>) {
         ap.writeText(current)
         cpu.sleep(1000)
     }
-
 }
 
 private fun current(): String {

@@ -26,7 +26,7 @@ class PusherHub {
         val subject = PublishSubject.create<String>()
 
         channel.bind(eventType) { ch, ev, data ->
-            log.debug("{} : {} : {}", ch, ev, data)
+            log.debug { "$ch : $ev : $data" }
             subject.onNext(data)
         }
 

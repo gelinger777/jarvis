@@ -10,10 +10,8 @@ import proto.common.Pair
 import proto.common.Trade
 import proto.eventstore.ProtoES
 import util.global.condition
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
+import util.global.dateTime
+import util.global.roundDown3
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Pattern
 
@@ -108,22 +106,6 @@ fun Order.compact(showTime: Boolean = true): String {
     } else {
         return "$side | ${price.roundDown3()} | ${volume.roundDown3()}"
     }
-}
-
-fun Double.roundDown3(): Double {
-    return Math.floor(this * 1e3) / 1e3
-}
-
-fun Double.roundDown5(): Double {
-    return Math.floor(this * 1e5) / 1e5
-}
-
-fun Double.roundDown7(): Double {
-    return Math.floor(this * 1e7) / 1e7
-}
-
-fun Long.dateTime(): String {
-    return DateTimeFormatter.ofPattern("YYY-MM-dd HH:mm:ss").format(ZonedDateTime.ofInstant (Instant.ofEpochMilli(this), ZoneOffset.UTC))
 }
 
 //fun main(args: Array<String>) {

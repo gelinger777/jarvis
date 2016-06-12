@@ -3,15 +3,15 @@ package util
 import rx.Observable
 import rx.subjects.PublishSubject
 import util.global.*
+import java.util.concurrent.ThreadLocalRandom
 
 object app {
     val log = logger("app")
     val exceptionLogger = logger("exc")
     val profile: String
 
-    internal val unrecoverableErrors = PublishSubject.create<Throwable>()
-
-    internal val reportedErrors = PublishSubject.create<Throwable>()
+    val unrecoverableErrors = PublishSubject.create<Throwable>()
+    val reportedErrors = PublishSubject.create<Throwable>()
 
     init {
         val logs = System.getProperty("logPath")
@@ -20,8 +20,8 @@ object app {
         mandatoryCondition(notNullOrEmpty(logs), "'logPath' system property must be specified")
         mandatoryCondition(notNullOrEmpty(profile), "'profile' system property must be specified")
 
-        log.info("started with profile : $profile")
-        log.info("log files root : $logs")
+        log.info { "started with profile : $profile" }
+        log.info { "log files root : $logs" }
 
         when (profile) {
             "dev" -> {
@@ -34,7 +34,7 @@ object app {
             }
             "prod" -> {
                 onReportedFailure {
-                    exceptionLogger.info("REPORTED ERROR", it)
+                    exceptionLogger.info ("REPORTED ERROR", it)
 
                     net.mail.send(
                             subject = "reported error",
@@ -43,7 +43,7 @@ object app {
                 }
 
                 onUnrecoverableFailure {
-                    exceptionLogger.info("UNRECOVERABLE ERROR", it)
+                    exceptionLogger.info ("UNRECOVERABLE ERROR", it)
 
                     net.mail.send(
                             subject = "unrecoverable error",
@@ -72,6 +72,14 @@ object app {
 
     fun time(): Long {
         return System.currentTimeMillis()
+    }
+
+    fun random(): Double {
+        return ThreadLocalRandom.current().nextDouble()
+    }
+
+    fun random(bound: Double): Boolean {
+        return ThreadLocalRandom.current().nextDouble() > bound
     }
 
     fun exit() {

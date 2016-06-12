@@ -1,12 +1,10 @@
 current tasks:
- ☐ use chronicle logger
-    ☐ use centralized logging configuration
-    
  ☐ event store 
-    ☐ StreamWriter
-    ☐ StreamReader
+    ✔ StreamWriter @done (16-06-12 15:59)
+    ✔ StreamReader @done (16-06-12 15:59)
     ☐ StreamUploader
     ☐ StreamPoller
+
     ☐ TradeStreamReader
     ☐ OrderStreamReader
 

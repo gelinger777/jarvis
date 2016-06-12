@@ -22,15 +22,15 @@ object cpu {
     }
 
     init {
-        log.debug("init")
+        log.debug { "init" }
 
         cleanupTasks.internalAdd({
-            log.debug("shutdown");
+            log.debug { "shutdown" }
 
             // common pool doesn't need shutdown
             executors.io.shutdown()
 
-            log.debug("waiting for pools to shut down")
+            log.debug { "waiting for pools to shut down" }
 
             executeMandatory { executors.io.awaitTermination(1, TimeUnit.MINUTES) }
             executeMandatory { executors.fj.awaitQuiescence(1, TimeUnit.MINUTES) }

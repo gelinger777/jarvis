@@ -76,7 +76,7 @@ fun report(message: String): Throwable {
 
 private fun reportAndKill(cause: Throwable) {
     // write log to a file
-    app.exceptionLogger.error("unrecoverable error", cause)
+    app.exceptionLogger.error(cause)
 
     // acknowledge all the failure subscribers
     app.unrecoverableErrors.onNext(cause);

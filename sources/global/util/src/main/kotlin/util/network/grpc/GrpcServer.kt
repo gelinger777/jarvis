@@ -16,7 +16,7 @@ class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
             .build()
 
     fun start(): GrpcServer {
-        log.info("starting a ${service.name} server on $port")
+        log.info { "starting a ${service.name} server on $port" }
 
         server.start()
         cleanupTasks.internalAdd(
@@ -28,14 +28,14 @@ class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
     }
 
     fun stop() {
-        log.info("shutting down ${service.name} server")
+        log.info { "shutting down ${service.name} server" }
 
         cleanupTasks.remove("server:$port")
         server.shutdown()
     }
 
 //    fun blockForTermination() {
-//        log.info("awaiting for termination of ${service.name}")
+//        log.info{"awaiting for termination of ${service.name}"}
 //        if (server != null) {
 //            try {
 //                server.awaitTermination()

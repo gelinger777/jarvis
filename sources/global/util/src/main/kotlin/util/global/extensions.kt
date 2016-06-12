@@ -6,7 +6,6 @@ import com.tars.util.misc.BatchOperator
 import io.grpc.stub.StreamObserver
 import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import rx.Observable
 import rx.Scheduler
 import rx.Subscriber
@@ -14,12 +13,12 @@ import rx.subjects.PublishSubject
 import util.Option
 import util.app.log
 import util.cpu
+import util.logging.Logger
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.function.Consumer
-import java.util.function.Supplier
 
 
 // observable
@@ -115,7 +114,7 @@ fun <T> StreamObserver<T>.complete(lastValue: T) {
 //}
 
 fun logger(name: String): Logger {
-    return LogManager.getLogger(name)
+    return Logger(LogManager.getLogger(name))
 }
 
 // mutable map
@@ -225,15 +224,15 @@ fun <T> Consumer<T>.andThen(after: Consumer<T>): Consumer<T> {
 fun <T : Message.Builder> T.readConfig(propertyName: String): T {
     return this.apply {
         executeMandatory {
-            log.debug("getting location of configuration : $propertyName")
+            log.debug { "getting location of configuration : $propertyName" }
             val path = System.getProperty(propertyName)
 
             condition(notNullOrEmpty(path), "property was not provided")
 
-            log.debug("reading configuration from : $path")
+            log.debug { "reading configuration from : $path" }
             val json = FileUtils.readFileToString(File(path), UTF_8)
 
-            log.debug("merging configuration")
+            log.debug { "merging configuration" }
             JsonFormat.parser().merge(json, this)
         }
     }

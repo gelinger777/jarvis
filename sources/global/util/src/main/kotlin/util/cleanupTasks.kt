@@ -13,13 +13,13 @@ object cleanupTasks {
 
     init {
         Runtime.getRuntime().addShutdownHook(Thread({
-            log.debug("executing cleanup tasks")
+            log.debug { "executing cleanup tasks" }
 
             // user code tasks
             tasks.entries.asSequence()
                     .sortedBy { -it.value.first }
                     .forEach {
-                        log.debug("cleanup : ${it.key}")
+                        log.debug { "cleanup : ${it.key}" }
                         executeSilent { it.value.second.invoke() }
                     }
 
@@ -27,7 +27,7 @@ object cleanupTasks {
             internalTasks.entries.asSequence()
                     .sortedBy { -it.value.first }
                     .forEach {
-                        log.debug("cleanup : ${it.key}")
+                        log.debug { "cleanup : ${it.key}" }
                         executeSilent { it.value.second.invoke() }
                     }
         }))

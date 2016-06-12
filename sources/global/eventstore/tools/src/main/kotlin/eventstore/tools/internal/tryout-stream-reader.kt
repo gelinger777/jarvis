@@ -1,8 +1,7 @@
 package eventstore.tools.internal
 
-import eventstore.tools.StreamWriter
+import eventstore.tools.StreamReader
 import net.openhft.chronicle.queue.RollCycles
-import util.cpu
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -10,12 +9,12 @@ import java.time.format.DateTimeFormatter
 
 internal fun main(args: Array<String>) {
 
-    val writer = StreamWriter("/Users/vach/workspace/jarvis/dist/data/uuid", RollCycles.HOURLY)
+    val reader = StreamReader("/Users/vach/workspace/jarvis/dist/data/uuid", RollCycles.HOURLY)
 
-    while (true) {
-        writer.write(current())
-        cpu.sleep(50)
-    }
+    reader.read()
+            .map { String(it.second, Charsets.UTF_8) }
+            .subscribe { println(it) }
+
 
 }
 

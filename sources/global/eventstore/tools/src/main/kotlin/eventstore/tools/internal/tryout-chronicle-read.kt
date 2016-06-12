@@ -3,7 +3,7 @@ package eventstore.tools.internal
 import net.openhft.chronicle.queue.RollCycles
 
 internal fun main(args: Array<String>) {
-    val ch = queue("/Users/vach/workspace/jarvis/dist/data/temp", RollCycles.MINUTELY)
+    val ch = queue("/Users/vach/workspace/jarvis/dist/data/test-cycles", RollCycles.MINUTELY)
 
     val tl = ch.createTailer()
 
@@ -11,13 +11,15 @@ internal fun main(args: Array<String>) {
 
     while (true) {
 
-        val message = tl.readText() ?: break
         val cycle = tl.cycle()
+        val index = tl.index()
+        val message = tl.readText() ?: break
+
         if (lastCycle != cycle) {
-            println("cycle : " + RollCycles.MINUTELY.toIndex(tl.cycle(), 0))
+            println("cycle : " + RollCycles.MINUTELY.toIndex(cycle, 0)) // todo this is the way to calculate first index of the cycle...
             lastCycle = cycle
         }
-        println("${tl.cycle()} : ${tl.index()} : $message")
+        println("$cycle : $index : $message")
     }
 
 

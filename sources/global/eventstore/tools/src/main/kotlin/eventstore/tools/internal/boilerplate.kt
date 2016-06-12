@@ -16,3 +16,7 @@ fun queue(path: String, rollupCycle: RollCycles): SingleChronicleQueue {
 fun StreamWriter.write(proto: MessageLite){
     write(proto.toByteArray())
 }
+
+fun StreamWriter.write(string: String){
+    write(string.toByteArray(Charsets.UTF_8))
+}
