@@ -1,3 +1,5 @@
+package eventstore.tools.internal.samples;
+
 import com.amazonaws.auth.SystemPropertiesCredentialsProvider;
 import com.amazonaws.services.glacier.AmazonGlacierClient;
 import com.amazonaws.services.glacier.transfer.ArchiveTransferManager;

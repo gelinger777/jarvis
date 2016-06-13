@@ -20,8 +20,8 @@ object app {
         mandatoryCondition(notNullOrEmpty(logs), "'logPath' system property must be specified")
         mandatoryCondition(notNullOrEmpty(profile), "'profile' system property must be specified")
 
-        log.info { "started with profile : $profile" }
-        log.info { "log files root : $logs" }
+        log.debug { "profile : $profile" }
+        log.debug { "log root : $logs" }
 
         when (profile) {
             "dev" -> {

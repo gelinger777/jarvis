@@ -18,7 +18,7 @@ internal fun main(args: Array<String>) {
 
         println("writing : $current")
         ap.writeText(current)
-        cpu.sleep(1000)
+        cpu.sleep(50)
     }
 }
 

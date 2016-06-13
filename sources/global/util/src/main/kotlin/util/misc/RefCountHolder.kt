@@ -4,7 +4,7 @@ import util.global.areSame
 import util.global.condition
 import util.global.getMandatory
 
-class RefCountHolder<T>(supplier: () -> T, finalizer: (T) -> Unit) {
+class RefCountHolder<T>(val supplier: () -> T, val finalizer: (T) -> Unit) {
 
     private val toggle: RefCountToggle
     private var instance: T? = null

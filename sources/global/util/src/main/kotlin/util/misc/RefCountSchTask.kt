@@ -10,10 +10,10 @@ import util.global.notInterrupted
  * task again (while reference count is positive).
  */
 class RefCountSchTask(
-        private val name: String,
-        private val task: () -> Unit,
-        private @Volatile var delay: Long,
-        private val terminationTimeout: Long = 10000) {
+        val name: String,
+        val task: () -> Unit,
+        @Volatile var delay: Long,
+        val terminationTimeout: Long = 10000) {
 
     private val scheduledTask = {
         while (Thread.currentThread().notInterrupted()) {

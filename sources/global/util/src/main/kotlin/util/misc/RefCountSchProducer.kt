@@ -7,10 +7,10 @@ import util.global.executeAndGetSilent
 import util.global.notInterrupted
 
 class RefCountSchProducer<T>(
-        private val name: String,
-        private val producer: () -> T,
-        private @Volatile var delay: Long,
-        private val terminationTimeout: Long = 10000) {
+        val name: String,
+        val producer: () -> T,
+        @Volatile var delay: Long,
+        val terminationTimeout: Long = 10000) {
 
     private val observable = PublishSubject.create<T>()
 

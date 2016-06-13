@@ -2,26 +2,25 @@ package util.logging
 
 import org.apache.logging.log4j.util.Supplier
 
-class Logger(private val logger: org.apache.logging.log4j.Logger) : org.apache.logging.log4j.Logger by logger {
+class Logger(val logger: org.apache.logging.log4j.Logger) : org.apache.logging.log4j.Logger by logger {
 
-    fun info(supplier: () -> String) {
+    inline fun info(crossinline supplier: () -> String) {
         logger.info(Supplier { supplier.invoke() })
     }
 
-    fun debug(supplier: () -> String) {
+    inline fun debug(crossinline supplier: () -> String) {
         logger.debug(Supplier { supplier.invoke() })
     }
 
-    fun warn(supplier: () -> String) {
+    inline fun warn(crossinline supplier: () -> String) {
         logger.warn(Supplier { supplier.invoke() })
     }
 
-    fun error(supplier: () -> String) {
+    inline fun error(crossinline supplier: () -> String) {
         logger.error(Supplier { supplier.invoke() })
     }
 
-    fun trace(supplier: () -> String) {
+    inline fun trace(crossinline supplier: () -> String) {
         logger.trace(Supplier { supplier.invoke() })
     }
-
 }

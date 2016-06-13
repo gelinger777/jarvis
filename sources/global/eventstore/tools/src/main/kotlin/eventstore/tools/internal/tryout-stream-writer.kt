@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter
 
 internal fun main(args: Array<String>) {
 
-    val writer = StreamWriter("/Users/vach/workspace/jarvis/dist/data/uuid", RollCycles.HOURLY)
+    val writer = StreamWriter("/Users/vach/workspace/jarvis/dist/data/uuid", RollCycles.MINUTELY)
 
     while (true) {
         writer.write(current())

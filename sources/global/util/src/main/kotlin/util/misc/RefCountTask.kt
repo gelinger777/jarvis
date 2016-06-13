@@ -13,7 +13,7 @@ import kotlin.concurrent.thread
  * Provided task must support interruption.
  */
 @ThreadSafe
-class RefCountTask(private val name: String, private val task: () -> Unit, private val terminationTimeout: Long = 10000) {
+class RefCountTask(val name: String, val task: () -> Unit, val terminationTimeout: Long = 10000) {
 
     private var thread: Thread? = null
 
