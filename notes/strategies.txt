@@ -1,5 +1,9 @@
 // low frequency trading
 
+    strategy.slowmo{
+        This strategy keeps putting trades over time dependig on the trend, it calculates average time for price reversals and distributes the available assets to time ranges and on each range makes the trade according to trend...
+    }
+
     strategy.pressure {
         This is a trend following strategy and uses pressure indicator as a major signal for the trend
     }

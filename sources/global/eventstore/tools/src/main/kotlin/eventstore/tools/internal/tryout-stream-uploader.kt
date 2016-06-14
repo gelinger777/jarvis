@@ -6,7 +6,7 @@ internal fun main(args: Array<String>) {
     val uploader = StreamUploader(
             source = "/Users/vach/workspace/jarvis/dist/data/uuid/",
             bucket = "jarvis-historical",
-            folder = "some/test/stream"
+            folder = "test"
     )
 
     println(uploader.source)
@@ -14,4 +14,5 @@ internal fun main(args: Array<String>) {
     uploader.start()
 
     readLine()
+
 }

@@ -1,5 +1,9 @@
 // indicators
 
+    indicator.ping {
+        Categorises each trade event to positive, negative and neutral by comparing with the previous trade, then provides overal signal about the direction and the move... Uses volume to weigh the value of the signals...
+    }
+
     indicator.change {
         This indicator projects the change over defined amount of time for any numeric source. It can be configured as "last N time" or "each N time"...
     }

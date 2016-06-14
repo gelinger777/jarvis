@@ -5,8 +5,8 @@ description = "Fully autonomous algorithmic trading environment."
  * default environment variables in shell scripts. Feel free to
  * adjust to your working environment.
  */
-def confRoot = "/Users/vach/workspace/jarvis/dist/conf"
-def distRoot = "/Users/vach/workspace/jarvis/dist/bin"
+def cfgRoot = "/Users/vach/workspace/jarvis/dist/conf"
+def binRoot = "/Users/vach/workspace/jarvis/dist/bin"
 def profile = "dev"
 
 buildscript {
@@ -248,14 +248,14 @@ project(":eventstore-server") {
     apply plugin: 'application'
     mainClassName = "eventstore.server.RunEventStoreKt"
 
-    def destination = "${distRoot}/eventstore"
+    def destination = "${binRoot}/eventstore"
 
     applicationDefaultJvmArgs = [
             "-DlogPath=${destination}/logs",
-            "-Dlog4j.configurationFile=${confRoot}/logging/log4j2.xml",
+            "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
 //            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
-            "-Dconf=${confRoot}/eventstore.json"
+            "-Dconf=${cfgRoot}/eventstore.json"
     ]
 
     installDist.destinationDir = file(destination)
@@ -353,14 +353,14 @@ project(":collector-bitfinex") {
     apply plugin: 'application'
     mainClassName = "collector.bitfinex.RunBitfinexCollectorKt"
 
-    def destination = "${distRoot}/bitfinex"
+    def destination = "${binRoot}/bitfinex"
 
     applicationDefaultJvmArgs = [
             "-DlogPath=${destination}/logs",
-            "-Dlog4j.configurationFile=${confRoot}/logging/log4j2.xml",
+            "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
 //            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
-            "-Dconf=${confRoot}/collector/bitfinex.json"
+            "-Dconf=${cfgRoot}/collector/bitfinex.json"
     ]
 
     installDist.destinationDir = file(destination)
@@ -377,14 +377,14 @@ project(":collector-bitstamp") {
     apply plugin: 'application'
     mainClassName = "collector.bitstamp.RunBitstampCollectorKt"
 
-    def destination = "${distRoot}/bitstamp"
+    def destination = "${binRoot}/bitstamp"
 
     applicationDefaultJvmArgs = [
             "-DlogPath=${destination}/logs",
-            "-Dlog4j.configurationFile=${confRoot}/logging/log4j2.xml",
+            "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
 //            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
-            "-Dconf=${confRoot}/collector/bitstamp.json"
+            "-Dconf=${cfgRoot}/collector/bitstamp.json"
     ]
 
     installDist.destinationDir = file(destination)
@@ -401,14 +401,14 @@ project(":collector-btce") {
     apply plugin: 'application'
     mainClassName = "collector.btce.RunBtceCollectorKt"
 
-    def destination = "${distRoot}/btce"
+    def destination = "${binRoot}/btce"
 
     applicationDefaultJvmArgs = [
             "-DlogPath=${destination}/logs",
-            "-Dlog4j.configurationFile=${confRoot}/logging/log4j2.xml",
+            "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
 //            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
-            "-Dconf=${confRoot}/collector/btce.json"
+            "-Dconf=${cfgRoot}/collector/btce.json"
     ]
 
     installDist.destinationDir = file(destination)
@@ -448,5 +448,5 @@ task wrapper(type: Wrapper) {
 }
 
 task cleanOutput() {
-    delete distRoot
+    delete binRoot
 }

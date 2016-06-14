@@ -3,8 +3,7 @@ current tasks:
     ✔ StreamWriter @done (16-06-12 15:59)
     ✔ StreamReader @done (16-06-13 07:55)
     ✔ StreamUploader @done (16-06-13 19:44)
-    ☐ StreamPoller
- 
+    ☐ StreamPoller 
     ☐ TradeStreamReader
     ☐ OrderStreamReader
 
@@ -16,7 +15,7 @@ current tasks:
    ☐ gdax
    ☐ itbit
    ☐ kraken
- 
+
  ☐ host collectors
    ☐ digitalocean.com       // the actual collector execution
    ☐ amazon glaicer         // storage for historical data
