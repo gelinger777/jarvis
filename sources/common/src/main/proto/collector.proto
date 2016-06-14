@@ -14,9 +14,8 @@ message BitfinexConfig {
 }
 
 message BitfinexCollectorConfig {
-    required proto.common.ServiceAddress eventStoreConfig = 1;
-    required int32 port = 2;
-    required BitfinexConfig bitfinexConfig = 3;
+    required int32 port = 1;
+    required BitfinexConfig bitfinexConfig = 2;
 }
 
 // bitstamp
@@ -27,13 +26,11 @@ message BitstampConfig {
 }
 
 message BitstampCollectorConfig {
-    required proto.common.ServiceAddress eventStoreConfig = 1;
-    required int32 port = 2;
-    required BitstampConfig bitstampConfig = 3;
+    required int32 port = 1;
+    required BitstampConfig bitstampConfig = 2;
 }
 
 // btce
-
 
 message BtceConfig {
     required string publicKey = 1;
@@ -41,7 +38,6 @@ message BtceConfig {
 }
 
 message BtceCollectorConfig {
-    required proto.common.ServiceAddress eventStoreConfig = 1;
-    required int32 port = 2;
-    required BtceConfig btceConfig = 3;
+    required int32 port = 1;
+    required BtceConfig btceConfig = 2;
 }

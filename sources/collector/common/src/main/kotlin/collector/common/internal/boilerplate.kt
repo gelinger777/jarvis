@@ -1,6 +1,6 @@
 package collector.common.internal
 
-import collector.common.server.CollectorService
+import collector.common.CollectorService
 import proto.common.Pair
 import java.io.File
 

@@ -17,12 +17,8 @@ service Collector {
 
     rpc recordTrades (RecordTradesReq) returns (RecordTradesResp) {
     }
-    rpc recordOrders (RecordOrdersReq) returns (RecordOrdersResp) {
-    }
 
-    rpc streamHistoricalTrades (StreamHistoricalTradesReq) returns (stream Trade) {
-    }
-    rpc streamHistoricalOrders (StreamHistoricalOrdersReq) returns (stream Order) {
+    rpc recordOrders (RecordOrdersReq) returns (RecordOrdersResp) {
     }
 }
 
@@ -36,14 +32,6 @@ message CollInfoReq {
 message CollInfoResp {
     repeated Pair accessibleMarketPairs = 1;
     repeated string currentStreams = 2;
-}
-
-message StreamTradesReq {
-    required Pair pair = 1;
-}
-
-message StreamOrdersReq {
-    required Pair pair = 1;
 }
 
 message RecordTradesReq {
@@ -62,18 +50,6 @@ message RecordOrdersReq {
 message RecordOrdersResp {
     required bool success = 1;
     optional string error = 2;
-}
-
-message StreamHistoricalTradesReq {
-    required Pair pair = 1;
-    optional int64 startIndex = 2;
-    optional int64 endIndex = 3;
-}
-
-message StreamHistoricalOrdersReq {
-    required Pair pair = 1;
-    optional int64 startIndex = 2;
-    optional int64 endIndex = 3;
 }
 
 // ---------------------------------------------------------------------------

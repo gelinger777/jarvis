@@ -79,15 +79,12 @@ subprojects {
 
         // logging
         compile('org.slf4j:slf4j-api:1.7.19') { force = true }
-//        compile('org.slf4j:slf4j-log4j12:1.7.19') { force = true }
         compile('org.slf4j:jcl-over-slf4j:1.7.19') { force = true }
         compile('org.slf4j:jul-to-slf4j:1.7.21') { force = true }
-//        compile('log4j:log4j:1.2.17') { force = true }
         compile('org.apache.logging.log4j:log4j-api:2.6') { force = true }
         compile('org.apache.logging.log4j:log4j-core:2.6') { force = true }
         compile('org.apache.logging.log4j:log4j-slf4j-impl:2.6') { force = true }
-        // enable for async loggers (note : async loggers will lose callers info
-//        compile 'com.lmax:disruptor:3.3.4'
+        compile 'com.lmax:disruptor:3.3.4'
 
         // test
         testCompile "org.jetbrains.kotlin:kotlin-test:1.0.2"
@@ -223,7 +220,7 @@ project(":common") {
 
 // Event Store ==================================================================================
 
-project(":eventstore-tools") {
+project(":eventstore") {
 
     description = "[lib] Tools for event stream persistence and processing."
 
@@ -235,37 +232,37 @@ project(":eventstore-tools") {
     }
 }
 
-project(":eventstore-client") {
-
-    description = "[lib] Event Store GRPC client."
-
-    dependencies {
-        compile project(":common")
-    }
-}
-
-project(":eventstore-server") {
-    apply plugin: 'application'
-    mainClassName = "eventstore.server.RunEventStoreKt"
-
-    def destination = "${binRoot}/eventstore"
-
-    applicationDefaultJvmArgs = [
-            "-DlogPath=${destination}/logs",
-            "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
+//project(":eventstore-client") {
+//
+//    description = "[lib] Event Store GRPC client."
+//
+//    dependencies {
+//        compile project(":common")
+//    }
+//}
+//
+//project(":eventstore-server") {
+//    apply plugin: 'application'
+//    mainClassName = "eventstore.server.RunEventStoreKt"
+//
+//    def destination = "${binRoot}/eventstore"
+//
+//    applicationDefaultJvmArgs = [
+//            "-DlogPath=${destination}/logs",
+//            "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
 //            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
-            "-Dprofile=${profile}",
-            "-Dconf=${cfgRoot}/eventstore.json"
-    ]
-
-    installDist.destinationDir = file(destination)
-
-    description = "[app] Event Store server."
-
-    dependencies {
-        compile project(":eventstore-tools")
-    }
-}
+//            "-Dprofile=${profile}",
+//            "-Dconf=${cfgRoot}/eventstore.json"
+//    ]
+//
+//    installDist.destinationDir = file(destination)
+//
+//    description = "[app] Event Store server."
+//
+//    dependencies {
+//        compile project(":eventstore")
+//    }
+//}
 
 // User Interface ===============================================================================
 
@@ -281,8 +278,6 @@ project(":visual") {
 
     dependencies {
         compile project(":common")
-        compile project(":eventstore-client")
-        compile project(":collector-client")
     }
 }
 
@@ -336,7 +331,7 @@ project(":collector-common") {
 
     dependencies {
         compile project(":common")
-        compile project(":eventstore-client")
+        compile project(":eventstore")
     }
 }
 
@@ -358,7 +353,7 @@ project(":collector-bitfinex") {
     applicationDefaultJvmArgs = [
             "-DlogPath=${destination}/logs",
             "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
-//            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
+            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
             "-Dconf=${cfgRoot}/collector/bitfinex.json"
     ]
@@ -382,7 +377,7 @@ project(":collector-bitstamp") {
     applicationDefaultJvmArgs = [
             "-DlogPath=${destination}/logs",
             "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
-//            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
+            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
             "-Dconf=${cfgRoot}/collector/bitstamp.json"
     ]
@@ -406,7 +401,7 @@ project(":collector-btce") {
     applicationDefaultJvmArgs = [
             "-DlogPath=${destination}/logs",
             "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
-//            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
+            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
             "-Dconf=${cfgRoot}/collector/btce.json"
     ]
@@ -426,10 +421,6 @@ project(":collector-btce") {
 project(":engine") {
 
     dependencies {
-        // event store
-        compile project(":eventstore-server")
-        compile project(":eventstore-client")
-
         // collectors
         compile project(":collector-bitfinex")
         compile project(":collector-bitstamp")

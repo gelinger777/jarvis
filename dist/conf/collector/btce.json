@@ -3,9 +3,5 @@
   "btceConfig": {
     "publicKey": "change me",
     "privateKey": "change me"
-  },
-  "eventStoreConfig": {
-    "host": "localhost",
-    "port": 9151
   }
 }
