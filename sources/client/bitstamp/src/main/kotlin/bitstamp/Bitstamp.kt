@@ -14,10 +14,11 @@ import util.global.notImplemented
 class Bitstamp() : IExchange {
     internal val log = logger("bitstamp")
 
+    val name = "bitstamp"
     internal val markets = mutableMapOf<Pair, Market>()
 
     override fun name(): String {
-        return "BITSTAMP"
+        return name
     }
 
     override fun pairs(): List<Pair> {

@@ -78,10 +78,6 @@ object app {
         return ThreadLocalRandom.current().nextDouble()
     }
 
-    fun random(bound: Double): Boolean {
-        return ThreadLocalRandom.current().nextDouble() > bound
-    }
-
     fun exit() {
         System.exit(0);
     }

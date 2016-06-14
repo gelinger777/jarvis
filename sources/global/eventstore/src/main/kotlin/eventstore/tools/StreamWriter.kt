@@ -4,8 +4,8 @@ import eventstore.tools.internal.queue
 import net.openhft.chronicle.queue.RollCycles
 import net.openhft.chronicle.queue.RollCycles.DAILY
 import org.apache.logging.log4j.util.Supplier
-import util.app
 import util.global.logger
+import util.global.occasionally
 import util.global.size
 
 /**
@@ -30,10 +30,12 @@ class StreamWriter(val path: String, val rollCycle: RollCycles = DAILY) {
         totalBytes += data.size
         totalEvents++
 
-        // occasionally log the average message size
-        if (app.random(9.0 / 10)) {
-            log.trace("$path - full size : ${size(totalBytes)}, number of events : $totalEvents events, average message size : ${size(totalBytes / totalEvents)}")
-        }
+        occasionally(
+                probability = 9.0 / 10,
+                task = {
+                    log.trace("$path - full size : ${size(totalBytes)}, number of events : $totalEvents events, average message size : ${size(totalBytes / totalEvents)}")
+                }
+        )
     }
 
 }

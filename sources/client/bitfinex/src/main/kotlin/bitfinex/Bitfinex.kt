@@ -14,10 +14,11 @@ import util.net
 class Bitfinex() : IExchange {
     internal val log = logger("bitfinex")
 
+    val name = "bitfinex"
     internal val markets = mutableMapOf<Pair, Market>()
 
     override fun name(): String {
-        return "BITFINEX"
+        return name
     }
 
     override fun pairs(): List<Pair> {

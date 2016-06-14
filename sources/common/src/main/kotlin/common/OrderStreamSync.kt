@@ -32,9 +32,9 @@ class OrderStreamSync(val fetcher: () -> Option<Orderbook>, val delay: Long) {
     val fetcherTask = RefCountSchTask(
             name = "order-fetcher",
             task = {
-                log.trace("polling")
+                log.debug { "polling" }
                 fetcher.invoke().ifPresent {
-                    log.trace("snapshot timestamp : ${it.time}")
+                    log.debug { "snapshot timestamp : ${it.time}" }
                     snapshot.take(it)
                 }
             },
@@ -45,47 +45,49 @@ class OrderStreamSync(val fetcher: () -> Option<Orderbook>, val delay: Long) {
     fun next(order: Order) {
 
         if (isSynced) {
-            log.trace("synced, emitting")
+            log.debug { "synced, emitting" }
             stream.onNext(order)
         } else {
-            log.trace("not synced adding to buffer")
-            log.trace("working with ${order.time}")
+            log.debug { "not synced adding to buffer" }
+            log.debug { "order time : ${order.time}" }
             buffer.addLast(order)
 
-            log.trace("getting the snapshot")
+            log.debug { "getting the snapshot" }
 
-            if(!fetcherTask.isStarted()){
+            if (!fetcherTask.isStarted()) {
                 fetcherTask.increment()
             }
 
             val snapshot = snapshot.immutable()
 
             if (snapshot.isNotPresent()) {
-                log.trace("no snapshot, skipping...")
+                log.debug { "no snapshot, skipping..." }
                 return
             }
 
             val book = snapshot.get()
 
             if (buffer.first.time >= book.time) {
-                log.trace("outdated snapshot, skipping...")
+                log.debug { "outdated snapshot, skipping..." }
             } else {
-                log.trace("up to date snapshot")
-                fetcherTask.forceStop()
 
-                log.trace("emitting the snapshot")
+                log.info { "in sync" }
+
+                fetcherTask.forceStop() // todo does not work...
+
+                log.debug { "emitting the snapshot" }
                 book.all().forEach { stream.onNext(it) }
                 this.snapshot.clear()
 
-                log.trace("emitting buffered orders")
+                log.debug { "emitting buffered orders" }
 
                 while (buffer.isNotEmpty()) {
                     val bufferedOrder = buffer.pollFirst()
 
                     if (bufferedOrder.time < book.time) {
-                        log.trace("skipping : ${bufferedOrder.time}")
+                        log.debug { "skipping : ${bufferedOrder.time}" }
                     } else {
-                        log.trace("applying : ${bufferedOrder.time}")
+                        log.debug { "applying : ${bufferedOrder.time}" }
                         stream.onNext(bufferedOrder)
                     }
                 }

@@ -12,10 +12,11 @@ import util.global.logger
 class Btce() : IExchange {
     val log = logger("btce")
 
+    val name = "btce"
     internal val markets = mutableMapOf<Pair, Market>()
 
     override fun name(): String {
-        return "BTCE"
+        return name
     }
 
     override fun pairs(): List<Pair> {

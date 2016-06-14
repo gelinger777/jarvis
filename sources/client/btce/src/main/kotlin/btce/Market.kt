@@ -17,8 +17,7 @@ import util.global.unpack
 import util.misc.RefCountSchProducer
 
 internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
-
-    val log = logger("btce")
+    internal val log = logger("${exchange.name}|${pair.compact()}")
 
     val tradePollTask = RefCountSchProducer(
             name = "trades-producer:${exchange.name()}|${pair.compact()}",
@@ -63,19 +62,18 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
     }
 
     override fun orders(): Observable<Order> {
+        log.info { "streaming orders" }
         orderPollTask.increment()
         return book.stream()
     }
 
     override fun trades(): Observable<Trade> {
+        log.info { "streaming trades" }
         tradePollTask.increment()
         return trades
     }
 
     // stuff
-
-
-    // trades
 
     private var previousTradesBatch = emptyList<Trade>()
 

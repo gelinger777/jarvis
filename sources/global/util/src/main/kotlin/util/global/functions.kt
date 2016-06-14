@@ -4,6 +4,7 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.ThreadLocalRandom
 import java.util.function.Consumer
 
 /**
@@ -58,7 +59,7 @@ fun Long.dateTime(): String {
 
 fun size(bytes: Long): String {
 
-    if(bytes < 1000){
+    if (bytes < 1000) {
         return "$bytes Bytes"
     }
     // less than 1 MB
@@ -71,6 +72,12 @@ fun size(bytes: Long): String {
     }
     // more than 1 GB
     else {
-        return "${(bytes / (1000*1000*1000.0)).roundDown1()} GB"
+        return "${(bytes / (1000 * 1000 * 1000.0)).roundDown1()} GB"
+    }
+}
+
+fun occasionally(probability: Double, task: () -> Unit) {
+    if (ThreadLocalRandom.current().nextDouble() > probability) {
+        task.invoke()
     }
 }

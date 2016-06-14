@@ -14,6 +14,7 @@ import util.net
 
 fun getOrderbookSnapshot(pair: Pair): Option<Orderbook> {
     return net.http.get("https://www.bitstamp.net/api/v2/order_book/${pair.toBitstampKey()}/")
+
             .flatMap { parseOrdersFromDiff(it) }
 }
 

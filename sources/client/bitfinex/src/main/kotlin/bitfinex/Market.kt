@@ -6,17 +6,17 @@ import common.AggregatedOrderbook
 import common.IExchange
 import common.IMarket
 import common.IOrderBook
+import common.global.compact
 import proto.common.Order
 import proto.common.Pair
 import proto.common.Trade
 import rx.Observable
 import rx.subjects.PublishSubject
 import util.global.logger
-import util.global.wtf
 import util.misc.RefCountToggle
 
 internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
-    internal val log = logger("bitfinex")
+    internal val log = logger("${exchange.name}|${pair.compact()}")
 
     val trades = PublishSubject.create<Trade>()
     val orders = PublishSubject.create<Order>()
@@ -30,6 +30,8 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
     val ordersToggle = RefCountToggle(on = { ws.send(subscribeOrdersCommand(pair)) })
 
     init {
+        log.info { "initializing" }
+
         orders.subscribe { book.accept(it) }
 
         channels.put(pair.asTradeKey(), object : (JsonArray) -> Unit {
@@ -44,17 +46,9 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
             }
         })
 
-        ws.stream().subscribe(
-                {
-                    log.debug { "websocket event : $it" }
-                    handleMessage(it, channels)
-                },
-                {
-                    log.error("ws client got unexpected exception", it)
-                    wtf(it)
-                },
-                { log.info { "websocket client completed" } }
-        )
+        ws.stream()
+                .doOnNext { log.debug { "websocket event : $it" } }
+                .forEach { handleMessage(it, channels) }
 
         ws.start()
     }
@@ -72,11 +66,13 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
     }
 
     override fun orders(): Observable<Order> {
+        log.info { "streaming orders" }
         ordersToggle.increment()
         return book.stream()
     }
 
     override fun trades(): Observable<Trade> {
+        log.info { "streaming trades" }
         tradesToggle.increment()
         return trades
     }

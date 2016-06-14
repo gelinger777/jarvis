@@ -26,15 +26,15 @@ private object repo {
 
 fun currency(symbol: String): Currency {
 
-    val uSymbol = symbol.toUpperCase()
+    val uSymbol = symbol.toLowerCase()
 
     return repo.currencies.computeIfAbsent(uSymbol, { Currency.newBuilder().setSymbol(it).build() })
 }
 
 fun pair(base: String, quote: String): Pair {
 
-    val uBase = base.toUpperCase()
-    val uQuote = quote.toUpperCase()
+    val uBase = base.toLowerCase()
+    val uQuote = quote.toLowerCase()
 
     return repo.pairs.computeIfAbsent("$uBase|$uQuote", {
         Pair.newBuilder()

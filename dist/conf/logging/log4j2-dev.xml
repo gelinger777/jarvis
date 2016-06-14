@@ -47,6 +47,13 @@
         <Logger name="util" level="INFO"/>
         <Logger name="com.tars.util.net.ws" level="INFO"/>
         <Logger name="com.amazonaws" level="ERROR"/>
+
+        <Logger name="bitfinex" level="INFO"/>
+        <Logger name="app" level="INFO"/>
+        <Logger name="cpu" level="INFO"/>
+        <Logger name="net" level="INFO"/>
+        <Logger name="pusher" level="INFO"/>
+        <Logger name="orderSync" level="INFO"/>
     </Loggers>
 
 </Configuration>
