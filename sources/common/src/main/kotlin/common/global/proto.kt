@@ -11,6 +11,7 @@ import proto.common.Trade
 import proto.eventstore.ProtoES
 import util.global.condition
 import util.global.dateTime
+import util.global.executeAndGetMandatory
 import util.global.roundDown3
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Pattern
@@ -52,6 +53,10 @@ fun trade(price: Double, volume: Double, time: Long): Trade {
             .build()
 }
 
+fun trade(data: ByteArray): Trade {
+    return executeAndGetMandatory { Trade.parseFrom(data) }
+}
+
 fun order(side: Order.Side, price: Double, volume: Double, time: Long = System.currentTimeMillis()): Order {
     condition(time > 0 && price > 0 && volume >= 0)
     return Order.newBuilder()
@@ -60,6 +65,10 @@ fun order(side: Order.Side, price: Double, volume: Double, time: Long = System.c
             .setPrice(price)
             .setVolume(volume)
             .build();
+}
+
+fun order(data: ByteArray): Order {
+    return executeAndGetMandatory { Order.parseFrom(data) }
 }
 
 fun String.asPair(): Pair {

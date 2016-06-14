@@ -32,6 +32,11 @@ class AggregatedOrderbook : IOrderBook {
         })
     }
 
+    fun clear(){
+        bids.clear()
+        asks.clear()
+    }
+
     override fun snapshot(): Orderbook {
         synchronized(stream, {
             return Orderbook(
