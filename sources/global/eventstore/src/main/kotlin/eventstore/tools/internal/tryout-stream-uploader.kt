@@ -5,7 +5,7 @@ import util.app
 
 internal fun main(args: Array<String>) {
     val uploader = StreamUploader(
-            source = "/Users/vach/workspace/jarvis/dist/data/uuid/",
+            source = "/Users/vach/workspace/jarvis/dist/data/test/",
             bucket = "jarvis-historical",
             folder = "test"
     )

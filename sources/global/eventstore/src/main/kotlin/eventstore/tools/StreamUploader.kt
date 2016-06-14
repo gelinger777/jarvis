@@ -34,7 +34,7 @@ class StreamUploader(
                 // no failures are accepted
                 executeMandatory { this.check() }
             },
-            delay = 10000
+            delay = 10000 // todo change to 5 minutes
     )
 
     init {
@@ -65,11 +65,18 @@ class StreamUploader(
 
         if (!root.exists() || !root.isDirectory) return
 
-        val files = root.listFiles()
-
+        // collect data about local files
+        val localFiles = root.listFiles()
         val lastModified = root.listFiles().map { it.lastModified() }.max() ?: return
 
-        files.filter { it.lastModified() < lastModified }.forEach { upload(it) }
+        // collect data about remote files
+        val remoteFiles = s3.listObjects(bucket).objectSummaries.map { it.key.removePrefix("$folder/") }
+
+        // upload all local files that are not uploaded except the currently used one
+        localFiles
+                .filter { it.lastModified() < lastModified }
+                .filter { remoteFiles.notContains(it.name) }
+                .forEach { upload(it) }
 
         lastCheck = app.time()
     }
@@ -87,4 +94,8 @@ class StreamUploader(
 
         log.info { "removed local ${file.name}" }
     }
+}
+
+fun <E> Collection<E>.notContains(element: E): Boolean {
+    return !contains(element)
 }

@@ -4,8 +4,8 @@ current tasks:
     ✔ StreamReader @done (16-06-13 07:55)
     ✔ StreamUploader @done (16-06-13 19:44)
     ☐ StreamPoller 
-    ☐ TradeStreamReader
-    ☐ OrderStreamReader
+    ✔ TradeStreamReader @done (16-06-15 00:40)
+    ✔ OrderStreamReader @done (16-06-15 00:40)
 
  ☐ add 5 more clients and collectors to top volume exchanges
    ✔ bitfinex @done (16-05-27 23:12)
