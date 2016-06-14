@@ -256,3 +256,7 @@ fun <T> Iterator<T>.optionalNext(): Option<T> {
         return Option.empty()
     }
 }
+
+fun <E> Collection<E>.notContains(element: E): Boolean {
+    return !contains(element)
+}

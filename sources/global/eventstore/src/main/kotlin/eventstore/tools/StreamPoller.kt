@@ -9,7 +9,7 @@ import util.global.condition
 import util.global.executeAndGetMandatory
 import util.global.executeMandatory
 import util.global.logger
-import util.misc.RefCountSchTask
+import util.misc.RefCountRepeatingTask
 
 /**
  * Polls data from remote data storage.
@@ -25,7 +25,7 @@ class StreamPoller(
 
     val s3: AmazonS3Client
 
-    val task = RefCountSchTask(
+    val task = RefCountRepeatingTask(
             name = "stream-poller : $bucket/$folder",
             task = {
                 // no failures are accepted

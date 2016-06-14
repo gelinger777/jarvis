@@ -16,4 +16,5 @@ internal fun main(args: Array<String>) {
 
     readLine()
 
+    uploader.stop()
 }

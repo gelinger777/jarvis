@@ -14,12 +14,12 @@ import util.Option
 import util.global.filterEmptyOptionals
 import util.global.logger
 import util.global.unpack
-import util.misc.RefCountSchProducer
+import util.misc.RefCountRepeatingProducer
 
 internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
     internal val log = logger("${exchange.name}|${pair.compact()}")
 
-    val tradePollTask = RefCountSchProducer(
+    val tradePollTask = RefCountRepeatingProducer(
             name = "trades-producer:${exchange.name()}|${pair.compact()}",
             producer = {
                 pollTrades(pair)
@@ -35,7 +35,7 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
 
     val book = AggregatedOrderbook()
 
-    val orderPollTask = RefCountSchProducer(
+    val orderPollTask = RefCountRepeatingProducer(
             name = "orders-producer:${exchange.name()}|${pair.compact()}",
             producer = {
                 log.debug("polling")

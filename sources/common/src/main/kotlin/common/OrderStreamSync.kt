@@ -8,7 +8,7 @@ import util.MutableOption
 import util.Option
 import util.global.condition
 import util.global.logger
-import util.misc.RefCountSchTask
+import util.misc.RefCountRepeatingTask
 import java.util.*
 
 
@@ -29,7 +29,7 @@ class OrderStreamSync(val fetcher: () -> Option<Orderbook>, val delay: Long) {
     var isSynced = false
     val snapshot = MutableOption.empty<Orderbook>()
 
-    val fetcherTask = RefCountSchTask(
+    val fetcherTask = RefCountRepeatingTask(
             name = "order-fetcher",
             task = {
                 log.debug { "polling" }

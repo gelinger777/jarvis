@@ -3,14 +3,14 @@ package util
 import util.cpu.executors.io
 import util.global.condition
 import util.global.logger
-import util.misc.RefCountSchTask
+import util.misc.RefCountRepeatingTask
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
 object heartBeat {
     private val log = logger("heartbeat")
     private val registry = ConcurrentHashMap<String, Pulse>()
-    private val watchDogTask = RefCountSchTask(
+    private val watchDogTask = RefCountRepeatingTask(
             name = "heartbeat-watchdog",
             task = {
                 // iterate over all monitored instances

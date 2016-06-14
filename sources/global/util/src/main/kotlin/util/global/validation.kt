@@ -30,11 +30,10 @@ fun notNullOrEmpty(collection: Collection<Any>?): Boolean {
     return collection != null && !collection.isEmpty()
 }
 
-
 fun isNullOrEmpty(string: String?): Boolean {
     return string == null || string.length == 0
 }
 
 fun areSame(first: Any?, second: Any?): Boolean {
-    return notNull(first) && notNull(second) && !(first === second)
+    return notNull(first) && notNull(second) && first === second
 }

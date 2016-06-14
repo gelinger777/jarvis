@@ -7,11 +7,8 @@ import com.amazonaws.regions.Regions.AP_SOUTHEAST_1
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.PutObjectRequest
 import util.app
-import util.global.condition
-import util.global.executeAndGetMandatory
-import util.global.executeMandatory
-import util.global.logger
-import util.misc.RefCountSchTask
+import util.global.*
+import util.misc.RefCountRepeatingTask
 import java.io.File
 
 /**
@@ -28,7 +25,7 @@ class StreamUploader(
 
     val s3: AmazonS3Client
 
-    val task = RefCountSchTask(
+    val task = RefCountRepeatingTask(
             name = "stream-uploader : $bucket/$folder",
             task = {
                 // no failures are accepted
@@ -94,8 +91,4 @@ class StreamUploader(
 
         log.info { "removed local ${file.name}" }
     }
-}
-
-fun <E> Collection<E>.notContains(element: E): Boolean {
-    return !contains(element)
 }

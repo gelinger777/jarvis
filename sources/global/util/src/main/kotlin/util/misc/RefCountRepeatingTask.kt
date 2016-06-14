@@ -1,6 +1,5 @@
 package util.misc
 
-import util.cpu
 import util.global.executeSilent
 import util.global.notInterrupted
 import java.util.concurrent.TimeUnit
@@ -11,17 +10,21 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
  * to complete without interruption, in which case after specified delay it will reschedule the same
  * task again (while reference count is positive).
  */
-class RefCountSchTask(
+class RefCountRepeatingTask(
         val name: String,
         val task: () -> Unit,
         @Volatile var delay: Long,
-        val unit : TimeUnit = MILLISECONDS,
+        val unit: TimeUnit = MILLISECONDS,
         val terminationTimeout: Long = 10000) {
 
     private val scheduledTask = {
         while (Thread.currentThread().notInterrupted()) {
             executeSilent(task)
-            cpu.sleep(unit.toMillis(delay))
+            try {
+                Thread.sleep(unit.toMillis(delay))
+            } catch(interruption: InterruptedException) {
+                break
+            }
         }
     }
 

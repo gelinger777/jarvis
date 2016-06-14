@@ -10,7 +10,7 @@ import kotlin.concurrent.thread
 /**
  * Reference Counting Task ensures that with the first positive reference a daemon thread will be
  * executing defined task, and that this thread will be interrupted when reference count gets to 0.
- * Provided task must support interruption.
+ * IMPORTANT : Provided task must support interruption.
  */
 @ThreadSafe
 class RefCountTask(val name: String, val task: () -> Unit, val terminationTimeout: Long = 10000) {

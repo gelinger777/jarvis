@@ -11,7 +11,7 @@ class RefCountHolder<T>(val supplier: () -> T, val finalizer: (T) -> Unit) {
 
     init {
         toggle = RefCountToggle(
-                { instance = supplier.invoke() },
+                { instance = getMandatory(supplier.invoke()) },
                 {
                     finalizer.invoke(getMandatory(instance))
                     instance = null
