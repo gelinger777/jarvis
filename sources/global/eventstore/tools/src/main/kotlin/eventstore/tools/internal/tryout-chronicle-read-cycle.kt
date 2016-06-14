@@ -1,6 +1,7 @@
 package eventstore.tools.internal
 
 import net.openhft.chronicle.queue.RollCycles
+import util.app
 
 internal fun main(args: Array<String>) {
     val ch = queue("/Users/vach/workspace/jarvis/dist/data/test-cycles", RollCycles.MINUTELY)
@@ -9,7 +10,7 @@ internal fun main(args: Array<String>) {
 
     tl.moveToIndex(104920321554907136)
 
-    println(tl.readText())
+    app.log.info(tl.readText())
 //
 //    var lastCycle = -1;
 //
@@ -18,12 +19,11 @@ internal fun main(args: Array<String>) {
 //        val message = tl.readText() ?: break
 //        val cycle = tl.cycle()
 //        if (lastCycle != cycle) {
-//            println("cycle : " + RollCycles.MINUTELY.toIndex(tl.cycle(), 0))
+//           app.log.info("cycle : " + RollCycles.MINUTELY.toIndex(tl.cycle(), 0))
 //            lastCycle = cycle
 //        }
-//        println("${tl.cycle()} : ${tl.index()} : $message")
+//       app.log.info("${tl.cycle()} : ${tl.index()} : $message")
 //    }
-
 
 
 }

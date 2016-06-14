@@ -1,4 +1,4 @@
-package engine.internal.eventstore.service
+package engine.internal.eventstore
 
 import eventstore.server.startEventStoreService
 import util.app

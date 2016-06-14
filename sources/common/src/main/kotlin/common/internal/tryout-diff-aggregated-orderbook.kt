@@ -3,7 +3,7 @@ package common.internal
 internal fun main(args: Array<String>) {
 //    val book = AggregatedOrderbook()
 //
-//    book.stream().subscribe { println(it.compact(showTime = false)) }
+//    book.stream().subscribe {app.log.info(it.compact(showTime = false)) }
 //
 //
 //
@@ -21,7 +21,7 @@ internal fun main(args: Array<String>) {
 //            )
 //    )
 //
-//    println()
+//   app.log.info()
 //    readLine()
 //
 //    book.accept(

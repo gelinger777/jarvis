@@ -1,10 +1,9 @@
-package engine.internal.readers
+package engine.readers
 
 import common.global.trade
 import eventstore.tools.StreamReader
 import proto.common.Trade
 import rx.Observable
-import util.global.condition
 import util.global.wtf
 
 /**
@@ -16,13 +15,11 @@ class TradeStreamReader(val source: StreamReader) {
         wtf("indexing is not supported yet")
     }
 
-    fun stream(start: Long, end: Long): Observable<Trade> {
-        condition(0 < start && start < end, "illegal arguments")
-
+    fun stream(start: Long = -1, end: Long = -1): Observable<Trade> {
         return Observable.create { subscriber ->
             source.read()
                     .map { trade(it.second) }
-                    .filter { it.time >= start && it.time <= end }
+                    .filter { (start == -1L || it.time >= start) && (end == -1L || it.time <= end) }
                     .forEach { subscriber.onNext(it) }
 
             subscriber.onCompleted()

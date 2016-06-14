@@ -6,6 +6,9 @@ import eventstore.server.startEventStoreService
 import util.global.logger
 
 
+/**
+ * Demonstrate usage of EventStream
+ */
 internal fun main(args: Array<String>) {
 
     startEventStoreService(

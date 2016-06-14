@@ -3,7 +3,7 @@ package util.internal
 fun main(args: Array<String>) {
 
 //    Cli()
-//    .command("info", { println("info command was executed")})
+//    .command("info", {app.log.info("info command was executed")})
 //    .start()
 
 

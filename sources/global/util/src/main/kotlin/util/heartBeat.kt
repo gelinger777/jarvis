@@ -18,9 +18,9 @@ object heartBeat {
                     log.trace { "checking : ${pulse.name}" }
                     // filter those who violated the timeout
                     if ((System.currentTimeMillis() - pulse.lastBeat.get()) > pulse.timeout) {
-                        println(System.currentTimeMillis())
-                        println(pulse.lastBeat.get())
-                        println(pulse.timeout)
+                       app.log.info(System.currentTimeMillis())
+                       app.log.info(pulse.lastBeat.get())
+                       app.log.info(pulse.timeout)
 
 
                         // schedule the callback execution

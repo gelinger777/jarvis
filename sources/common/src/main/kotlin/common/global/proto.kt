@@ -118,7 +118,7 @@ fun Order.compact(showTime: Boolean = true): String {
 }
 
 //fun main(args: Array<String>) {
-//    order(Order.Side.BID, 405.0, 10.2).compact(true).apply { println(this) }
+//    order(Order.Side.BID, 405.0, 10.2).compact(true).apply {app.log.info(this) }
 //}
 
 fun ProtoES.Event.bytes(): ByteArray {

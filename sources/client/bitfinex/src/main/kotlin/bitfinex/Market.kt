@@ -46,14 +46,14 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
 
         ws.stream().subscribe(
                 {
-                    log.debug("| << {}", it)
+                    log.debug { "websocket event : $it" }
                     handleMessage(it, channels)
                 },
                 {
                     log.error("ws client got unexpected exception", it)
                     wtf(it)
                 },
-                { log.info("websocket client completed") }
+                { log.info { "websocket client completed" } }
         )
 
         ws.start()

@@ -5,6 +5,7 @@ import collector.client.CollectorClient
 import common.global.compact
 import common.global.pair
 import eventstore.server.startEventStoreService
+import util.app
 
 internal fun main(args: Array<String>) {
 
@@ -28,7 +29,7 @@ internal fun main(args: Array<String>) {
     readLine()
 
     bitfinexCollectorClient.streamHistoricalOrders(pair("btc", "usd"))
-            .forEach { println(it.compact()) }
+            .forEach { app.log.info { it.compact() } }
 
     readLine()
 

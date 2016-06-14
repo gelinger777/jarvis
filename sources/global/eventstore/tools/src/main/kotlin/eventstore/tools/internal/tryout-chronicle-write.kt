@@ -1,6 +1,7 @@
 package eventstore.tools.internal
 
 import net.openhft.chronicle.queue.RollCycles
+import util.app
 import util.cpu
 import java.time.Instant
 import java.time.ZoneOffset
@@ -16,7 +17,7 @@ internal fun main(args: Array<String>) {
 
         val current = current()
 
-        println("writing : $current")
+        app.log.info("writing : $current")
         ap.writeText(current)
         cpu.sleep(50)
     }

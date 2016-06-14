@@ -5,12 +5,12 @@
 
     <Appenders>
         <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%C{2} (%F:%L) | %-5p | [%t] | %d{HH:mm:ss} | %m%n"/>
+            <PatternLayout pattern="%-30c{1} | %-10t | %-5p | %d{HH:mm:ss} | %m%n"/>
         </Console>
 
         <RollingRandomAccessFile name="ALL" fileName="${sys:logPath}/all/all.log"
                                  filePattern="${sys:logPath}/all/all-%d{MM-dd-yyyy}-%i.log">
-            <PatternLayout pattern="%-5p | [%t] | %d{HH:mm:ss} | %m%n"/>
+            <PatternLayout pattern="%c{1.} | %-5p | [%t] | %d{HH:mm:ss} | %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="10 MB"/>
@@ -20,7 +20,7 @@
 
         <RollingRandomAccessFile name="EXCEPTIONS" fileName="${sys:logPath}/exceptions/exceptions.log"
                                  filePattern="${sys:logPath}/exceptions/exceptions-%d{MM-dd-yyyy}-%i.log">
-            <PatternLayout pattern="%-5p | [%t] | %d{HH:mm:ss} | %m%n"/>
+            <PatternLayout pattern="%c{1.} | %-5p | [%t] | %d{HH:mm:ss} | %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="10 MB"/>

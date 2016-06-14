@@ -1,6 +1,7 @@
-package engine.internal.eventstore.service
+package engine.internal.eventstore
 
 import eventstore.client.EventStoreClient
+import util.app
 import util.cpu
 import kotlin.concurrent.thread
 
@@ -14,12 +15,12 @@ internal fun main(args: Array<String>) {
     val stream = client.getStream("test/tryout")
 
     thread(start = true, isDaemon = true, block = {
-        while(true){
+        while (true) {
             stream.write("ping".toByteArray())
             cpu.sleep(300)
         }
     })
 
-    println("enter to terminate")
+   app.log.info("enter to terminate")
     readLine()
 }

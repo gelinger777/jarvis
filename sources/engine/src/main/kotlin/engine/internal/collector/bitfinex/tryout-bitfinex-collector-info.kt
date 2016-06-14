@@ -4,6 +4,7 @@ import collector.bitfinex.startBitfinexCollectorService
 import collector.client.CollectorClient
 import common.global.compact
 import eventstore.server.startEventStoreService
+import util.app.log
 
 internal fun main(args: Array<String>) {
 
@@ -23,8 +24,8 @@ internal fun main(args: Array<String>) {
 
     bitfinexCollectorClient.info()
             .apply {
-                println("Accessible Market Pairs")
-                accessibleMarketPairsList.forEach { println(it.compact()) }
+                log.info { "Accessible Market Pairs" }
+                accessibleMarketPairsList.forEach { log.info { it.compact() } }
             }
 
 }

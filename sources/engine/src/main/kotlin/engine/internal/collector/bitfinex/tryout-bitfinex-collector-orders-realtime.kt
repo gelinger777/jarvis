@@ -7,6 +7,7 @@ import common.global.pair
 import common.global.parseOrder
 import eventstore.client.EventStoreClient
 import eventstore.server.startEventStoreService
+import util.app
 
 internal fun main(args: Array<String>) {
 
@@ -34,7 +35,7 @@ internal fun main(args: Array<String>) {
     eventStoreClient.getStream("bitfinex/btc-usd/orders")
             .stream()
             .forEach {
-                println(it.parseOrder().compact())
+                app.log.info { it.parseOrder().compact() }
             }
 
     readLine()

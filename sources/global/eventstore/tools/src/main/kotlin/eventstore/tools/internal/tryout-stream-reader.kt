@@ -2,6 +2,7 @@ package eventstore.tools.internal
 
 import eventstore.tools.StreamReader
 import net.openhft.chronicle.queue.RollCycles
+import util.app
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -13,7 +14,7 @@ internal fun main(args: Array<String>) {
 
     reader.read()
             .map { String(it.second, Charsets.UTF_8) }
-            .subscribe { println(it) }
+            .subscribe { app.log.info(it) }
 
 
 }

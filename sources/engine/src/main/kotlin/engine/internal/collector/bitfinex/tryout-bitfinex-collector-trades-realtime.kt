@@ -7,6 +7,7 @@ import common.global.pair
 import common.global.parseTrade
 import eventstore.client.EventStoreClient
 import eventstore.server.startEventStoreService
+import util.app
 
 internal fun main(args: Array<String>) {
 
@@ -33,9 +34,7 @@ internal fun main(args: Array<String>) {
     // directly read from eventstore as trades being written
     eventStoreClient.getStream("bitfinex/btc-usd/trades")
             .stream()
-            .forEach {
-                println(it.parseTrade().compact())
-            }
+            .forEach { app.log.info { it.parseTrade().compact() } }
 
     readLine()
 

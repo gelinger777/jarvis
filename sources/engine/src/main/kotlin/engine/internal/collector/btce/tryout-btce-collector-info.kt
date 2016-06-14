@@ -4,6 +4,7 @@ import collector.bitstamp.startBtceCollectorService
 import collector.client.CollectorClient
 import common.global.compact
 import eventstore.server.startEventStoreService
+import util.app
 
 internal fun main(args: Array<String>) {
 
@@ -23,8 +24,8 @@ internal fun main(args: Array<String>) {
 
     bitstampCollectorClient.info()
             .apply {
-                println("Accessible Market Pairs")
-                accessibleMarketPairsList.forEach { println(it.compact()) }
+                app.log.info("Accessible Market Pairs")
+                accessibleMarketPairsList.forEach {app.log.info(it.compact()) }
             }
 
 }

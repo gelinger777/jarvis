@@ -4,6 +4,7 @@ import com.amazonaws.auth.SystemPropertiesCredentialsProvider
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
+import util.app
 import util.global.condition
 import util.global.executeAndGetMandatory
 import util.global.executeMandatory
@@ -55,7 +56,7 @@ class StreamPoller(
 
         val listObjects = s3.listObjects(bucket)
 
-        println(listObjects)
+        app.log.info(listObjects)
 
 //        val root = File(source)
 //

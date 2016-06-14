@@ -1,5 +1,7 @@
 package eventstore.client.internal
+
 import eventstore.client.EventStoreClient
+import util.app
 
 /**
  *
@@ -14,12 +16,12 @@ internal fun main(args: Array<String>) {
 
     es.stream()
             .subscribe (
-                    { println("${it.index} : ${String(it.data.toByteArray())}") },
+                    { app.log.info("${it.index} : ${String(it.data.toByteArray())}") },
                     { it.printStackTrace() },
-                    { println("completed") }
+                    { app.log.info("completed") }
             )
 
 
-    println("enter to finish")
+    app.log.info("enter to finish")
     readLine()
 }

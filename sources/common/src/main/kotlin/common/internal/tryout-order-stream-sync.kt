@@ -6,6 +6,7 @@ import common.global.order
 import proto.common.Order
 import util.MutableOption
 import util.Option
+import util.app.log
 import util.cpu
 
 internal fun main(args: Array<String>) {
@@ -16,9 +17,9 @@ internal fun main(args: Array<String>) {
 
     val sync = OrderStreamSync(supplier, 2000)
 
-    sync.stream.subscribe { println("ordTime : ${it.time}") }
+    sync.stream.subscribe { log.info { "ordTime : ${it.time}" } }
 
-    println("setting outdated snapshot")
+    log.info { "setting outdated snapshot" }
 
     sync.next(ord(2))
 
@@ -40,7 +41,7 @@ internal fun main(args: Array<String>) {
     sync.next(ord(5))
     sync.next(ord(6))
 
-    println("setting up to date snapshot")
+    log.info { "setting up to date snapshot" }
 
     option.take(
             Orderbook(

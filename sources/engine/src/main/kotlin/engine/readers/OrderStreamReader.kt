@@ -1,4 +1,4 @@
-package engine.internal.readers
+package engine.readers
 
 import common.AggregatedOrderbook
 import common.global.all
@@ -7,7 +7,6 @@ import common.global.order
 import eventstore.tools.StreamReader
 import proto.common.Order
 import rx.Observable
-import util.global.condition
 import util.global.logger
 import util.global.wtf
 
@@ -23,9 +22,7 @@ class OrderStreamReader(val source: StreamReader) {
         wtf("indexing is not supported yet")
     }
 
-    fun stream(start: Long, end: Long): Observable<Order> {
-        condition(0 < start && start < end, "illegal arguments")
-
+    fun stream(start: Long = -1, end: Long = -1): Observable<Order> {
         return Observable.create { subscriber ->
             // before streaming actual order events we need to stream snapshot of orderbook at that exact moment
             val book = AggregatedOrderbook()
@@ -34,10 +31,10 @@ class OrderStreamReader(val source: StreamReader) {
                     .doOnNext { log.trace { "${it.first} : ${source.path}" } }
                     .map { order(it.second) }
                     .doOnNext { log.trace { "${it.compact()}" } }
-                    .filter { it.time <= end }
+                    .filter { end == -1L || it.time <= end }
                     .forEach {
                         // already streaming (good for branch prediction)
-                        if(it.time > start){
+                        if(start == -1L || it.time > start){
                             // emit and proceed
                             subscriber.onNext(it)
                         } else {

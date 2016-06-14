@@ -1,6 +1,7 @@
 package eventstore.tools.internal
 
 import eventstore.tools.StreamUploader
+import util.app
 
 internal fun main(args: Array<String>) {
     val uploader = StreamUploader(
@@ -9,7 +10,7 @@ internal fun main(args: Array<String>) {
             folder = "test"
     )
 
-    println(uploader.source)
+    app.log.info(uploader.source)
 
     uploader.start()
 

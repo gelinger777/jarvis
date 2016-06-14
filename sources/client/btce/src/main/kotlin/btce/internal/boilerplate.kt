@@ -147,7 +147,7 @@ internal fun List<Trade>.filterNewTrades(batch: List<Trade>): Option<List<Trade>
 //            )
 //    ).ifPresent {
 //        it.forEach {
-//            println(it.compact())
+//           app.log.info(it.compact())
 //        }
 //    }
 //
