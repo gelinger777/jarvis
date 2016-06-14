@@ -41,6 +41,8 @@ fun onReportedFailure(listener: (Throwable) -> Unit) {
 
 // wtf methods
 
+// todo fix wtf method using special class Nothing
+
 fun wtf() {
     reportAndKill(WTFException())
 }
@@ -185,10 +187,10 @@ fun <T> executeAndGet(callable: () -> T): T {
     }
 }
 
-fun <T> getMandatory(arg : T?): T{
-    if(arg != null){
+fun <T> getMandatory(arg: T?): T {
+    if (arg != null) {
         return arg
-    }else{
+    } else {
         return whatever { reportAndKill(WTFException("not null is expected")) }
     }
 }
