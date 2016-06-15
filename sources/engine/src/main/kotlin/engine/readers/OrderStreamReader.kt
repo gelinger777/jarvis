@@ -4,7 +4,7 @@ import common.AggregatedOrderbook
 import common.global.all
 import common.global.compact
 import common.global.order
-import eventstore.tools.StreamReader
+import eventstore.tools.io.ESReader
 import proto.common.Order
 import rx.Observable
 import util.global.logger
@@ -15,7 +15,7 @@ import util.global.wtf
  *
  * todo : using eventstore-tools
  */
-class OrderStreamReader(val source: StreamReader) {
+class OrderStreamReader(val source: ESReader) {
     val log = logger("orderStreamReader")
 
     fun index() {

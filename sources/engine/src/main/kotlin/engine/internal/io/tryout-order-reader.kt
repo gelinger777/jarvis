@@ -2,7 +2,7 @@ package engine.internal.io
 
 import common.global.compact
 import engine.readers.OrderStreamReader
-import eventstore.tools.StreamReader
+import eventstore.tools.io.ESReader
 import net.openhft.chronicle.queue.RollCycles
 import util.app
 
@@ -11,7 +11,7 @@ import util.app
  */
 internal fun main(args: Array<String>) {
 
-    val rawStreamReader = StreamReader(
+    val rawStreamReader = ESReader(
             path = "/Users/vach/workspace/jarvis/dist/data/bitfinex/btc-usd/orders/",
             rollCycle = RollCycles.MINUTELY
     )

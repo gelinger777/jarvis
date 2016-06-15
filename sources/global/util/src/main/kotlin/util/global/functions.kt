@@ -5,6 +5,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
 
 /**
@@ -79,5 +80,18 @@ fun size(bytes: Long): String {
 fun occasionally(probability: Double, task: () -> Unit) {
     if (ThreadLocalRandom.current().nextDouble() > probability) {
         task.invoke()
+    }
+}
+
+fun sleepLoopUntil(condition: () -> Boolean, block: () -> Unit, delay: Long = 1000, unit: TimeUnit = TimeUnit.MILLISECONDS) {
+
+    while (!condition.invoke()) {
+        block.invoke()
+
+        try {
+            Thread.sleep(unit.toMillis(delay))
+        } catch(e: InterruptedException) {
+            break
+        }
     }
 }

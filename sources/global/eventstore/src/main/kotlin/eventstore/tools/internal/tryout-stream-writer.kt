@@ -1,6 +1,6 @@
 package eventstore.tools.internal
 
-import eventstore.tools.StreamWriter
+import eventstore.tools.io.ESWriter
 import net.openhft.chronicle.queue.RollCycles
 import util.cpu
 import java.time.Instant
@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter
 
 internal fun main(args: Array<String>) {
 
-    val writer = StreamWriter("/Users/vach/workspace/jarvis/dist/data/uuid", RollCycles.MINUTELY)
+    val writer = ESWriter("/Users/vach/workspace/jarvis/dist/data/uuid", RollCycles.MINUTELY)
 
     while (true) {
         writer.write(current())

@@ -1,27 +1,27 @@
-package eventstore.tools
+package eventstore.tools.net
 
 import com.amazonaws.auth.SystemPropertiesCredentialsProvider
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
-import util.app
-import util.global.condition
-import util.global.executeAndGetMandatory
-import util.global.executeMandatory
-import util.global.logger
+import com.amazonaws.services.s3.iterable.S3Objects
+import com.amazonaws.services.s3.model.S3ObjectSummary
+import com.amazonaws.services.s3.transfer.TransferManager
+import eventstore.tools.internal.fileName
+import util.cpu
+import util.global.*
 import util.misc.RefCountRepeatingTask
+import java.io.File
 
 /**
  * Polls data from remote data storage.
  */
-class StreamPoller(
+class ESPoller(
         val destination: String,
         val bucket: String = "jarvis-historical",
         val folder: String,
         val region: Regions = Regions.AP_SOUTHEAST_1) {
     private val log = logger("StreamPoller")
-
-    var lastCheck = -1L;
 
     val s3: AmazonS3Client
 
@@ -52,23 +52,30 @@ class StreamPoller(
     }
 
     private fun check() {
-        log.debug { "${task.name} : checking for new data" }
+        val root = File(destination)
 
-        val listObjects = s3.listObjects(bucket)
+        if (!root.exists() || !root.isDirectory) return
 
-        app.log.info(listObjects)
+        // collect data about local files
+        val localFiles = root.listFiles().map { it.name }
 
-//        val root = File(source)
+        // collect data about remote files
+        val remoteFiles = S3Objects.inBucket(s3, bucket).toList()
+
+        // download all remote files not found in local file system
+        remoteFiles
+            .filter { localFiles.notContains(it.fileName()) }
+            .forEach { download(it) }
+    }
+
+    private fun download(s3object: S3ObjectSummary) {
+
+
+        val tm = TransferManager(s3, cpu.executors.io)
+
+//        s3.getObject(GetObjectRequest())
 //
-//        if (!root.exists() || !root.isDirectory) return
-//
-//        val files = root.listFiles()
-//
-//        val lastModified = root.listFiles().map { it.lastModified() }.max() ?: return
-//
-//        files.filter { it.lastModified() < lastModified }.forEach { upload(it) }
-//
-//        lastCheck = app.time()
+//        return notImplemented()
     }
 
 //    private fun upload(file: File) {

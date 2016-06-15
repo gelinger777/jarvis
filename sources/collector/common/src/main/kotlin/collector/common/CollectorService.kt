@@ -3,7 +3,7 @@ package collector.common
 import collector.common.internal.ordersDataPathFor
 import collector.common.internal.tradeDataPathFor
 import common.IExchange
-import eventstore.tools.StreamWriter
+import eventstore.tools.io.ESWriter
 import io.grpc.stub.StreamObserver
 import proto.common.*
 import util.global.complete
@@ -12,7 +12,7 @@ import util.global.logger
 
 class CollectorService(val client: IExchange) : CollectorGrpc.Collector {
     val log = logger("collector.${client.name().toLowerCase()}")
-    val recorders = mutableMapOf<String, StreamWriter>()
+    val recorders = mutableMapOf<String, ESWriter>()
 
     override fun info(request: CollInfoReq, observer: StreamObserver<CollInfoResp>) {
         observer.complete(
@@ -28,7 +28,7 @@ class CollectorService(val client: IExchange) : CollectorGrpc.Collector {
 
         recorders.computeIfAbsent(path, {
             log.info { "recording trades to $path" }
-            StreamWriter(path)
+            ESWriter(path)
                     .apply {
                         client.market(request.pair).trades()
                                 .map { it.toByteArray() }
@@ -48,7 +48,7 @@ class CollectorService(val client: IExchange) : CollectorGrpc.Collector {
 
         recorders.computeIfAbsent(path, {
             log.info { "recording orders $path" }
-            StreamWriter(path)
+            ESWriter(path)
                     .apply {
                         client.market(request.pair).orders()
                                 .map { it.toByteArray() }

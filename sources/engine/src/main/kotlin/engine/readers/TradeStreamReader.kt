@@ -1,7 +1,7 @@
 package engine.readers
 
 import common.global.trade
-import eventstore.tools.StreamReader
+import eventstore.tools.io.ESReader
 import proto.common.Trade
 import rx.Observable
 import util.global.wtf
@@ -9,7 +9,7 @@ import util.global.wtf
 /**
  * Analyses raw stream of trades and provides api to query historical data.
  */
-class TradeStreamReader(val source: StreamReader) {
+class TradeStreamReader(val source: ESReader) {
 
     fun index(){
         wtf("indexing is not supported yet")

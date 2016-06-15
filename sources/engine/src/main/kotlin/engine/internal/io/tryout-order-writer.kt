@@ -3,7 +3,7 @@ package engine.internal.io
 import bitfinex.Bitfinex
 import common.global.compact
 import common.global.pair
-import eventstore.tools.StreamWriter
+import eventstore.tools.io.ESWriter
 import net.openhft.chronicle.queue.RollCycles
 import util.app.log
 
@@ -12,7 +12,7 @@ import util.app.log
  */
 internal fun main(args: Array<String>) {
 
-    val rawStreamWriter = StreamWriter(
+    val rawStreamWriter = ESWriter(
             path = "/Users/vach/workspace/jarvis/dist/data/bitfinex/btc-usd/orders/",
             rollCycle = RollCycles.MINUTELY
     )

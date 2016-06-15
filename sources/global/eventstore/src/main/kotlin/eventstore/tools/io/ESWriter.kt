@@ -1,6 +1,7 @@
-package eventstore.tools
+package eventstore.tools.io
 
 import eventstore.tools.internal.queue
+import eventstore.tools.internal.write
 import net.openhft.chronicle.queue.RollCycles
 import net.openhft.chronicle.queue.RollCycles.DAILY
 import org.apache.logging.log4j.util.Supplier
@@ -10,9 +11,9 @@ import util.global.size
 
 /**
  * Provides api to write data to an event stream with rollup intervals.
- * By default rollup interval is daily
+ * By default rollup interval is daily.
  */
-class StreamWriter(val path: String, val rollCycle: RollCycles = DAILY) {
+class ESWriter(val path: String, val rollCycle: RollCycles = DAILY) {
     private val log = logger("StreamWriter")
     private val chronicle = queue(path, rollCycle)
     private val appender = chronicle.createAppender()

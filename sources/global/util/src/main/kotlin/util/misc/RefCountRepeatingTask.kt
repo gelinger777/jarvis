@@ -2,6 +2,7 @@ package util.misc
 
 import util.global.executeSilent
 import util.global.notInterrupted
+import util.global.sleepLoopUntil
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
@@ -18,14 +19,12 @@ class RefCountRepeatingTask(
         val terminationTimeout: Long = 10000) {
 
     private val scheduledTask = {
-        while (Thread.currentThread().notInterrupted()) {
-            executeSilent(task)
-            try {
-                Thread.sleep(unit.toMillis(delay))
-            } catch(interruption: InterruptedException) {
-                break
-            }
-        }
+        sleepLoopUntil(
+                {Thread.currentThread().isInterrupted},
+                task,
+                delay,
+                unit
+        )
     }
 
 
