@@ -10,8 +10,8 @@ object app {
     val exceptionLogger = logger("exc")
     val profile: String
 
-    val unrecoverableErrors = PublishSubject.create<Throwable>()
-    val reportedErrors = PublishSubject.create<Throwable>()
+    internal val reportedErrors = PublishSubject.create<Throwable>()
+    internal val unrecoverableErrors = PublishSubject.create<Throwable>()
 
     init {
         val logs = System.getProperty("logPath")
@@ -25,16 +25,19 @@ object app {
 
         when (profile) {
             "dev" -> {
-                onReportedFailure {
-                    exceptionLogger.info("REPORTED ERROR", it)
+                reportedErrors.forEach {
+                    exceptionLogger.warn(it)
                 }
-                onUnrecoverableFailure {
-                    exceptionLogger.info("UNRECOVERABLE ERROR", it)
+
+                unrecoverableErrors.forEach {
+                    exceptionLogger.error(it)
                 }
             }
             "prod" -> {
-                onReportedFailure {
-                    exceptionLogger.info ("REPORTED ERROR", it)
+
+
+                reportedErrors.forEach {
+                    exceptionLogger.warn (it)
 
                     net.mail.send(
                             subject = "reported error",
@@ -42,8 +45,8 @@ object app {
                     )
                 }
 
-                onUnrecoverableFailure {
-                    exceptionLogger.info ("UNRECOVERABLE ERROR", it)
+                unrecoverableErrors.forEach {
+                    exceptionLogger.error (it)
 
                     net.mail.send(
                             subject = "unrecoverable error",
@@ -51,9 +54,7 @@ object app {
                     )
                 }
             }
-            else -> {
-                wtf("unknown profile : $profile")
-            }
+            else -> wtf("unknown profile : $profile")
 
         }
     }
@@ -80,5 +81,9 @@ object app {
 
     fun exit() {
         System.exit(0);
+    }
+
+    fun prop(s: String): String {
+        return executeAndGetMandatory { System.getProperty(s) }
     }
 }

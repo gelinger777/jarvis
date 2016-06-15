@@ -9,7 +9,7 @@ import util.network.pusher.PusherHub
 import util.network.websocket.WebsocketHub
 
 object net {
-    val socket by lazy { notImplemented<SocketHub>() }
+    val socket by lazy <SocketHub> { notImplemented() }
 
     val http by lazy { HttpHub() }
 

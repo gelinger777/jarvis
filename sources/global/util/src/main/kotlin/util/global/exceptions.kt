@@ -24,39 +24,44 @@ internal class WTFException : RuntimeException {
 }
 
 
-/**
- * Register a listener for the unrecoverable errors.
- */
-fun onUnrecoverableFailure(listener: (Throwable) -> Unit) {
-    app.unrecoverableErrors.subscribe({
-        executeSilent { listener.invoke(it) }
-    })
-}
-
-fun onReportedFailure(listener: (Throwable) -> Unit) {
-    app.reportedErrors.subscribe({
-        executeSilent { listener.invoke(it) }
-    })
-}
+///**
+// * Register a listener for the unrecoverable errors.
+// */
+//fun onUnrecoverableFailure(listener: (Throwable) -> Unit) {
+//    app.unrecoverableErrors.subscribe({
+//        executeSilent { listener.invoke(it) }
+//    })
+//}
+//
+///**
+// * Register a listener for recoverable reported errors.
+// */
+//fun onReportedFailure(listener: (Throwable) -> Unit) {
+//    app.reportedErrors.subscribe({
+//        executeSilent { listener.invoke(it) }
+//    })
+//}
 
 // wtf methods
 
-// todo fix wtf method using special class Nothing
-
-fun wtf() {
+fun wtf(): Nothing {
     reportAndKill(WTFException())
 }
 
-fun wtf(message: String) {
+fun wtf(message: String): Nothing {
     reportAndKill(WTFException(message))
 }
 
-fun wtf(cause: Throwable) {
+fun wtf(cause: Throwable): Nothing {
     reportAndKill(WTFException(cause))
 }
 
-fun wtf(cause: Throwable, message: String) {
+fun wtf(cause: Throwable, message: String): Nothing {
     reportAndKill(WTFException(message, cause))
+}
+
+fun notImplemented(): Nothing {
+    wtf("not implemented")
 }
 
 // logging to file
@@ -76,7 +81,7 @@ fun report(message: String): Throwable {
     return report(RuntimeException(message))
 }
 
-private fun reportAndKill(cause: Throwable) {
+private fun reportAndKill(cause: Throwable): Nothing {
     // write log to a file
     app.exceptionLogger.error(cause)
 
@@ -85,6 +90,9 @@ private fun reportAndKill(cause: Throwable) {
 
     // kill process (let the cleanup tasks run)
     System.exit(-1)
+
+    // this is just to trick the compiler (vm is killed at this point)
+    throw cause;
 }
 
 // runnable execution exception handling
@@ -191,7 +199,7 @@ fun <T> getMandatory(arg: T?): T {
     if (arg != null) {
         return arg
     } else {
-        return whatever { reportAndKill(WTFException("not null is expected")) }
+        reportAndKill(WTFException("not null is expected"))
     }
 }
 
@@ -218,6 +226,6 @@ fun <T> executeAndGetMandatory(callable: () -> T): T {
             throw RuntimeException("callable returned null")
         }
     } catch (cause: Throwable) {
-        return whatever { reportAndKill(WTFException(cause)) }
+        reportAndKill(WTFException(cause))
     }
 }

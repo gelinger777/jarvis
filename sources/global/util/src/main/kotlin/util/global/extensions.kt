@@ -123,7 +123,7 @@ fun logger(name: String): Logger {
  * Get non null value or throw IllegalStateException.
  */
 fun <K, V> Map<K, V>.getMandatory(key: K): V {
-    return this[key] ?: whatever { wtf("nothing found for [$key]") }
+    return this[key] ?: wtf("nothing found for [$key]")
 }
 
 fun <K, V> Map<K, V>.notContainsKey(key: K): Boolean {
@@ -131,7 +131,7 @@ fun <K, V> Map<K, V>.notContainsKey(key: K): Boolean {
 }
 
 fun <K, V> MutableMap<K, V>.removeAndGetMandatory(key: K): V {
-    return this.remove(key) ?: whatever { wtf("nothing found for [$key]") }
+    return this.remove(key) ?: wtf("nothing found for [$key]")
 }
 
 /**

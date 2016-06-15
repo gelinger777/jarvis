@@ -1,24 +1,12 @@
 current tasks:
- ☐ event store 
-    ✔ StreamWriter @done (16-06-12 15:59)
-    ✔ StreamReader @done (16-06-13 07:55)
-    ✔ StreamUploader @done (16-06-13 19:44)
-    ☐ StreamPoller 
-    ✔ TradeStreamReader @done (16-06-15 00:40)
-    ✔ OrderStreamReader @done (16-06-15 00:40)
-
- ☐ add 5 more clients and collectors to top volume exchanges
-   ✔ bitfinex @done (16-05-27 23:12)
-   ✔ bitstamp (in progress) @done (16-06-01 22:46)
-   ✔ btce       @done (16-06-07 17:33)
-   ☐ btcc
-   ☐ gdax
-   ☐ itbit
-   ☐ kraken
-
- ☐ host collectors
-   ☐ digitalocean.com       // the actual collector execution
-   ☐ amazon glaicer         // storage for historical data
+ ☐ add heartbeat to each collector
+ ☐ prepare binaries for deployment
+ ☐ host collectors on digital ocean
+   ☐ configure scripts for redeployment
+ ☐ support btcc
+ ☐ support gdax
+ ☐ support itbit
+ ☐ support kraken
 
 stocksharp integration :
  ☐ protobuf/grpc compilation to Java/C#/Node

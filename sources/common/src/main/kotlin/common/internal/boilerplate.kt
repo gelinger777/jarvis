@@ -3,7 +3,7 @@ package common.internal
 import common.AggregatedOrderbook
 import proto.common.Order
 import util.global.report
-import util.global.wth
+import util.global.wtf
 import java.util.*
 
 internal fun Order.isCanceled(): Boolean {
@@ -28,6 +28,6 @@ internal fun AggregatedOrderbook.book(side: Order.Side): TreeMap<Double, Order> 
     when (side) {
         Order.Side.ASK -> return asks
         Order.Side.BID -> return bids
-        else -> return wth()
+        else -> wtf()
     }
 }
