@@ -3,7 +3,7 @@ package util.network.pusher
 import com.pusher.client.Pusher
 import rx.Observable
 import rx.subjects.PublishSubject
-import util.cleanupTasks
+import util.maid
 import util.cpu
 import util.global.logger
 
@@ -15,7 +15,7 @@ class PusherHub {
         val pusher = Pusher(pusherKey)
         pusher.connect()
 
-        cleanupTasks.internalAdd(
+        maid.internalAdd(
                 task = { pusher.disconnect() },
                 priority = 1,
                 key = "pusher|$pusherKey|$channelKey|$eventType"

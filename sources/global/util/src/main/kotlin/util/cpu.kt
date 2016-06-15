@@ -2,7 +2,6 @@ package util
 
 import rx.schedulers.Schedulers.from
 import util.global.executeMandatory
-import util.global.executeSilent
 import util.global.logger
 import util.global.toClosure
 import util.misc.RefCountTask
@@ -24,7 +23,7 @@ object cpu {
     init {
         log.debug { "init" }
 
-        cleanupTasks.internalAdd({
+        maid.internalAdd({
             log.debug { "shutdown" }
 
             // common pool doesn't need shutdown
@@ -48,25 +47,7 @@ object cpu {
         val io = from(executors.io)
     }
 
-    fun refCountTask(name: String, task: () -> Unit, timeout: Long = 10000): RefCountTask {
-        return RefCountTask(name, task, timeout)
-    }
-
-    @JvmStatic fun refCountTask(name: String, task: Runnable, timeout: Long): RefCountTask {
-        return RefCountTask(name, task.toClosure(), timeout)
-    }
-
     @JvmStatic fun refCountTask(name: String, task: Runnable): RefCountTask {
         return RefCountTask(name, task.toClosure(), 10000)
-    }
-
-    // sleep
-
-    @JvmStatic fun sleep(millis: Long) {
-        executeSilent { TimeUnit.MILLISECONDS.sleep(millis) }
-    }
-
-    @JvmStatic fun sleep(value: Long, unit: TimeUnit) {
-        executeSilent { unit.sleep(value) }
     }
 }

@@ -2,7 +2,7 @@ package util.network.grpc
 
 import io.grpc.ServerBuilder
 import io.grpc.ServerServiceDefinition
-import util.cleanupTasks
+import util.maid
 import util.cpu
 import util.global.logger
 
@@ -19,7 +19,7 @@ class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
         log.info { "starting a ${service.name} server on $port" }
 
         server.start()
-        cleanupTasks.internalAdd(
+        maid.internalAdd(
                 task = { server.shutdown() },
                 priority = 1,
                 key = "server:$port"
@@ -30,7 +30,7 @@ class GrpcServer(val port: Int, val service: ServerServiceDefinition) {
     fun stop() {
         log.info { "shutting down ${service.name} server" }
 
-        cleanupTasks.remove("server:$port")
+        maid.remove("server:$port")
         server.shutdown()
     }
 

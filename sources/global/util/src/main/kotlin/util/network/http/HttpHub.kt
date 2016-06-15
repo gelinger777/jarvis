@@ -5,7 +5,7 @@ import org.apache.http.client.methods.RequestBuilder
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
 import util.Option
-import util.cleanupTasks
+import util.maid
 import util.global.executeAndGetSilent
 import util.global.logger
 
@@ -15,7 +15,7 @@ import util.global.logger
  */
 class HttpHub {
     internal val log = logger("http")
-    internal val hc = HttpClients.createDefault().apply { cleanupTasks.internalAdd({ this.close() }, 1, "http-client") }
+    internal val hc = HttpClients.createDefault().apply { maid.internalAdd({ this.close() }, 1, "http-client") }
 
     // interface
 

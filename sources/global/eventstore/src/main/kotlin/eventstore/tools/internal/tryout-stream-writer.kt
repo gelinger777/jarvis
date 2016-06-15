@@ -2,7 +2,6 @@ package eventstore.tools.internal
 
 import eventstore.tools.io.ESWriter
 import net.openhft.chronicle.queue.RollCycles
-import util.cpu
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -14,7 +13,7 @@ internal fun main(args: Array<String>) {
 
     while (true) {
         writer.write(current())
-        cpu.sleep(50)
+        Thread.sleep(50)
     }
 
 }

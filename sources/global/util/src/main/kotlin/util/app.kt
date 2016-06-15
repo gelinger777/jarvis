@@ -26,18 +26,18 @@ object app {
         when (profile) {
             "dev" -> {
                 reportedErrors.forEach {
-                    exceptionLogger.warn(it)
+                    exceptionLogger.warn("unexpected error", it)
                 }
 
                 unrecoverableErrors.forEach {
-                    exceptionLogger.error(it)
+                    exceptionLogger.error("unrecoverable error", it)
                 }
             }
             "prod" -> {
 
 
                 reportedErrors.forEach {
-                    exceptionLogger.warn (it)
+                    exceptionLogger.warn ("unexpected error", it)
 
                     net.mail.send(
                             subject = "reported error",
@@ -46,7 +46,7 @@ object app {
                 }
 
                 unrecoverableErrors.forEach {
-                    exceptionLogger.error (it)
+                    exceptionLogger.error ("unrecoverable error", it)
 
                     net.mail.send(
                             subject = "unrecoverable error",
@@ -83,7 +83,7 @@ object app {
         System.exit(0);
     }
 
-    fun prop(s: String): String {
-        return executeAndGetMandatory { System.getProperty(s) }
+    fun prop(key: String): String {
+        return executeAndGetMandatory { System.getProperty(key) }
     }
 }

@@ -7,7 +7,6 @@ import proto.common.Order
 import util.MutableOption
 import util.Option
 import util.app.log
-import util.cpu
 
 internal fun main(args: Array<String>) {
 
@@ -51,7 +50,8 @@ internal fun main(args: Array<String>) {
                     )
             )
     )
-    cpu.sleep(3000)
+
+    Thread.sleep(3000)
     sync.next(ord(7))
     sync.next(ord(8))
     sync.next(ord(9))

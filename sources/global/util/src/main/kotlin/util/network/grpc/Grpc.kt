@@ -3,7 +3,7 @@ package util.network.grpc
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import io.grpc.ServerServiceDefinition
-import util.cleanupTasks
+import util.maid
 import util.cpu
 import util.global.executeAndGetMandatory
 
@@ -21,7 +21,7 @@ class Grpc {
                     .executor(cpu.executors.io)
                     .build()
         }
-        cleanupTasks.add(
+        maid.add(
                 task = { channel.shutdown() },
                 priority = 1,
                 key = "grpc|$host|$port"

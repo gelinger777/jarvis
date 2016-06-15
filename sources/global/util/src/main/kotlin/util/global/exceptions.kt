@@ -116,13 +116,7 @@ fun <T> executeAndGet(supplier: () -> T): T? {
  */
 fun <T> executeAndGetMandatory(supplier: () -> T): T {
     try {
-        val result = supplier.invoke()
-
-        if (result != null) {
-            return result
-        } else {
-            throw RuntimeException("supplier returned null")
-        }
+        return supplier.invoke() ?: throw NullPointerException()
     } catch (cause: Throwable) {
         wtf(cause)
     }

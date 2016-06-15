@@ -78,3 +78,34 @@ fun sleepLoopUntil(condition: () -> Boolean, block: () -> Unit, delay: Long = 10
         }
     }
 }
+
+
+//    /**
+//     * Create a runnable that when run will apply provided name to the thread while its being executed...
+//     */
+//    fun task(name: String, block: () -> Unit): Runnable {
+//        return Runnable {
+//            val thread = Thread.currentThread()
+//            val oldName = thread.name
+//            thread.name = name
+//
+//            block.invoke()
+//
+//            thread.name = oldName
+//        }
+//    }
+
+/**
+ * Create a runnable that when run will apply provided name to the thread while its being executed...
+ */
+fun named(name: String, block: () -> Unit): () -> Unit {
+    return {
+        val thread = Thread.currentThread()
+        val oldName = thread.name
+        thread.name = name
+
+        block.invoke()
+
+        thread.name = oldName
+    }
+}

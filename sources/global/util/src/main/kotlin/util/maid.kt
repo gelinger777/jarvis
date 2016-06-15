@@ -1,18 +1,15 @@
 package util
 
-import util.global.condition
-import util.global.executeSilent
-import util.global.logger
-import util.global.toClosure
+import util.global.*
 import java.util.*
 
-object cleanupTasks {
+object maid {
     val log = logger("maid")
     val tasks = mutableMapOf<String, Pair<Int, () -> Unit>>()
     internal val internalTasks = mutableMapOf<String, Pair<Int, () -> Unit>>()
 
     init {
-        Runtime.getRuntime().addShutdownHook(Thread({
+        Runtime.getRuntime().addShutdownHook(Thread(named("cleanup", {
             log.debug { "executing cleanup tasks" }
 
             // user code tasks
@@ -30,7 +27,7 @@ object cleanupTasks {
                         log.debug { "cleanup : ${it.key}" }
                         executeSilent { it.value.second.invoke() }
                     }
-        }))
+        })))
     }
 
     /**

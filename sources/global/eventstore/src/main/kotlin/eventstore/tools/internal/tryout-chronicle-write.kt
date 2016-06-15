@@ -19,7 +19,7 @@ internal fun main(args: Array<String>) {
 
         app.log.info("writing : $current")
         ap.writeText(current)
-        cpu.sleep(50)
+        Thread.sleep(50)
     }
 }
 
