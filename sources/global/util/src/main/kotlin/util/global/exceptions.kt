@@ -2,9 +2,7 @@ package util.global
 
 import util.Option
 import util.app
-import java.util.concurrent.Callable
 
-// todo refactor exception handling (direct kill vs subscribed callback killer)
 /**
  * WTFException represents an unrecoverable error, a logical error that is not considered to ever happen in the system.
  */
@@ -22,25 +20,6 @@ internal class WTFException : RuntimeException {
     constructor(cause: Throwable) : super(cause) {
     }
 }
-
-
-///**
-// * Register a listener for the unrecoverable errors.
-// */
-//fun onUnrecoverableFailure(listener: (Throwable) -> Unit) {
-//    app.unrecoverableErrors.subscribe({
-//        executeSilent { listener.invoke(it) }
-//    })
-//}
-//
-///**
-// * Register a listener for recoverable reported errors.
-// */
-//fun onReportedFailure(listener: (Throwable) -> Unit) {
-//    app.reportedErrors.subscribe({
-//        executeSilent { listener.invoke(it) }
-//    })
-//}
 
 // wtf methods
 
@@ -64,37 +43,6 @@ fun notImplemented(): Nothing {
     wtf("not implemented")
 }
 
-// logging to file
-
-/**
- * Logs an exception to general error log and returns without throwing it further.
- */
-fun report(cause: Throwable): Throwable {
-    app.reportedErrors.onNext(cause)
-    return cause
-}
-
-/**
- * Logs an exception to general error log and returns without throwing it further.
- */
-fun report(message: String): Throwable {
-    return report(RuntimeException(message))
-}
-
-private fun reportAndKill(cause: Throwable): Nothing {
-    // write log to a file
-    app.exceptionLogger.error(cause)
-
-    // acknowledge all the failure subscribers
-    app.unrecoverableErrors.onNext(cause);
-
-    // kill process (let the cleanup tasks run)
-    System.exit(-1)
-
-    // this is just to trick the compiler (vm is killed at this point)
-    throw cause;
-}
-
 // runnable execution exception handling
 
 /**
@@ -116,7 +64,8 @@ fun execute(block: () -> Unit) {
     try {
         block.invoke()
     } catch (cause: Throwable) {
-        throw report(cause)
+        report(cause)
+        throw cause
     }
 
 }
@@ -128,104 +77,98 @@ fun executeMandatory(block: () -> Unit) {
     try {
         block.invoke()
     } catch (cause: Throwable) {
-        reportAndKill(WTFException(cause))
+        wtf(cause)
     }
 
 }
 
-// callable execution exception handling
+// supplier execution exception handling
 
 /**
- * Executes callable, wraps in Option, if any exception is thrown logs it and returns empty option.
+ * Executes supplier, wraps in Option, if any exception is thrown logs it and returns empty option.
  */
-@Deprecated("use kotlin")
-fun <T> executeAndGetSilent(callable: Callable<T>): Option<T> {
+fun <T> executeAndGetSilent(supplier: () -> T): Option<T> {
     try {
-        return Option.ofNullable(callable.call())
+        return Option.ofNullable(supplier.invoke())
     } catch (cause: Throwable) {
         report(cause)
         return Option.empty<T>()
     }
 }
 
+
 /**
- * Executes callable, wraps in Option, if any exception is thrown logs it and returns empty option.
+ * Executes runnable, if any exception is thrown logs it and rethrows.
  */
-fun <T> executeAndGetSilent(callable: () -> T): Option<T> {
+fun <T> executeAndGet(supplier: () -> T): T? {
     try {
-        return Option.ofNullable(callable.invoke())
+        return supplier.invoke()
     } catch (cause: Throwable) {
         report(cause)
-        return Option.empty<T>()
+        throw cause
     }
 }
 
+
 /**
- * Executes callable, if callable returns null or any exception is thrown logs it, and rethrows.
+ * Executes supplier, if supplier returns null or any exception is thrown logs it, executes callbacks if any, AND
+ * KILLS THE PROCESS.
  */
-@Deprecated("use kotlin")
-fun <T> executeAndGet(callable: Callable<T>): T {
+fun <T> executeAndGetMandatory(supplier: () -> T): T {
     try {
-        val result = callable.call()
+        val result = supplier.invoke()
 
         if (result != null) {
             return result
         } else {
-            throw report(RuntimeException("callable returned null"))
+            throw RuntimeException("supplier returned null")
         }
     } catch (cause: Throwable) {
-        throw report(cause)
+        wtf(cause)
     }
 }
 
 /**
- * Executes callable, if callable returns null or any exception is thrown logs it, and rethrows.
+ * Try convert nullable to non nullable or fail.
  */
-fun <T> executeAndGet(callable: () -> T): T {
-    try {
-        val result = callable.invoke()
-
-        if (result != null) {
-            return result
-        } else {
-            throw report(RuntimeException("callable returned null"))
-        }
-    } catch (cause: Throwable) {
-        throw report(cause)
-    }
-}
-
-fun <T> getMandatory(arg: T?): T {
+fun <T> tryGet(arg: T?): T {
     if (arg != null) {
         return arg
     } else {
-        reportAndKill(WTFException("not null is expected"))
+        throw NullPointerException()
     }
 }
 
 /**
- * Executes callable, if callable returns null or any exception is thrown logs it, executes callbacks if any, AND
- * KILLS THE PROCESS.
+ * Try convert nullable to non nullable or die.
  */
-@Deprecated("use kotlin")
-fun <T> executeAndGetMandatory(callable: Callable<T>): T {
-    return getMandatory(callable.call())
+fun <T> getMandatory(arg: T?): T {
+    return arg ?: wtf("not null is expected")
+}
+
+// reporting
+
+/**
+ * Logs an exception to general error log and returns without throwing it further.
+ */
+fun report(cause: Throwable) {
+    app.reportedErrors.onNext(cause)
 }
 
 /**
- * Executes callable, if callable returns null or any exception is thrown logs it, executes callbacks if any, AND
- * KILLS THE PROCESS.
+ * Logs an exception to general error log and returns without throwing it further.
  */
-fun <T> executeAndGetMandatory(callable: () -> T): T {
-    try {
-        val result = callable.invoke()
+fun report(message: String) {
+    report(RuntimeException(message))
+}
 
-        if (result != null) {
-            return result
-        } else {
-            throw RuntimeException("callable returned null")
-        }
-    } catch (cause: Throwable) {
-        reportAndKill(WTFException(cause))
-    }
+private fun reportAndKill(cause: Throwable): Nothing {
+    // acknowledge all the failure subscribers
+    app.unrecoverableErrors.onNext(cause);
+
+    // kill process (let the cleanup tasks run)
+    System.exit(-1)
+
+    // this is just to trick the compiler (vm is killed at this po
+    throw cause;
 }
