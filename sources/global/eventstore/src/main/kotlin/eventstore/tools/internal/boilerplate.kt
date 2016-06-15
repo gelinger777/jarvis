@@ -1,7 +1,6 @@
 package eventstore.tools.internal
 
 import com.amazonaws.services.s3.model.S3ObjectSummary
-import com.amazonaws.services.s3.transfer.Upload
 import com.google.protobuf.MessageLite
 import eventstore.tools.io.ESWriter
 import net.openhft.chronicle.bytes.Bytes
@@ -9,7 +8,7 @@ import net.openhft.chronicle.queue.ChronicleQueueBuilder
 import net.openhft.chronicle.queue.ExcerptAppender
 import net.openhft.chronicle.queue.RollCycle
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue
-import java.io.File
+import java.nio.file.Paths
 
 fun queue(path: String, rollCycle: RollCycle): SingleChronicleQueue {
     return ChronicleQueueBuilder
@@ -38,9 +37,9 @@ fun ExcerptAppender.write(bytes: ByteArray): Long {
 
 
 fun S3ObjectSummary.fileName(): String {
-    return File(key).name
+    return Paths.get(key).fileName.toString()
 }
 
-fun Upload.notCompleted(): Boolean {
-    return !isDone
+fun S3ObjectSummary.isChronicleFile(): Boolean {
+    return key.endsWith(".cq4")
 }

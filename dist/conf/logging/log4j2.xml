@@ -47,6 +47,8 @@
         <Logger name="util" level="INFO"/>
         <Logger name="com.tars.util.net.ws" level="INFO"/>
         <Logger name="com.amazonaws" level="ERROR"/>
+        <Logger name="ESUploader" level="TRACE"/>
+        <Logger name="ESPoller" level="TRACE"/>
     </Loggers>
 
 </Configuration>

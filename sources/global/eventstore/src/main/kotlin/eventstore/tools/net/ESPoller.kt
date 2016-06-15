@@ -8,30 +8,32 @@ import com.amazonaws.services.s3.iterable.S3Objects
 import com.amazonaws.services.s3.model.S3ObjectSummary
 import com.amazonaws.services.s3.transfer.TransferManager
 import eventstore.tools.internal.fileName
-import util.cpu
+import eventstore.tools.internal.isChronicleFile
 import util.global.*
 import util.misc.RefCountRepeatingTask
 import java.io.File
+import java.util.concurrent.TimeUnit.MINUTES
 
 /**
  * Polls data from remote data storage.
  */
 class ESPoller(
-        val destination: String,
+        val localRoot: String,
         val bucket: String = "jarvis-historical",
         val folder: String,
         val region: Regions = Regions.AP_SOUTHEAST_1) {
-    private val log = logger("StreamPoller")
+    private val log = logger("ESPoller")
 
     val s3: AmazonS3Client
 
     val task = RefCountRepeatingTask(
-            name = "stream-poller : $bucket/$folder",
+            name = "es-poller",
             task = {
                 // no failures are accepted
                 executeMandatory { this.check() }
             },
-            delay = 10000
+            //            delay = 2000
+            delay = 5, unit = MINUTES
     )
 
     init {
@@ -52,43 +54,51 @@ class ESPoller(
     }
 
     private fun check() {
-        val root = File(destination)
+        log.debug { "${task.name} : checking" }
 
-        if (!root.exists() || !root.isDirectory) return
+        val localRoot = File(localRoot)
+
+        if (!localRoot.exists() || !localRoot.isDirectory) return
 
         // collect data about local files
-        val localFiles = root.listFiles().map { it.name }
+        val localFiles = localRoot.listFiles().map { it.name }
 
         // collect data about remote files
-        val remoteFiles = S3Objects.inBucket(s3, bucket).toList()
+        val remoteFiles = S3Objects.inBucket(s3, bucket)
+                .filter { it.isChronicleFile() }.map { it }.toList()
+
+        val tm = TransferManager(s3)
 
         // download all remote files not found in local file system
         remoteFiles
-            .filter { localFiles.notContains(it.fileName()) }
-            .forEach { download(it) }
+                .filter {
+                    localFiles.notContains(it.fileName()).apply {
+                        if (this == false) log.trace { "skipping ${it.key} as it is already available locally" }
+                    }
+                }
+                .forEach { download(it, tm) }
+
+        tm.shutdownNow(false)
     }
 
-    private fun download(s3object: S3ObjectSummary) {
+    private fun download(s3object: S3ObjectSummary, tm: TransferManager) {
 
+        val file = File("$localRoot/${s3object.fileName()}")
 
-        val tm = TransferManager(s3, cpu.executors.io)
+        log.info { "initiating download from s3:$bucket/${s3object.key} to ${file.path}" }
 
-//        s3.getObject(GetObjectRequest())
-//
-//        return notImplemented()
+        val download = tm.download(bucket, s3object.key, file)
+
+        sleepLoopUntil(
+                condition = { download.isDone },
+                block = {
+                    log.info { "${download.description} (${download.state})" }
+                    log.debug { "progress : ${download.progress.percentTransferred.roundDown2()} %  (${size(download.progress.bytesTransferred)})" }
+                },
+                delay = 1000
+        )
+
+        log.info { "successfully downloaded : ${file.name}" }
     }
 
-//    private fun upload(file: File) {
-//        val destination = "$folder/${file.name}"
-//
-//        log.info { "uploading ${file.name} to $bucket/$destination" }
-//
-//        s3.putObject(PutObjectRequest(bucket, destination, file))
-//
-//        log.info { "successfully uploaded : ${file.name}" }
-//
-//        file.delete()
-//
-//        log.info { "removed local ${file.name}" }
-//    }
 }

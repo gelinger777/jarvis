@@ -54,6 +54,10 @@
         <Logger name="net" level="INFO"/>
         <Logger name="pusher" level="INFO"/>
         <Logger name="orderSync" level="INFO"/>
+
+        <Logger name="ESUploader" level="TRACE"/>
+        <Logger name="ESPoller" level="TRACE"/>
+
     </Loggers>
 
 </Configuration>
