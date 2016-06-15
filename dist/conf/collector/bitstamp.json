@@ -1,7 +1,0 @@
-{
-  "port": 9153,
-  "bitstampConfig": {
-    "publicKey": "change me",
-    "privateKey": "change me"
-  }
-}

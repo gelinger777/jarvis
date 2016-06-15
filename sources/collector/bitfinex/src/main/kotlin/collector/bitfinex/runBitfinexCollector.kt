@@ -2,12 +2,10 @@ package collector.bitfinex
 
 import bitfinex.Bitfinex
 import collector.common.CollectorService
-import proto.bitstamp.ProtoCollector.BitfinexCollectorConfig
 import proto.common.CollectorGrpc
 import util.app
 import util.app.log
 import util.cleanupTasks
-import util.global.readConfig
 import util.net
 
 fun startBitfinexCollectorService(port: Int) {
@@ -25,9 +23,10 @@ fun startBitfinexCollectorService(port: Int) {
 
 fun main(args: Array<String>) {
     app.log.info("reading the configuration")
-    val config = BitfinexCollectorConfig.newBuilder().readConfig("conf").build()
 
-    startBitfinexCollectorService(config.port)
+    val port = app.prop("port").toInt();
+
+    startBitfinexCollectorService(port)
 
     log.info("enter to terminate")
     readLine()

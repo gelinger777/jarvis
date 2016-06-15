@@ -34,7 +34,7 @@ internal fun handleMessage(data: String, channels: MutableMap<Any, (JsonArray) -
                 val chanId = rootObject.get("chanId").asInt
                 val pair = rootObject.get("pair").asString.asPair()
 
-                var key = ""
+                val key: String
 
                 when (rootObject.get("channel").asString) {
                     "book" -> key = pair.asBookKey()
@@ -98,7 +98,7 @@ internal fun parseOrders(array: JsonArray): List<Order> {
             if (count == 0) {
                 if (volume == -1.0 || volume == 1.0) {
                     volume = 0.0
-                }else{
+                } else {
                     wtf("no orders but provided volume?")
                 }
             }

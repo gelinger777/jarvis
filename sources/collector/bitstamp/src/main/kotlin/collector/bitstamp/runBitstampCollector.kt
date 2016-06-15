@@ -2,12 +2,10 @@ package collector.bitstamp
 
 import bitstamp.Bitstamp
 import collector.common.CollectorService
-import proto.bitstamp.ProtoCollector.BitstampCollectorConfig
 import proto.common.CollectorGrpc
 import util.app
 import util.app.log
 import util.cleanupTasks
-import util.global.readConfig
 import util.net
 
 fun startBitstampCollectorService(port: Int) {
@@ -25,9 +23,10 @@ fun startBitstampCollectorService(port: Int) {
 
 fun main(args: Array<String>) {
     app.log.info("reading the configuration")
-    val config = BitstampCollectorConfig.newBuilder().readConfig("conf").build()
 
-    startBitstampCollectorService(config.port)
+    val port = app.prop("port").toInt()
+
+    startBitstampCollectorService(port)
 
     log.info("enter to terminate")
     readLine()

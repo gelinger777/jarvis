@@ -1,7 +1,0 @@
-{
-  "port": 9154,
-  "btceConfig": {
-    "publicKey": "change me",
-    "privateKey": "change me"
-  }
-}

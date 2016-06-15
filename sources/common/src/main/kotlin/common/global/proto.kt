@@ -8,7 +8,6 @@ import proto.common.Currency
 import proto.common.Order
 import proto.common.Pair
 import proto.common.Trade
-import proto.eventstore.ProtoES
 import util.global.condition
 import util.global.dateTime
 import util.global.executeAndGetMandatory
@@ -115,22 +114,6 @@ fun Order.compact(showTime: Boolean = true): String {
     } else {
         return "$side | ${price.roundDown3()} | ${volume.roundDown3()}"
     }
-}
-
-//fun main(args: Array<String>) {
-//    order(Order.Side.BID, 405.0, 10.2).compact(true).apply {app.log.info(this) }
-//}
-
-fun ProtoES.Event.bytes(): ByteArray {
-    return data.toByteArray()
-}
-
-fun ProtoES.Event.parseTrade(): Trade {
-    return Trade.parseFrom(data.toByteArray())
-}
-
-fun ProtoES.Event.parseOrder(): Order {
-    return Order.parseFrom(data.toByteArray())
 }
 
 /**

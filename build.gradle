@@ -7,6 +7,7 @@ description = "Fully autonomous algorithmic trading environment."
  */
 def cfgRoot = "/Users/vach/workspace/jarvis/dist/conf"
 def binRoot = "/Users/vach/workspace/jarvis/dist/bin"
+def storeRoot = "/Users/vach/workspace/jarvis/dist/data"
 def profile = "dev"
 
 buildscript {
@@ -232,38 +233,6 @@ project(":eventstore") {
     }
 }
 
-//project(":eventstore-client") {
-//
-//    description = "[lib] Event Store GRPC client."
-//
-//    dependencies {
-//        compile project(":common")
-//    }
-//}
-//
-//project(":eventstore-server") {
-//    apply plugin: 'application'
-//    mainClassName = "eventstore.server.RunEventStoreKt"
-//
-//    def destination = "${binRoot}/eventstore"
-//
-//    applicationDefaultJvmArgs = [
-//            "-DlogPath=${destination}/logs",
-//            "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
-//            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
-//            "-Dprofile=${profile}",
-//            "-Dconf=${cfgRoot}/eventstore.json"
-//    ]
-//
-//    installDist.destinationDir = file(destination)
-//
-//    description = "[app] Event Store server."
-//
-//    dependencies {
-//        compile project(":eventstore")
-//    }
-//}
-
 // User Interface ===============================================================================
 
 project(":visual") {
@@ -355,7 +324,9 @@ project(":collector-bitfinex") {
             "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
             "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
-            "-Dconf=${cfgRoot}/collector/bitfinex.json"
+
+            "-DstorePath=${storeRoot}",
+            "-Dport=9151"
     ]
 
     installDist.destinationDir = file(destination)
@@ -379,7 +350,9 @@ project(":collector-bitstamp") {
             "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
             "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
-            "-Dconf=${cfgRoot}/collector/bitstamp.json"
+
+            "-DstorePath=${storeRoot}",
+            "-Dport=9152"
     ]
 
     installDist.destinationDir = file(destination)
@@ -403,7 +376,9 @@ project(":collector-btce") {
             "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
             "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
-            "-Dconf=${cfgRoot}/collector/btce.json"
+
+            "-DstorePath=${storeRoot}",
+            "-Dport=9152"
     ]
 
     installDist.destinationDir = file(destination)

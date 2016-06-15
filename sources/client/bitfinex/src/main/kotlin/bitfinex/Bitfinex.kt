@@ -41,7 +41,7 @@ class Bitfinex() : IExchange {
     }
 
     override fun account(): IAccount {
-        return notImplemented()
+        notImplemented()
     }
 }
 

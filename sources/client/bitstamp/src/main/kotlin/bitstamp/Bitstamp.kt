@@ -39,6 +39,6 @@ class Bitstamp() : IExchange {
     }
 
     override fun account(): IAccount {
-        return notImplemented()
+        notImplemented()
     }
 }

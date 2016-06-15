@@ -2,12 +2,10 @@ package collector.bitstamp
 
 import btce.Btce
 import collector.common.CollectorService
-import proto.bitstamp.ProtoCollector.BtceCollectorConfig
 import proto.common.CollectorGrpc
 import util.app
 import util.app.log
 import util.cleanupTasks
-import util.global.readConfig
 import util.net
 
 fun startBtceCollectorService(port: Int) {
@@ -25,9 +23,10 @@ fun startBtceCollectorService(port: Int) {
 
 fun main(args: Array<String>) {
     app.log.info("reading the configuration")
-    val config = BtceCollectorConfig.newBuilder().readConfig("conf").build()
 
-    startBtceCollectorService(config.port)
+    val port = app.prop("port").toInt()
+
+    startBtceCollectorService(port)
 
     log.info("enter to terminate")
     readLine()

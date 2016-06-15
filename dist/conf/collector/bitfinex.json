@@ -1,7 +1,0 @@
-{
-  "port": 9152,
-  "bitfinexConfig": {
-    "publicKey": "change me",
-    "privateKey": "change me"
-  }
-}

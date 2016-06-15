@@ -5,7 +5,7 @@ import util.app.log
 internal fun main(args: Array<String>) {
     val a = 60    /* 60 = 0011 1100 */
     val b = 13    /* 13 = 0000 1101 */
-    var c = 0
+    var c: Int
 
     c = a and b       /* 12 = 0000 1100 */
     log.info { "a & b = " + c }
