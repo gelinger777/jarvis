@@ -154,6 +154,7 @@ subprojects {
 
             }
 
+            // todo deprecation warning since gradle 2.14
             project.sourceSets {
                 main {
                     proto {
@@ -163,14 +164,14 @@ subprojects {
                         srcDirs 'src/main/java', 'src/gen/main/java', 'src/gen/main/grpc'
                     }
                 }
-                test {
-                    proto {
-                        srcDir 'src/test/proto'
-                    }
-                    java {
-                        srcDirs 'src/test/java', 'src/gen/test/java', 'src/gen/test/grpc'
-                    }
-                }
+//                test {
+//                    proto {
+//                        srcDir 'src/test/proto'
+//                    }
+//                    java {
+//                        srcDirs 'src/test/java', 'src/gen/test/java', 'src/gen/test/grpc'
+//                    }
+//                }
             }
         }
     }
@@ -410,7 +411,7 @@ project(":engine") {
 
 task wrapper(type: Wrapper) {
     description = 'Regenerates the Gradle wrapper script'
-    gradleVersion = '2.13'
+    gradleVersion = '2.14'
 }
 
 task cleanOutput() {
