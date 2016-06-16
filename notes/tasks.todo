@@ -1,8 +1,10 @@
 current tasks:
- ☐ add heartbeat to each collector
- ☐ prepare binaries for deployment
- ☐ host collectors on digital ocean
-   ☐ configure scripts for redeployment
+ ✔ add heartbeat to each collector @done (16-06-16 17:49)
+ ✔ prepare binaries for deployment @done (16-06-16 17:49)
+ ☐ test local for 2 days uninterrupted...
+ ☐ fix other collectors
+ ☐ deploy collectors
+ 
  ☐ support btcc
  ☐ support gdax
  ☐ support itbit

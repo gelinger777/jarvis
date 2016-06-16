@@ -3,7 +3,7 @@ package engine.internal.io
 import bitfinex.Bitfinex
 import common.global.compact
 import common.global.pair
-import eventstore.tools.io.ESWriter
+import eventstore.tools.io.EventStreamWriter
 import net.openhft.chronicle.queue.RollCycles
 import util.app.log
 
@@ -12,9 +12,9 @@ import util.app.log
  */
 internal fun main(args: Array<String>) {
 
-    val rawStreamWriter = ESWriter(
+    val rawStreamWriter = EventStreamWriter(
             path = "/Users/vach/workspace/jarvis/dist/data/bitfinex/btc-usd/trades/",
-            rollCycle = RollCycles.MINUTELY
+            cycles = RollCycles.MINUTELY
     )
 
     Bitfinex().market(pair("btc", "usd"))

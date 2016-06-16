@@ -1,35 +1,12 @@
 package collector.bitfinex
 
 import bitfinex.Bitfinex
-import collector.common.CollectorService
-import proto.common.CollectorGrpc
+import collector.common.startCollectorFor
 import util.app
-import util.app.log
-import util.maid
-import util.net
-
-fun startBitfinexCollectorService(port: Int, storeRoot: String) {
-    log.info("creating Bitfinex client")
-    val bitfinex = Bitfinex()
-
-    log.info("creating the collector")
-    val collector = CollectorService(bitfinex, storeRoot)
-
-    log.info("publishing collector via grpc")
-    val server = net.grpc.server(port, CollectorGrpc.bindService(collector)).start()
-
-    maid.add(key = "bitfinex-collector", task = { server.stop() })
-}
+import util.global.sleepUntilInterrupted
 
 fun main(args: Array<String>) {
-    app.log.info("reading the configuration")
-
-    val port = app.prop("port").toInt()
-    val storeRoot = app.prop("storeRoot")
-
-    startBitfinexCollectorService(port, storeRoot)
-
-    log.info("enter to terminate")
-    readLine()
-    app.exit()
+    app.log.info { "starting Bitfinex collector" }
+    startCollectorFor(Bitfinex())
+    sleepUntilInterrupted()
 }

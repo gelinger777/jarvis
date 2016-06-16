@@ -1,6 +1,5 @@
 package util
 
-import rx.Observable
 import rx.subjects.PublishSubject
 import util.global.*
 import java.util.concurrent.ThreadLocalRandom
@@ -10,14 +9,15 @@ object app {
     val exceptionLogger = logger("exc")
     val profile: String
 
-    internal val reportedErrors = PublishSubject.create<Throwable>()
-    internal val unrecoverableErrors = PublishSubject.create<Throwable>()
+    // todo : make this internal when jetbrains fixes the method not found bug
+    val reportedErrors = PublishSubject.create<Throwable>()
+    val unrecoverableErrors = PublishSubject.create<Throwable>()
 
     init {
-        val logs = System.getProperty("logPath")
-        profile = System.getProperty("profile")
+        val logs = property("log.path")
+        profile = property("profile")
 
-        mandatoryCondition(notNullOrEmpty(logs), "'logPath' system property must be specified")
+        mandatoryCondition(notNullOrEmpty(logs), "'log.path' system property must be specified")
         mandatoryCondition(notNullOrEmpty(profile), "'profile' system property must be specified")
 
         log.debug { "profile : $profile" }
@@ -34,14 +34,17 @@ object app {
                 }
             }
             "prod" -> {
-
+                // use exceptions to notify developer (possible to notify specific people depending on the package)
 
                 reportedErrors.forEach {
                     exceptionLogger.warn ("unexpected error", it)
 
                     net.mail.send(
                             subject = "reported error",
-                            message = it.stackTraceAsString()
+                            message = it.stackTraceAsString(),
+                            destination = "vachagan.balayan@gmail.com",
+                            senderName = "Jarvis",
+                            senderAddress = "jarvis@everywhere.com"
                     )
                 }
 
@@ -49,26 +52,30 @@ object app {
                     exceptionLogger.error ("unrecoverable error", it)
 
                     net.mail.send(
-                            subject = "unrecoverable error",
-                            message = it.stackTraceAsString()
+                            subject = "reported error",
+                            message = it.stackTraceAsString(),
+                            destination = "vachagan.balayan@gmail.com",
+                            senderName = "Jarvis",
+                            senderAddress = "jarvis@everywhere.com"
                     )
                 }
             }
-            else -> wtf("unknown profile : $profile")
-
+            else -> wtf()
         }
     }
 
-    fun isDevProfile(): Boolean {
-        return profile == "dev"
+    fun property(key: String): String {
+        return executeAndGetMandatory { System.getProperty(key) }
     }
 
-    fun reportedErrors(): Observable<Throwable> {
-        return reportedErrors;
+    fun optionalProperty(key: String): Option<String> {
+        return executeAndGetSilent { System.getProperty(key) }
     }
 
-    fun unrecoverableErrors(): Observable<Throwable> {
-        return unrecoverableErrors;
+    fun ensurePropertiesAreProvided(vararg keys: String) {
+        keys.forEach {
+            condition(notNullOrEmpty(System.getProperty(it)), "system property '$it' is required")
+        }
     }
 
     fun time(): Long {
@@ -83,7 +90,4 @@ object app {
         System.exit(0);
     }
 
-    fun prop(key: String): String {
-        return executeAndGetMandatory { System.getProperty(key) }
-    }
 }

@@ -1,18 +1,18 @@
 package engine.readers
 
 import common.global.trade
-import eventstore.tools.io.ESReader
+import eventstore.tools.io.EventStreamReader
 import proto.common.Trade
 import rx.Observable
-import util.global.wtf
+import util.global.notImplemented
 
 /**
  * Analyses raw stream of trades and provides api to query historical data.
  */
-class TradeStreamReader(val source: ESReader) {
+class TradeStreamReader(val source: EventStreamReader) {
 
     fun index(){
-        wtf("indexing is not supported yet")
+        notImplemented()
     }
 
     fun stream(start: Long = -1, end: Long = -1): Observable<Trade> {

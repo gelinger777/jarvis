@@ -7,18 +7,23 @@ class CollectorClient(val host: String, val port: Int) {
     private val blockingStub = CollectorGrpc.newBlockingStub(channel)
 
     fun info(): CollInfoResp {
-        return blockingStub.info(CollInfoReq.getDefaultInstance())
+        return blockingStub.info(Empty.getDefaultInstance())
     }
 
-    fun recordTrades(pair: Pair): RecordTradesResp {
-        return blockingStub.recordTrades(
-                RecordTradesReq.newBuilder().setPair(pair).build()
+    fun recordTrades(pair: Pair) {
+        blockingStub.record(
+                RecordReq.newBuilder()
+                        .setType(RecordReq.Type.TRADES)
+                        .setPair(pair)
+                        .build()
         )
     }
-
-    fun recordOrders(pair: Pair): RecordOrdersResp {
-        return blockingStub.recordOrders(
-                RecordOrdersReq.newBuilder().setPair(pair).build()
+    fun recordOrders(pair: Pair) {
+        blockingStub.record(
+                RecordReq.newBuilder()
+                        .setType(RecordReq.Type.TRADES)
+                        .setPair(pair)
+                        .build()
         )
     }
 }

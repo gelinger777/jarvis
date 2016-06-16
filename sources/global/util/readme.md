@@ -17,7 +17,7 @@ all network resources before `cpu` will shut down execution pools... Cleanup tas
 registered/unregistered with priorities and when application shuts down those are
 executed in right order...
 * `app` will initialize default logger for application, and read conventional properties
-from environment variables such as `profile` and `logPath`
+from environment variables such as `profile` and `log.path`
 
 We favour fail fast approach, if any unexpected behaviour of the application is taking place we kill and report the cause of the failure (for example email to developer).
 

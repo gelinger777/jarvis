@@ -4,22 +4,20 @@ import common.AggregatedOrderbook
 import common.global.all
 import common.global.compact
 import common.global.order
-import eventstore.tools.io.ESReader
+import eventstore.tools.io.EventStreamReader
 import proto.common.Order
 import rx.Observable
 import util.global.logger
-import util.global.wtf
+import util.global.notImplemented
 
 /**
  * Analyses raw stream of orders and provides api to query historical data. Streaming orders does not make sense if the initial orderbook is not being streamed first, hence it will create different orderbook snapshots.
- *
- * todo : using eventstore-tools
  */
-class OrderStreamReader(val source: ESReader) {
+class OrderStreamReader(val source: EventStreamReader) {
     val log = logger("orderStreamReader")
 
     fun index() {
-        wtf("indexing is not supported yet")
+        notImplemented()
     }
 
     fun stream(start: Long = -1, end: Long = -1): Observable<Order> {

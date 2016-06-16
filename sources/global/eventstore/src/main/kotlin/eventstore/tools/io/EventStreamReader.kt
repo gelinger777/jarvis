@@ -12,8 +12,8 @@ import util.global.size
 /**
  * Provides streaming api for reading raw data stream. Make sure to pass the correct roll cycle.
  */
-class ESReader(val path: String, val rollCycle: RollCycle = RollCycles.DAILY) {
-    private val log = logger("StreamReader")
+class EventStreamReader(val path: String, val rollCycle: RollCycle = RollCycles.DAILY) {
+    private val log = logger("EventStreamReader")
     private val chronicle = queue(path, rollCycle)
 
     fun read(): Observable<Pair<Long, ByteArray>> {

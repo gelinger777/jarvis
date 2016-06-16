@@ -16,9 +16,9 @@ class Postman(
             .apiKey(apiKey)
 
     fun send(subject: String, message: String,
-             destination: String = "vachagan.balayan@gmail.com",
-             senderName: String = "Jarvis",
-             senderAddress: String = "jarvis@jarvis.com"
+             destination: String ,
+             senderName: String ,
+             senderAddress: String
     ) {
         log.info { "sending an email to [$destination]" }
 

@@ -3,12 +3,11 @@ package eventstore.tools.net
 import com.amazonaws.auth.SystemPropertiesCredentialsProvider
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
-import com.amazonaws.regions.Regions.AP_SOUTHEAST_1
+import com.amazonaws.regions.Regions.US_WEST_2
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.iterable.S3Objects
 import com.amazonaws.services.s3.transfer.TransferManager
 import eventstore.tools.internal.fileName
-import eventstore.tools.internal.isChronicleFile
 import util.global.*
 import util.misc.RefCountRepeatingTask
 import java.io.File
@@ -17,53 +16,45 @@ import java.util.concurrent.TimeUnit.MINUTES
 /**
  * Tracks the stream for rollups and uploads them to the AWS S3 storage, credentials must be available via system properties...
  */
-class ESUploader(
-        val localRoot: String,
-        val bucket: String = "jarvis-historical",
-        val folder: String,
-        val region: Regions = AP_SOUTHEAST_1) {
-    private val log = logger("ESUploader")
+class EventStreamUploader(
+        val localPath: String,
+        val remotePath: String,
+        val bucket: String,
+        val region: Regions = US_WEST_2,
+        val delay : Long = MINUTES.toMillis(5)
+) {
+    private val log = logger("EventStreamUploader")
 
     val s3: AmazonS3Client
 
     val task = RefCountRepeatingTask(
-            name = "es-uploader",
+            name = "event-stream-uploader",
             task = {
                 // no failures are accepted
                 executeMandatory { this.check() }
             },
-//            delay = 2000
-            delay = 5, unit = MINUTES
+            delay = delay
     )
 
     init {
-        // validate the source
-        val root = File(localRoot)
-        condition(root.exists(), "folder $localRoot does not exist")
-        condition(root.isDirectory, "$localRoot is not a directory")
-
         // validate s3
         s3 = AmazonS3Client(executeAndGetMandatory { SystemPropertiesCredentialsProvider().credentials })
         s3.setRegion(Region.getRegion(region))
         condition(s3.listBuckets().map { it.name }.contains(bucket), "bucket '$bucket' does not exist")
-    }
 
-    fun start() {
-        log.info { "starting ${task.name}" }
+        log.info { "starting uploader : from '$localPath' to 's3:$bucket/$remotePath' with ${duration(delay)} delay on each check" }
         task.forceStart()
-    }
-
-    fun stop() {
-        log.info { "stopping ${task.name}" }
-        task.forceStop()
     }
 
     private fun check() {
         log.debug { "${task.name} : checking" }
 
-        val localRoot = File(localRoot)
+        val localRoot = File(localPath)
 
-        if (!localRoot.exists() || !localRoot.isDirectory) return
+        if (!localRoot.exists() || !localRoot.isDirectory) {
+            log.debug { "local source $localRoot is not valid skipping" }
+            return
+        }
 
         // collect data about local files
         val localFiles = localRoot.listFiles()
@@ -71,7 +62,7 @@ class ESUploader(
 
         // collect data about remote files
         val remoteFiles = S3Objects.inBucket(s3, bucket)
-                .filter { it.isChronicleFile() }.map { it.fileName() }.toList()
+                .filter { it.key.startsWith("$remotePath/") && it.key.endsWith(".cq4") }.map { it.fileName() }.toList()
 
         val tm = TransferManager(s3)
 
@@ -93,7 +84,7 @@ class ESUploader(
     }
 
     private fun upload(file: File, tm: TransferManager) {
-        val destination = "$folder/${file.name}"
+        val destination = "$remotePath/${file.name}"
 
         log.info { "initiating upload from ${file.path} to s3:$bucket/$destination" }
 
@@ -105,7 +96,7 @@ class ESUploader(
                     log.info { "${upload.description} (${upload.state})" }
                     log.debug { "progress : ${upload.progress.percentTransferred.roundDown2()} %  (${size(upload.progress.bytesTransferred)})" }
                 },
-                delay = 1000
+                delay = MINUTES.toMillis(1)
         )
 
         log.info { "successfully uploaded : ${file.name}" }

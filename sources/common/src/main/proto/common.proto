@@ -5,6 +5,8 @@ option java_outer_classname = "ProtoCommon";
 
 package proto.common;
 
+message Empty { }
+
 // ---------------------------------------------------------------------------
 // service interface
 // ---------------------------------------------------------------------------
@@ -12,13 +14,10 @@ package proto.common;
 // Collector service provides interface to record and stream realtime and historical data for a particular exchange
 service Collector {
 
-    rpc info (CollInfoReq) returns (CollInfoResp) {
+    rpc info (Empty) returns (CollInfoResp) {
     }
 
-    rpc recordTrades (RecordTradesReq) returns (RecordTradesResp) {
-    }
-
-    rpc recordOrders (RecordOrdersReq) returns (RecordOrdersResp) {
+    rpc record (RecordReq) returns (Empty) {
     }
 }
 
@@ -26,30 +25,19 @@ service Collector {
 // request/response types
 // ---------------------------------------------------------------------------
 
-message CollInfoReq {
-}
-
 message CollInfoResp {
     repeated Pair accessibleMarketPairs = 1;
     repeated string currentStreams = 2;
 }
 
-message RecordTradesReq {
-    required Pair pair = 1;
-}
+message RecordReq {
+    enum Type {
+        ORDERS = 0;
+        TRADES = 1;
+    }
 
-message RecordTradesResp {
-    required bool success = 1;
-    optional string error = 2;
-}
-
-message RecordOrdersReq {
-    required Pair pair = 1;
-}
-
-message RecordOrdersResp {
-    required bool success = 1;
-    optional string error = 2;
+    required Type type = 1;
+    required Pair pair = 2;
 }
 
 // ---------------------------------------------------------------------------

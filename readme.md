@@ -87,7 +87,7 @@ By default generated binary distribution for services are stored in `/dist/bin`,
 
 Each `app` expects following environment variables to be provided :
 * `conf` location of json configuration for that specific app
-* `logPath` where log files for the execution will be stored
+* `log.path` where log files for the execution will be stored
 * `profile` profile information is available in runtime
 
 Each module that may need some explanation will provide a `readme.md` file under its sources root.

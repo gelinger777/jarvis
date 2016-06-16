@@ -321,13 +321,18 @@ project(":collector-bitfinex") {
     def destination = "${binRoot}/bitfinex"
 
     applicationDefaultJvmArgs = [
-            "-DlogPath=${destination}/logs",
+            "-Dlog.path=${destination}/logs",
             "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
             "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
-
-            "-DstorePath=${storeRoot}",
-            "-Dport=9151"
+            "-Dstore.path=${storeRoot}",
+//            "-Daws.accessKeyId=CHANGEME",
+//            "-Daws.secretKey=CHANGEME",
+//            "-Daws.bucket=CHANGEME",
+            "-Drecord.trades=btc-usd",
+            "-Drecord.orders=btc-usd",
+            "-Dtrade.cycles=HOURLY",
+            "-Dorder.cycles=HOURLY"
     ]
 
     installDist.destinationDir = file(destination)
@@ -336,18 +341,20 @@ project(":collector-bitfinex") {
 
     dependencies {
         compile project(":collector-common")
+//        compile 'net.openhft:chronicle-queue:4.3.2'
         compile project(":client-bitfinex")
     }
 }
 
 project(":collector-bitstamp") {
+    // todo
     apply plugin: 'application'
     mainClassName = "collector.bitstamp.RunBitstampCollectorKt"
 
     def destination = "${binRoot}/bitstamp"
 
     applicationDefaultJvmArgs = [
-            "-DlogPath=${destination}/logs",
+            "-Dlog.path=${destination}/logs",
             "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
             "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",
@@ -367,13 +374,14 @@ project(":collector-bitstamp") {
 }
 
 project(":collector-btce") {
+    // todo
     apply plugin: 'application'
     mainClassName = "collector.btce.RunBtceCollectorKt"
 
     def destination = "${binRoot}/btce"
 
     applicationDefaultJvmArgs = [
-            "-DlogPath=${destination}/logs",
+            "-Dlog.path=${destination}/logs",
             "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
             "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
             "-Dprofile=${profile}",

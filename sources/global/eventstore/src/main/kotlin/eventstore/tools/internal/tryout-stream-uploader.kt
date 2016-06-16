@@ -1,19 +1,13 @@
 package eventstore.tools.internal
 
-import eventstore.tools.net.ESUploader
-import util.app
+import eventstore.tools.net.EventStreamUploader
 
 internal fun main(args: Array<String>) {
-    val uploader = ESUploader(
-            localRoot = "/Users/vach/workspace/jarvis/dist/data/test",
-            bucket = "jarvis-historical", folder = "test"
+    EventStreamUploader(
+            localPath = "/Users/vach/workspace/jarvis/dist/data/test",
+            remotePath = "test",
+            bucket = "jarvis-history"
     )
 
-    app.log.info(uploader.localRoot)
-
-    uploader.start()
-
     readLine()
-
-    uploader.stop()
 }

@@ -71,14 +71,14 @@ fun order(data: ByteArray): Order {
 }
 
 fun String.asPair(): Pair {
-    val matcher = Pattern.compile("(.{3})[-|\\||_/|-]?(.{3})").matcher(this)
+    val matcher = Pattern.compile("^(.{3})[-|\\||_/|-]?(.{3})$").matcher(this)
     // BTCUSD
     // BTC_USD
     // BTC|USD
     // BTC/USD
     // BTC-USD
 
-    matcher.find()
+    condition(matcher.find(), "$this is not a valid pair string")
 
     return pair(
             base = matcher.group(1),

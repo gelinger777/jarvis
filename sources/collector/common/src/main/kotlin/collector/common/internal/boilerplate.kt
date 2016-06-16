@@ -1,20 +1,14 @@
 package collector.common.internal
 
-import collector.common.CollectorService
+import common.IExchange
 import proto.common.Pair
-import java.io.File
 
-internal fun CollectorService.tradeDataPathFor(pair: Pair): String {
-    // exchange/btc-usd/trades
-    return client.name().toLowerCase() + File.separator + pair.asFolderName() + File.separator + "trades"
+
+internal fun ordersRelativePath(client: IExchange, pair: Pair): String {
+    return "${client.name()}/${pair.base.symbol.toLowerCase()}-${pair.quote.symbol.toLowerCase()}/orders"
+
 }
 
-internal fun CollectorService.ordersDataPathFor(pair : Pair): String {
-    // exchange/btc-usd/orders
-    return client.name().toLowerCase() + File.separator + pair.asFolderName() + File.separator + "orders"
-}
-
-private fun Pair.asFolderName(): String {
-    // btc-usd
-    return "${base.symbol.toLowerCase()}-${quote.symbol.toLowerCase()}"
+internal fun tradesRelativePath(client: IExchange, pair: Pair): String {
+    return "${client.name()}/${pair.base.symbol.toLowerCase()}-${pair.quote.symbol.toLowerCase()}/trades"
 }

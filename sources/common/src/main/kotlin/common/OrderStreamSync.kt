@@ -73,7 +73,7 @@ class OrderStreamSync(val fetcher: () -> Option<Orderbook>, val delay: Long) {
 
                 log.info { "in sync" }
 
-                fetcherTask.forceStop() // todo does not work...
+                fetcherTask.forceStop()
 
                 log.debug { "emitting the snapshot" }
                 book.all().forEach { stream.onNext(it) }

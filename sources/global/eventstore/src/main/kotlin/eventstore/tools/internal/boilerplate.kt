@@ -2,7 +2,7 @@ package eventstore.tools.internal
 
 import com.amazonaws.services.s3.model.S3ObjectSummary
 import com.google.protobuf.MessageLite
-import eventstore.tools.io.ESWriter
+import eventstore.tools.io.EventStreamWriter
 import net.openhft.chronicle.bytes.Bytes
 import net.openhft.chronicle.queue.ChronicleQueueBuilder
 import net.openhft.chronicle.queue.ExcerptAppender
@@ -17,11 +17,11 @@ fun queue(path: String, rollCycle: RollCycle): SingleChronicleQueue {
             .build()
 }
 
-fun ESWriter.write(proto: MessageLite){
+fun EventStreamWriter.write(proto: MessageLite){
     write(proto.toByteArray())
 }
 
-fun ESWriter.write(string: String){
+fun EventStreamWriter.write(string: String){
     write(string.toByteArray(Charsets.UTF_8))
 }
 
@@ -35,11 +35,6 @@ fun ExcerptAppender.write(bytes: ByteArray): Long {
 //    return 0
 //}
 
-
 fun S3ObjectSummary.fileName(): String {
     return Paths.get(key).fileName.toString()
-}
-
-fun S3ObjectSummary.isChronicleFile(): Boolean {
-    return key.endsWith(".cq4")
 }

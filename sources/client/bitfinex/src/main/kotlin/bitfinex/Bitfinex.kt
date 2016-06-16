@@ -4,6 +4,7 @@ import common.IAccount
 import common.IExchange
 import common.IMarket
 import common.global.asPair
+import common.global.compact
 import proto.common.Pair
 import util.global.computeIfAbsent
 import util.global.condition
@@ -36,7 +37,7 @@ class Bitfinex() : IExchange {
     }
 
     override @Synchronized fun market(pair: Pair): IMarket {
-        condition(pairs().contains(pair))
+        condition(pairs().contains(pair), "${pair.compact()} is not supported by ${name}")
         return markets.computeIfAbsent(pair, { Market(this, it) })
     }
 

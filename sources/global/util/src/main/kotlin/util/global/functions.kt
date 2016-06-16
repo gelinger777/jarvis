@@ -60,9 +60,33 @@ fun size(bytes: Long): String {
     }
 }
 
-fun occasionally(probability: Double, task: () -> Unit) {
-    if (ThreadLocalRandom.current().nextDouble() > probability) {
-        task.invoke()
+fun duration(timeout: Long): String {
+    if (timeout < 1000) {
+        return "$timeout ms"
+    }
+    // less than 1 Minute
+    else if (timeout < 60 * 1000) {
+        return "${(timeout / 1000.0).roundDown1()} seconds"
+    }
+    // less than 1 Hour
+    else if (timeout < 60 * 60 * 1000) {
+        return "${(timeout / (60 * 1000.0)).roundDown1()} minutes"
+    }
+
+    // less than a day
+    else if (timeout < 24 * 60 * 60 * 1000) {
+        return "${(timeout / (60 * 60 * 1000.0)).roundDown1()} hours"
+    } else {
+        return "${(timeout / (24 * 60 * 60 * 1000.0)).roundDown1()} days"
+    }
+}
+
+/**
+ * Execute block with probability...
+ */
+fun withProbability(probability: Double, block: () -> Unit) {
+    if (ThreadLocalRandom.current().nextDouble() < probability) {
+        block.invoke()
     }
 }
 
@@ -107,5 +131,15 @@ fun named(name: String, block: () -> Unit): () -> Unit {
         block.invoke()
 
         thread.name = oldName
+    }
+}
+
+fun sleepUntilInterrupted() {
+    while (true) {
+        try {
+            Thread.sleep(Long.MAX_VALUE)
+        } catch(interruption: InterruptedException) {
+            break
+        }
     }
 }
