@@ -1,4 +1,4 @@
-package engine.readers
+package engine.io.readers
 
 import common.global.trade
 import eventstore.tools.io.EventStreamReader
@@ -10,10 +10,6 @@ import util.global.notImplemented
  * Analyses raw stream of trades and provides api to query historical data.
  */
 class TradeStreamReader(val source: EventStreamReader) {
-
-    fun index(){
-        notImplemented()
-    }
 
     fun stream(start: Long = -1, end: Long = -1): Observable<Trade> {
         return Observable.create { subscriber ->

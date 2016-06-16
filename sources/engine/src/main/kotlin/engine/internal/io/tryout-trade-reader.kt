@@ -1,7 +1,7 @@
 package engine.internal.io
 
 import common.global.compact
-import engine.readers.TradeStreamReader
+import engine.io.readers.TradeStreamReader
 import eventstore.tools.io.EventStreamReader
 import net.openhft.chronicle.queue.RollCycles
 import util.app.log

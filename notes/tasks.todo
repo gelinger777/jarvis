@@ -2,6 +2,7 @@ current tasks:
  ✔ add heartbeat to each collector @done (16-06-16 17:49)
  ✔ prepare binaries for deployment @done (16-06-16 17:49)
  ☐ test local for 2 days uninterrupted...
+ ☐ develop specialized writers for Order and Trade types
  ☐ fix other collectors
  ☐ deploy collectors
  

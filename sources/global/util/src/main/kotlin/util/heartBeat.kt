@@ -60,6 +60,12 @@ object heartBeat {
     }
 
     data class Pulse(val name: String, val timeout: Long, val callback: () -> Unit, val keepAlive: Boolean, val lastBeat: AtomicLong = AtomicLong(System.currentTimeMillis()))
+
+    fun status() {
+        registry.values.forEach {
+            log.info { "${it.name} inactive for ${duration(app.time() - it.lastBeat.get())}" }
+        }
+    }
 }
 
 

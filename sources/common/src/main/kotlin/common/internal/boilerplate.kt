@@ -11,13 +11,17 @@ internal fun Order.isCanceled(): Boolean {
 }
 
 internal fun AggregatedOrderbook.remove(order: Order) {
-    val book = book(order.side)
 
-    if (!book.containsKey(order.price)) {
-        report("book should have an order with price : ${order.price} (this either means we are not synced with orderbook or api is written by idiots (like Bitstamp)...")
+    // try remove from bids
+    var removed = bids.remove(order.price)
+
+    if (removed == null) {
+        removed = asks.remove(order.price)
     }
 
-    book.remove(order.price)
+    if(removed == null){
+        report("book should have an order with price : ${order.price} (this either means we are not synced with orderbook or api is written by idiots (like Bitstamp)...")
+    }
 }
 
 internal fun AggregatedOrderbook.place(order: Order) {

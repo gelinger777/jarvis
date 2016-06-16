@@ -1,5 +1,6 @@
 package common
 
+import common.global.compact
 import proto.common.Currency
 import proto.common.Order
 import proto.common.Pair
@@ -20,6 +21,8 @@ interface IExchange {
 }
 
 interface IMarket {
+
+    fun name(): String = "${exchange().name()}|${pair().compact()}"
 
     fun exchange(): IExchange
 

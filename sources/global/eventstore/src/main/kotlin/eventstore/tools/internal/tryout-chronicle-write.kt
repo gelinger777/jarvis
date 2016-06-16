@@ -1,8 +1,6 @@
 package eventstore.tools.internal
 
 import net.openhft.chronicle.queue.RollCycles
-import util.app
-import util.cpu
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -13,13 +11,12 @@ internal fun main(args: Array<String>) {
 
     val ap = ch.createAppender()
 
+    val time = 42
+    val price = 42.4242F
+    val vol = 42.4242F
+
     while (true) {
 
-        val current = current()
-
-        app.log.info("writing : $current")
-        ap.writeText(current)
-        Thread.sleep(50)
     }
 }
 

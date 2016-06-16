@@ -10,13 +10,6 @@ project(':util').projectDir = "$rootDir/sources/global/util" as File
 include ":eventstore"
 project(':eventstore').projectDir = "$rootDir/sources/global/eventstore/" as File
 
-//include ":eventstore-client"
-//project(':eventstore-client').projectDir = "$rootDir/sources/global/eventstore/client" as File
-//
-//include ":eventstore-server"
-//project(':eventstore-server').projectDir = "$rootDir/sources/global/eventstore/server" as File
-
-
 include ":visual"
 project(':visual').projectDir = "$rootDir/sources/visual" as File
 
@@ -45,10 +38,6 @@ project(':client-btcc').projectDir = "$rootDir/sources/client/btcc" as File
 
 include ":collector-common"
 project(':collector-common').projectDir = "$rootDir/sources/collector/common" as File
-
-include ":collector-client"
-project(':collector-client').projectDir = "$rootDir/sources/collector/client" as File
-
 
 include ":collector-bitfinex"
 project(':collector-bitfinex').projectDir = "$rootDir/sources/collector/bitfinex" as File

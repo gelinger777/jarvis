@@ -1,11 +1,14 @@
 package engine.internal.io
 
-import bitfinex.Bitfinex
-import common.global.compact
-import common.global.pair
+import common.global.json
+import common.global.order
+import engine.io.readers.OrderStreamReader
+import engine.io.writers.OrderStreamWriter
+import eventstore.tools.io.EventStreamReader
 import eventstore.tools.io.EventStreamWriter
 import net.openhft.chronicle.queue.RollCycles
-import util.app.log
+import proto.common.Order
+import util.app
 
 /**
  * Record orders from bitfinex using eventstore tools.
@@ -13,16 +16,23 @@ import util.app.log
 internal fun main(args: Array<String>) {
 
     val rawStreamWriter = EventStreamWriter(
-            path = "/Users/vach/workspace/jarvis/dist/data/bitfinex/btc-usd/orders/",
+            path = "/Users/vach/workspace/jarvis/dist/data/temp",
             cycles = RollCycles.MINUTELY
     )
 
-    Bitfinex().market(pair("btc", "usd"))
-            .orders()
-            .doOnNext { log.debug { "bitfinex/btc-usd : ${it.compact()}" } }
-            .map { it.toByteArray() }
-            .forEach { rawStreamWriter.write(it) }
+    val orderStreamWriter = OrderStreamWriter(rawStreamWriter)
 
-    readLine()
+    orderStreamWriter.write(order(Order.Side.BID, 42.0, 42.0, 100))
+    orderStreamWriter.write(order(Order.Side.ASK, 42.0, 42.0, 200))
+    orderStreamWriter.write(order(Order.Side.BID, 42.0, 42.0, 300))
+
+    val rawStreamReader = EventStreamReader(
+            path = "/Users/vach/workspace/jarvis/dist/data/temp",
+            rollCycle = RollCycles.MINUTELY
+    )
+
+    OrderStreamReader(rawStreamReader).stream().forEach {
+        app.log.info("read : " + it.json())
+    }
 
 }

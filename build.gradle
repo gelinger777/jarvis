@@ -305,15 +305,6 @@ project(":collector-common") {
     }
 }
 
-project(":collector-client") {
-
-    description = "[lib] Collector client library that allows to connect and work with any collector."
-
-    dependencies {
-        compile project(":common")
-    }
-}
-
 project(":collector-bitfinex") {
     apply plugin: 'application'
     mainClassName = "collector.bitfinex.RunBitfinexCollectorKt"
@@ -409,7 +400,6 @@ project(":engine") {
         compile project(":collector-bitfinex")
         compile project(":collector-bitstamp")
         compile project(":collector-btce")
-        compile project(":collector-client")
     }
 }
 

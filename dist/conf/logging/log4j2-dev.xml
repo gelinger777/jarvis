@@ -5,12 +5,12 @@
 
     <Appenders>
         <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%-30c{1} | %-30t | %-5p | %d{HH:mm:ss} | %m%n"/>
+            <PatternLayout pattern="%-20c{1} | %-20t | %-5p | %d{HH:mm:ss} | %m%n"/>
         </Console>
 
         <RollingRandomAccessFile name="ALL" fileName="${sys:log.path}/all/all.log"
                                  filePattern="${sys:log.path}/all/all-%d{MM-dd-yyyy}-%i.log">
-            <PatternLayout pattern="%-30c{1} | %-10t | %-5p | %d{HH:mm:ss} | %m%n"/>
+            <PatternLayout pattern="%-20c{1} | %-20t | %-5p | %d{HH:mm:ss} | %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="10 MB"/>
@@ -20,7 +20,7 @@
 
         <RollingRandomAccessFile name="EXCEPTIONS" fileName="${sys:log.path}/exceptions/exceptions.log"
                                  filePattern="${sys:log.path}/exceptions/exceptions-%d{MM-dd-yyyy}-%i.log">
-            <PatternLayout pattern="%-30c{1} | %-10t | %-5p | %d{HH:mm:ss} | %m%n"/>
+            <PatternLayout pattern="%-20c{1} | %-20t | %-5p | %d{HH:mm:ss} | %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="10 MB"/>
@@ -29,8 +29,8 @@
         </RollingRandomAccessFile>
 
         <RollingRandomAccessFile name="S3" fileName="${sys:log.path}/s3/s3.log"
-                                 filePattern="${sys:log.path}/exceptions/exceptions-%d{MM-dd-yyyy}-%i.log">
-            <PatternLayout pattern="%-30c{1} | %-10t | %-5p | %d{HH:mm:ss} | %m%n"/>
+                                 filePattern="${sys:log.path}/s3/s3-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout pattern="%-20c{1} | %-20t | %-5p | %d{HH:mm:ss} | %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="10 MB"/>
@@ -43,7 +43,7 @@
         <Root level="ALL">
             <AppenderRef ref="STDOUT"/>
             <AppenderRef ref="ALL"/>
-        </Root>
+        </Root>00
         <Logger name="exc" level="ERROR">
             <AppenderRef ref="EXCEPTIONS"/>
         </Logger>
