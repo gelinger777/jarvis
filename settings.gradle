@@ -1,56 +1,23 @@
 rootProject.name = 'jarvis'
 
 
-include ":common"
-project(':common').projectDir = "$rootDir/sources/common" as File
-
 include ":util"
 project(':util').projectDir = "$rootDir/sources/util" as File
+
+include ":common"
+project(':common').projectDir = "$rootDir/sources/common" as File
 
 include ":eventstore"
 project(':eventstore').projectDir = "$rootDir/sources/eventstore/" as File
 
-include ":visual"
-project(':visual').projectDir = "$rootDir/sources/visual" as File
+include ":clients"
+project(':clients').projectDir = "$rootDir/sources/clients" as File
 
-
-// clients
-
-
-include ":client-bitfinex"
-project(':client-bitfinex').projectDir = "$rootDir/sources/client/bitfinex" as File
-
-include ":client-bitstamp"
-project(':client-bitstamp').projectDir = "$rootDir/sources/client/bitstamp" as File
-
-include ":client-btce"
-project(':client-btce').projectDir = "$rootDir/sources/client/btce" as File
-
-include ":client-gdax"
-project(':client-gdax').projectDir = "$rootDir/sources/client/gdax" as File
-
-include ":client-btcc"
-project(':client-btcc').projectDir = "$rootDir/sources/client/btcc" as File
-
-
-// collectors
-
-
-include ":collector-common"
-project(':collector-common').projectDir = "$rootDir/sources/collector/common" as File
-
-include ":collector-bitfinex"
-project(':collector-bitfinex').projectDir = "$rootDir/sources/collector/bitfinex" as File
-
-include ":collector-bitstamp"
-project(':collector-bitstamp').projectDir = "$rootDir/sources/collector/bitstamp" as File
-
-include ":collector-btce"
-project(':collector-btce').projectDir = "$rootDir/sources/collector/btce" as File
-
-
-// jarvis
-
+include ":collectors"
+project(':collectors').projectDir = "$rootDir/sources/collectors" as File
 
 include ":engine"
 project(':engine').projectDir = "$rootDir/sources/engine" as File
+
+include ":visual"
+project(':visual').projectDir = "$rootDir/sources/visual" as File

@@ -1,6 +1,6 @@
 package engine.internal
 
-import bitfinex.Bitfinex
+import client.bitfinex.Bitfinex
 import common.IMarket
 import common.global.pair
 import util.global.sleepLoopUntil

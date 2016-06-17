@@ -5,9 +5,14 @@ description = "Fully autonomous algorithmic trading environment."
  * default environment variables in shell scripts. Feel free to
  * adjust to your working environment.
  */
-def cfgRoot = "/Users/vach/workspace/jarvis/dist/conf"
-def binRoot = "/Users/vach/workspace/jarvis/dist/bin"
-def storeRoot = "/Users/vach/workspace/jarvis/dist/data"
+
+def distRoot = "/Users/vach/workspace/jarvis/dist/"
+
+def cfgRoot = "${distRoot}/conf"
+def binRoot = "${distRoot}/bin"
+def logRoot = "${distRoot}/log"
+def dataRoot = "${distRoot}/data"
+
 def profile = "dev"
 
 buildscript {
@@ -22,8 +27,6 @@ buildscript {
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.7'
     }
 }
-
-// Global =======================================================================================
 
 subprojects {
     apply plugin: 'java'
@@ -234,6 +237,92 @@ project(":eventstore") {
     }
 }
 
+// Clients ======================================================================================
+
+project(":clients") {
+    description = "[lib] Client library to work with different exchanges with same api."
+
+    dependencies {
+        compile project(":common")
+    }
+}
+
+// Collectors ======================================================================================
+
+project(":collectors") {
+    apply plugin: 'application'
+
+    description = "[app's] Common collector functionality that is reused across collectors."
+
+    dependencies {
+        compile project(":eventstore")
+        compile project(":clients")
+    }
+
+    startScripts.enabled = false
+    installDist.destinationDir = file("${binRoot}/collectors")
+
+    task bitfinexCollector(type: CreateStartScripts) {
+        mainClassName = "collector.common.RunBitfinexCollectorKt"
+        applicationName = "bitfinex-collector"
+        defaultJvmOpts = [
+                "-Dlog.path=${logRoot}/bitfinex",
+                "-Dlog4j.configurationFile=${cfgRoot}/log/log4j2.xml",
+                "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
+                "-Dprofile=${profile}",
+                "-Dstore.path=${dataRoot}",
+                "-Daws.accessKeyId=CHANGEME",
+                "-Daws.secretKey=CHANGEME",
+                "-Daws.bucket=jarvis-history",
+                "-Drecord.trades=btc-usd",
+                "-Drecord.orders=btc-usd",
+                "-Dtrade.cycles=HOURLY",
+                "-Dorder.cycles=HOURLY"
+        ]
+
+        outputDir = file("${project.buildDir.path}/bitfinex")
+        classpath = jar.outputs.files + project.configurations.runtime
+    }
+
+    task bitstampCollector(type: CreateStartScripts) {
+        mainClassName = "collector.common.RunBitstampCollectorKt"
+        applicationName = "bitstamp-collector"
+        defaultJvmOpts = [
+                "-Dlog.path=${logRoot}/bitstamp",
+                "-Dlog4j.configurationFile=${cfgRoot}/log/log4j2.xml",
+                "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
+                "-Dprofile=${profile}",
+                "-Dstore.path=${dataRoot}",
+                "-Daws.accessKeyId=CHANGEME",
+                "-Daws.secretKey=CHANGEME",
+                "-Daws.bucket=jarvis-history",
+                "-Drecord.trades=btc-usd",
+                "-Drecord.orders=btc-usd",
+                "-Dtrade.cycles=HOURLY",
+                "-Dorder.cycles=HOURLY"
+        ]
+        outputDir = file("${project.buildDir.path}/bitstamp")
+
+        classpath = jar.outputs.files + project.configurations.runtime
+    }
+
+    applicationDistribution.into("bin") {
+        from(bitfinexCollector)
+        from(bitstampCollector)
+        fileMode = 0755
+    }
+}
+
+// Jarvis =======================================================================================
+
+project(":engine") {
+
+    dependencies {
+        // collectors
+        compile project(":collectors")
+    }
+}
+
 // User Interface ===============================================================================
 
 project(":visual") {
@@ -251,158 +340,6 @@ project(":visual") {
     }
 }
 
-// Clients ======================================================================================
-
-project(":client-bitfinex") {
-    description = "[lib] Client library to work with Bitfinex exchange."
-
-    dependencies {
-        compile project(":common")
-    }
-}
-
-project(":client-bitstamp") {
-    description = "[lib] Client library to work with Bitstamp exchange."
-
-    dependencies {
-        compile project(":common")
-    }
-}
-
-project(":client-btce") {
-    description = "[lib] Client library to work with Btce exchange."
-
-    dependencies {
-        compile project(":common")
-    }
-}
-
-project(":client-gdax") {
-    description = "[lib] Client library to work with GDAX (Coinbase) exchange."
-
-    dependencies {
-        compile project(":common")
-    }
-}
-
-project(":client-btcc") {
-    description = "[lib] Client library to work with BtcChina exchange."
-
-    dependencies {
-        compile project(":common")
-    }
-}
-
-// Collectors ===================================================================================
-
-project(":collector-common") {
-
-    description = "[lib] Common collector functionality that is reused across collectors."
-
-    dependencies {
-        compile project(":common")
-        compile project(":eventstore")
-    }
-}
-
-project(":collector-bitfinex") {
-    apply plugin: 'application'
-    mainClassName = "collector.bitfinex.RunBitfinexCollectorKt"
-
-    def destination = "${binRoot}/bitfinex"
-
-    applicationDefaultJvmArgs = [
-            "-Dlog.path=${destination}/logs",
-            "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
-            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
-            "-Dprofile=${profile}",
-            "-Dstore.path=${storeRoot}",
-//            "-Daws.accessKeyId=CHANGEME",
-//            "-Daws.secretKey=CHANGEME",
-//            "-Daws.bucket=CHANGEME",
-            "-Drecord.trades=btc-usd",
-            "-Drecord.orders=btc-usd",
-            "-Dtrade.cycles=HOURLY",
-            "-Dorder.cycles=HOURLY"
-    ]
-
-    installDist.destinationDir = file(destination)
-
-    description = "[app] Collects trade and orderbook data for Bitfinex exchange."
-
-    dependencies {
-        compile project(":collector-common")
-//        compile 'net.openhft:chronicle-queue:4.3.2'
-        compile project(":client-bitfinex")
-    }
-}
-
-project(":collector-bitstamp") {
-    // todo
-    apply plugin: 'application'
-    mainClassName = "collector.bitstamp.RunBitstampCollectorKt"
-
-    def destination = "${binRoot}/bitstamp"
-
-    applicationDefaultJvmArgs = [
-            "-Dlog.path=${destination}/logs",
-            "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
-            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
-            "-Dprofile=${profile}",
-
-            "-DstorePath=${storeRoot}",
-            "-Dport=9152"
-    ]
-
-    installDist.destinationDir = file(destination)
-
-    description = "[app] Collects trade and orderbook data for Bitstamp exchange."
-
-    dependencies {
-        compile project(":collector-common")
-        compile project(":client-bitstamp")
-    }
-}
-
-project(":collector-btce") {
-    // todo
-    apply plugin: 'application'
-    mainClassName = "collector.btce.RunBtceCollectorKt"
-
-    def destination = "${binRoot}/btce"
-
-    applicationDefaultJvmArgs = [
-            "-Dlog.path=${destination}/logs",
-            "-Dlog4j.configurationFile=${cfgRoot}/logging/log4j2.xml",
-            "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
-            "-Dprofile=${profile}",
-
-            "-DstorePath=${storeRoot}",
-            "-Dport=9152"
-    ]
-
-    installDist.destinationDir = file(destination)
-
-    description = "[app] Collects trade and orderbook data for Btce exchange."
-
-    dependencies {
-        compile project(":collector-common")
-        compile project(":client-btce")
-    }
-}
-
-// jarvis
-
-project(":engine") {
-
-    dependencies {
-        // collectors
-        compile project(":collector-bitfinex")
-        compile project(":collector-bitstamp")
-        compile project(":collector-btce")
-    }
-}
-
 // Stuff =======================================================================================
 
 // ./gradlew wrapper --gradle-version=2.13
@@ -414,4 +351,6 @@ task wrapper(type: Wrapper) {
 
 task cleanOutput() {
     delete binRoot
+    delete dataRoot
+    delete logRoot
 }
