@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit.MINUTES
 /**
  * Polls data from remote data storage.
  */
-class EventStreamPoller(
+class QueuePoller(
         val localPath: String,
         val remotePath: String,
         val bucket: String,

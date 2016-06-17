@@ -2,7 +2,7 @@ package eventstore.tools.internal
 
 import com.amazonaws.services.s3.model.S3ObjectSummary
 import com.google.protobuf.MessageLite
-import eventstore.tools.io.BytesWriter
+import eventstore.tools.io.bytes.BytesWriter
 import net.openhft.chronicle.bytes.Bytes
 import net.openhft.chronicle.queue.ChronicleQueueBuilder
 import net.openhft.chronicle.queue.ExcerptAppender

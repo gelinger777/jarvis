@@ -1,8 +1,8 @@
-package engine.io.trade
+package eventstore.tools.io.trade
 
 import com.google.common.primitives.Longs
 import common.global.json
-import eventstore.tools.io.BytesWriter
+import eventstore.tools.io.bytes.BytesWriter
 import proto.common.Raw
 import proto.common.Trade
 import util.app

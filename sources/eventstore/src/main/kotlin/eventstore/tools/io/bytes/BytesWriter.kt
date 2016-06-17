@@ -1,4 +1,4 @@
-package eventstore.tools.io
+package eventstore.tools.io.bytes
 
 import eventstore.tools.internal.queue
 import eventstore.tools.internal.write

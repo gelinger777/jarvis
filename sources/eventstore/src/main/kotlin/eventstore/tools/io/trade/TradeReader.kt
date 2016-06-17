@@ -1,7 +1,7 @@
-package engine.io.trade
+package eventstore.tools.io.trade
 
 import com.google.common.primitives.Longs
-import eventstore.tools.io.BytesReader
+import eventstore.tools.io.bytes.BytesReader
 import proto.common.Raw
 import proto.common.Trade
 import rx.Observable

@@ -1,6 +1,6 @@
 package eventstore.tools.internal
 
-import eventstore.tools.io.BytesReader
+import eventstore.tools.io.bytes.BytesReader
 import net.openhft.chronicle.queue.RollCycles.HOURLY
 import util.app
 

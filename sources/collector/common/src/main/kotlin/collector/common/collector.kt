@@ -3,13 +3,15 @@ package collector.common
 import collector.common.internal.ordersRelativePath
 import collector.common.internal.tradesRelativePath
 import common.IExchange
+import common.IMarket
 import common.global.asPair
 import common.global.compact
-import eventstore.tools.io.BytesWriter
-import eventstore.tools.net.EventStreamUploader
+import eventstore.tools.io.bytes.BytesWriter
+import eventstore.tools.io.order.OrderWriter
+import eventstore.tools.io.trade.TradeWriter
+import eventstore.tools.net.QueueUploader
 import net.openhft.chronicle.queue.RollCycles
 import net.openhft.chronicle.queue.RollCycles.MINUTELY
-import rx.Observable
 import util.app
 import util.app.log
 import util.global.executeAndGetMandatory
@@ -35,38 +37,65 @@ fun startCollectorFor(client: IExchange) {
     val tradeCycles = app.optionalProperty("trade.cycles").flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }.ifNotPresentTake(MINUTELY).get()
     val orderCycles = app.optionalProperty("order.cycles").flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }.ifNotPresentTake(MINUTELY).get()
 
-
     for (pair in tradePairs) {
         log.info { "collecting trades of ${client.name()}|${pair.compact()}" }
 
-        val relativePath = tradesRelativePath(client, pair)
-        val dataStream = client.market(pair).trades().map { it.toByteArray() }
-
-        collect(dataStream, relativePath, tradeCycles)
+        collectTrades(
+                market = client.market(pair),
+                relativePath = tradesRelativePath(client, pair),
+                cycles = tradeCycles
+        )
     }
 
     for (pair in orderPairs) {
         log.info { "collecting orders of ${client.name()}|${pair.compact()}" }
 
-        val relativePath = ordersRelativePath(client, pair)
-        val dataStream = client.market(pair).orders().map { it.toByteArray() }
-
-        collect(dataStream, relativePath, orderCycles)
+        collectOrders(
+                market = client.market(pair),
+                relativePath = ordersRelativePath(client, pair),
+                cycles = orderCycles
+        )
     }
 }
 
-private fun collect(dataStream: Observable<ByteArray>, relativePath: String, cycles: RollCycles) {
+private fun collectTrades(market: IMarket, relativePath: String, cycles: RollCycles) {
     val absolutePath = "${app.property("store.path")}/$relativePath"
 
-    val writer = BytesWriter(path = absolutePath, cycles = cycles)
+    val writer = TradeWriter(BytesWriter(path = absolutePath, cycles = cycles))
 
-    EventStreamUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
+    QueueUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
 
-    dataStream
+    market.trades()
             .forEach {
                 writer.write(it)
                 heartBeat.beat(relativePath)
             }
 
-    heartBeat.start(name = relativePath, timeout = MINUTES.toMillis(30), callback = { report("no events for a while") }, keepAlive = true)
+    heartBeat.start(
+            name = relativePath,
+            timeout = MINUTES.toMillis(30),
+            callback = { report("no events for a while") },
+            keepAlive = true
+    )
+}
+
+private fun collectOrders(market: IMarket, relativePath: String, cycles: RollCycles) {
+    val absolutePath = "${app.property("store.path")}/$relativePath"
+
+    val writer = OrderWriter(BytesWriter(path = absolutePath, cycles = cycles))
+
+    QueueUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
+
+    market.orders()
+            .forEach {
+                writer.write(it)
+                heartBeat.beat(relativePath)
+            }
+
+    heartBeat.start(
+            name = relativePath,
+            timeout = MINUTES.toMillis(30),
+            callback = { report("no events for a while") },
+            keepAlive = true
+    )
 }

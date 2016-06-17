@@ -1,8 +1,8 @@
-package engine.io.order
+package eventstore.tools.io.order
 
 import com.google.common.primitives.Longs
 import common.global.json
-import eventstore.tools.io.BytesWriter
+import eventstore.tools.io.bytes.BytesWriter
 import proto.common.Order
 import proto.common.Order.Side.ASK
 import proto.common.Order.Side.BID

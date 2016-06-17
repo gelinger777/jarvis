@@ -1,6 +1,6 @@
 package eventstore.tools.internal
 
-import eventstore.tools.io.BytesWriter
+import eventstore.tools.io.bytes.BytesWriter
 import net.openhft.chronicle.queue.RollCycles
 import java.time.Instant
 import java.time.ZoneOffset

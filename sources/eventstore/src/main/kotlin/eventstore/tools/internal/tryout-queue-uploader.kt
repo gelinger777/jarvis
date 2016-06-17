@@ -1,9 +1,9 @@
 package eventstore.tools.internal
 
-import eventstore.tools.net.EventStreamUploader
+import eventstore.tools.net.QueueUploader
 
 internal fun main(args: Array<String>) {
-    EventStreamUploader(
+    QueueUploader(
             localPath = "/Users/vach/workspace/jarvis/dist/data/test",
             remotePath = "test",
             bucket = "jarvis-history"

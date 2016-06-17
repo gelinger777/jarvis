@@ -1,11 +1,11 @@
-package engine.internal.io
+package eventstore.tools.internal
 
 import common.global.json
 import common.global.trade
-import engine.io.trade.TradeReader
-import engine.io.trade.TradeWriter
-import eventstore.tools.io.BytesReader
-import eventstore.tools.io.BytesWriter
+import eventstore.tools.io.bytes.BytesReader
+import eventstore.tools.io.bytes.BytesWriter
+import eventstore.tools.io.trade.TradeReader
+import eventstore.tools.io.trade.TradeWriter
 import net.openhft.chronicle.queue.RollCycles
 import util.app
 

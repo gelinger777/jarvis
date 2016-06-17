@@ -5,10 +5,10 @@ include ":common"
 project(':common').projectDir = "$rootDir/sources/common" as File
 
 include ":util"
-project(':util').projectDir = "$rootDir/sources/global/util" as File
+project(':util').projectDir = "$rootDir/sources/util" as File
 
 include ":eventstore"
-project(':eventstore').projectDir = "$rootDir/sources/global/eventstore/" as File
+project(':eventstore').projectDir = "$rootDir/sources/eventstore/" as File
 
 include ":visual"
 project(':visual').projectDir = "$rootDir/sources/visual" as File

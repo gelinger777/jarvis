@@ -1,9 +1,9 @@
-package engine.io.order
+package eventstore.tools.io.order
 
 import com.google.common.primitives.Longs
 import common.AggregatedOrderbook
 import common.global.all
-import eventstore.tools.io.BytesReader
+import eventstore.tools.io.bytes.BytesReader
 import proto.common.Order
 import proto.common.Raw
 import rx.Observable

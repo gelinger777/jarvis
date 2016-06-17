@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit.MINUTES
 /**
  * Tracks the stream for rollups and uploads them to the AWS S3 storage, credentials must be available via system properties...
  */
-class EventStreamUploader(
+class QueueUploader(
         val localPath: String,
         val remotePath: String,
         val bucket: String,
