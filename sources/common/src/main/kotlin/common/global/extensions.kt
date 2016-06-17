@@ -82,31 +82,32 @@ fun Orderbook.all(): List<Order> {
 /**
  * Encode trade stream to compressed byte stream.
  */
-fun Observable<Trade>.encode(): Observable<ByteArray> {
+fun Observable<Trade>.encodeTrades(): Observable<ByteArray> {
 
     return this.lift(Observable.Operator { subscriber ->
 
         object : Subscriber<Trade>() {
             var lastTime = -1L
 
-            override fun onNext(trade: Trade) {
+            override fun onNext(order: Trade) {
                 try {
                     // write initial timestamp on first write
                     if (lastTime == -1L) {
-                        lastTime = trade.time
+                        lastTime = order.time
                         subscriber.onNext(Longs.toByteArray(lastTime))
                     }
 
                     // calculate time difference since last time
-                    val time = (trade.time - lastTime).toInt()
-                    val price = trade.price.toFloat()
-                    val vol = trade.volume.toFloat()
+                    val builder = Raw.newBuilder()
 
+                    builder.time = (order.time - lastTime).toInt()
+                    builder.price = order.price.toFloat()
+                    builder.volume = order.volume.toFloat()
 
-                    lastTime = trade.time
+                    lastTime = order.time
 
                     if (subscriber.isSubscribed()) {
-                        subscriber.onNext(Raw.newBuilder().setTime(time).setPrice(price).setVolume(vol).build().toByteArray())
+                        subscriber.onNext(builder.build().toByteArray())
                     }
 
                 } catch(e: Throwable) {
@@ -128,7 +129,99 @@ fun Observable<Trade>.encode(): Observable<ByteArray> {
 /**
  * Decode compressed byte stream to trade stream.
  */
-fun Observable<ByteArray>.decode(): Observable<Trade> {
+fun Observable<ByteArray>.decodeTrades(): Observable<Trade> {
+
+    return this.lift(Observable.Operator { subscriber ->
+        object : Subscriber<ByteArray>() {
+            var lastTime = -1L
+
+            override fun onNext(data: ByteArray) {
+                try {
+                    if (lastTime == -1L) {
+                        condition(data.size == 8, "first chunk shall be 8 bytes (initial timestamp)")
+                        lastTime = Longs.fromByteArray(data)
+                    } else {
+                        val rawTrade = Raw.parseFrom(data)
+                        val builder = Trade.newBuilder()
+
+                        builder.time = lastTime + rawTrade.time
+                        builder.price = rawTrade.price.toDouble()
+                        builder.volume = rawTrade.volume.toDouble()
+
+                        lastTime = builder.time
+
+                        if (subscriber.isSubscribed()) {
+                            subscriber.onNext(builder.build())
+                        }
+                    }
+                } catch(e: Throwable) {
+                    subscriber.onError(e)
+                }
+            }
+
+            override fun onError(error: Throwable) {
+                subscriber.onError(error)
+            }
+
+            override fun onCompleted() {
+                subscriber.onCompleted()
+            }
+        }
+    })
+}
+
+
+/**
+ * Encode trade stream to compressed byte stream.
+ */
+fun Observable<Order>.encodeOrders(): Observable<ByteArray> {
+
+    return this.lift(Observable.Operator { subscriber ->
+
+        object : Subscriber<Order>() {
+            var lastTime = -1L
+
+            override fun onNext(order: Order) {
+                try {
+                    // write initial timestamp on first write
+                    if (lastTime == -1L) {
+                        lastTime = order.time
+                        subscriber.onNext(Longs.toByteArray(lastTime))
+                    }
+
+                    // calculate time difference since last time
+                    val builder = Raw.newBuilder()
+
+                    builder.time = (order.time - lastTime).toInt()
+                    builder.price = order.price.toFloat()
+                    builder.volume = if (order.side == Order.Side.BID) order.volume.toFloat() else -order.volume.toFloat()
+
+                    lastTime = order.time
+
+                    if (subscriber.isSubscribed()) {
+                        subscriber.onNext(builder.build().toByteArray())
+                    }
+
+                } catch(e: Throwable) {
+                    subscriber.onError(e)
+                }
+            }
+
+            override fun onError(error: Throwable) {
+                subscriber.onError(error)
+            }
+
+            override fun onCompleted() {
+                subscriber.onCompleted()
+            }
+        }
+    })
+}
+
+/**
+ * Decode compressed byte stream to trade stream.
+ */
+fun Observable<ByteArray>.decodeOrders(): Observable<Order> {
 
     return this.lift(Observable.Operator { subscriber ->
         object : Subscriber<ByteArray>() {
@@ -141,24 +234,23 @@ fun Observable<ByteArray>.decode(): Observable<Trade> {
                         lastTime = Longs.fromByteArray(data)
                     } else {
                         val rawOrder = Raw.parseFrom(data)
-                        val builder = Trade.newBuilder()
+                        val builder = Order.newBuilder()
 
-                        val time = lastTime + rawOrder.time
+                        builder.time = lastTime + rawOrder.time
+                        builder.price = rawOrder.price.toDouble()
 
-                        builder.time = time
+                        if (rawOrder.volume > 0) {
+                            builder.side = Order.Side.BID
+                            builder.volume = rawOrder.volume.toDouble()
+                        } else {
+                            builder.side = Order.Side.ASK
+                            builder.volume = -rawOrder.volume.toDouble()
+                        }
 
-                        val price = rawOrder.price.toDouble()
-
-                        builder.price = price
-
-                        builder.volume = rawOrder.volume.toDouble()
-
-                        val trade = builder.build()
-
-                        lastTime = time
+                        lastTime = builder.time
 
                         if (subscriber.isSubscribed()) {
-                            subscriber.onNext(trade)
+                            subscriber.onNext(builder.build())
                         }
                     }
                 } catch(e: Throwable) {
