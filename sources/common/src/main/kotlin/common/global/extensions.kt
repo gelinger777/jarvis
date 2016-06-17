@@ -11,10 +11,7 @@ import proto.common.Raw
 import proto.common.Trade
 import rx.Observable
 import rx.Subscriber
-import util.global.condition
-import util.global.dateTime
-import util.global.isSubscribed
-import util.global.roundDown3
+import util.global.*
 import java.util.regex.Pattern
 
 fun String.asPair(): Pair {
@@ -87,27 +84,32 @@ fun Observable<Trade>.encodeTrades(): Observable<ByteArray> {
     return this.lift(Observable.Operator { subscriber ->
 
         object : Subscriber<Trade>() {
+            val log = logger("TradeEncoder")
             var lastTime = -1L
 
-            override fun onNext(order: Trade) {
+            override fun onNext(trade: Trade) {
                 try {
                     // write initial timestamp on first write
                     if (lastTime == -1L) {
-                        lastTime = order.time
-                        subscriber.onNext(Longs.toByteArray(lastTime))
+                        lastTime = trade.time
+                        val data = Longs.toByteArray(lastTime)
+                        log.debug { "encoded the timestamp $lastTime to ${size(data.size)}" }
+                        subscriber.onNext(data)
                     }
 
                     // calculate time difference since last time
                     val builder = Raw.newBuilder()
 
-                    builder.time = (order.time - lastTime).toInt()
-                    builder.price = order.price.toFloat()
-                    builder.volume = order.volume.toFloat()
+                    builder.time = (trade.time - lastTime).toInt()
+                    builder.price = trade.price.toFloat()
+                    builder.volume = trade.volume.toFloat()
 
-                    lastTime = order.time
+                    lastTime = trade.time
 
                     if (subscriber.isSubscribed()) {
-                        subscriber.onNext(builder.build().toByteArray())
+                        val data = builder.build().toByteArray()
+                        log.debug { "encoded ${trade.compact()} to ${size(data.size)}" }
+                        subscriber.onNext(data)
                     }
 
                 } catch(e: Throwable) {
@@ -133,6 +135,7 @@ fun Observable<ByteArray>.decodeTrades(): Observable<Trade> {
 
     return this.lift(Observable.Operator { subscriber ->
         object : Subscriber<ByteArray>() {
+            val log = logger("TradeDecoder")
             var lastTime = -1L
 
             override fun onNext(data: ByteArray) {
@@ -140,6 +143,7 @@ fun Observable<ByteArray>.decodeTrades(): Observable<Trade> {
                     if (lastTime == -1L) {
                         condition(data.size == 8, "first chunk shall be 8 bytes (initial timestamp)")
                         lastTime = Longs.fromByteArray(data)
+                        log.debug { "decoded the timestamp" }
                     } else {
                         val rawTrade = Raw.parseFrom(data)
                         val builder = Trade.newBuilder()
@@ -151,7 +155,9 @@ fun Observable<ByteArray>.decodeTrades(): Observable<Trade> {
                         lastTime = builder.time
 
                         if (subscriber.isSubscribed()) {
-                            subscriber.onNext(builder.build())
+                            val trade = builder.build()
+                            log.debug { "decoded ${trade.compact()} from ${size(data.size)}" }
+                            subscriber.onNext(trade)
                         }
                     }
                 } catch(e: Throwable) {
@@ -179,6 +185,7 @@ fun Observable<Order>.encodeOrders(): Observable<ByteArray> {
     return this.lift(Observable.Operator { subscriber ->
 
         object : Subscriber<Order>() {
+            val log = logger("OrderEncoder")
             var lastTime = -1L
 
             override fun onNext(order: Order) {
@@ -186,7 +193,9 @@ fun Observable<Order>.encodeOrders(): Observable<ByteArray> {
                     // write initial timestamp on first write
                     if (lastTime == -1L) {
                         lastTime = order.time
-                        subscriber.onNext(Longs.toByteArray(lastTime))
+                        val data = Longs.toByteArray(lastTime)
+                        log.debug { "encoded the timestamp $lastTime to ${size(data.size)}" }
+                        subscriber.onNext(data)
                     }
 
                     // calculate time difference since last time
@@ -199,7 +208,9 @@ fun Observable<Order>.encodeOrders(): Observable<ByteArray> {
                     lastTime = order.time
 
                     if (subscriber.isSubscribed()) {
-                        subscriber.onNext(builder.build().toByteArray())
+                        val data = builder.build().toByteArray()
+                        log.debug { "encoded ${order.compact()} to ${size(data.size)}" }
+                        subscriber.onNext(data)
                     }
 
                 } catch(e: Throwable) {
@@ -225,6 +236,7 @@ fun Observable<ByteArray>.decodeOrders(): Observable<Order> {
 
     return this.lift(Observable.Operator { subscriber ->
         object : Subscriber<ByteArray>() {
+            val log = logger("OrderDecoder")
             var lastTime = -1L
 
             override fun onNext(data: ByteArray) {
@@ -232,6 +244,7 @@ fun Observable<ByteArray>.decodeOrders(): Observable<Order> {
                     if (lastTime == -1L) {
                         condition(data.size == 8, "first chunk shall be 8 bytes (initial timestamp)")
                         lastTime = Longs.fromByteArray(data)
+                        log.debug { "decoded the timestamp" }
                     } else {
                         val rawOrder = Raw.parseFrom(data)
                         val builder = Order.newBuilder()
@@ -250,7 +263,9 @@ fun Observable<ByteArray>.decodeOrders(): Observable<Order> {
                         lastTime = builder.time
 
                         if (subscriber.isSubscribed()) {
-                            subscriber.onNext(builder.build())
+                            val order = builder.build()
+                            log.debug { "decoded ${order.compact()} from ${size(data.size)}" }
+                            subscriber.onNext(order)
                         }
                     }
                 } catch(e: Throwable) {

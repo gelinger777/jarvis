@@ -8,9 +8,10 @@ import rx.Observable
 import util.global.isSubscribed
 import util.global.logger
 import util.global.size
+import util.global.withProbability
 
 /**
- * Provides streaming api for reading raw data stream. Make sure to pass the correct roll cycle.
+ * Provides streaming api for reading raw data stream. Supports unsubscribe.
  */
 class BytesReader(val path: String, val rollCycle: RollCycle = RollCycles.DAILY) {
     private val log = logger("EventStreamReader")
@@ -28,19 +29,31 @@ class BytesReader(val path: String, val rollCycle: RollCycle = RollCycles.DAILY)
             chronicle.createTailer().use {
 
                 val buffer = Bytes.allocateElasticDirect()
+                var totalBytes = 0L
+                var totalEvents = 0L
+
                 while (subscriber.isSubscribed()) {
 
+                    // read data
                     val index = it.index()
-
                     if (!it.readBytes(buffer)) {
                         break;
                     }
-
                     val data = buffer.toByteArray()
                     buffer.clear()
+                    log.debug { "have read ${size(data.size.toLong())} from $path" }
 
                     subscriber.onNext(index to data)
-                    log.debug { "have read ${size(data.size.toLong())} from $path" }
+
+                    // update stats
+                    totalBytes += data.size
+                    totalEvents++
+
+                    // print occasionally
+                    withProbability(
+                            1 / 42.0,
+                            { log.trace("$path - full size : ${size(totalBytes)}, number of events : $totalEvents events, average message size : ${size(totalBytes / totalEvents)}") }
+                    )
                 }
 
                 subscriber.onCompleted()

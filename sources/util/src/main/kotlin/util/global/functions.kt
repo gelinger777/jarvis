@@ -41,6 +41,10 @@ fun Long.dateTime(): String {
     return DateTimeFormatter.ofPattern("YYY-MM-dd HH:mm:ss").format(ZonedDateTime.ofInstant (Instant.ofEpochMilli(this), ZoneOffset.UTC))
 }
 
+fun size(bytes: Int):String{
+    return size(bytes.toLong())
+}
+
 fun size(bytes: Long): String {
 
     if (bytes < 1000) {

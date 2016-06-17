@@ -6,9 +6,9 @@ import common.IExchange
 import common.IMarket
 import common.global.asPair
 import common.global.compact
+import common.global.encodeOrders
+import common.global.encodeTrades
 import eventstore.tools.io.bytes.BytesWriter
-import eventstore.tools.io.order.OrderWriter
-import eventstore.tools.io.trade.TradeWriter
 import eventstore.tools.net.QueueUploader
 import net.openhft.chronicle.queue.RollCycles
 import net.openhft.chronicle.queue.RollCycles.MINUTELY
@@ -61,11 +61,12 @@ fun startCollectorFor(client: IExchange) {
 private fun collectTrades(market: IMarket, relativePath: String, cycles: RollCycles) {
     val absolutePath = "${app.property("store.path")}/$relativePath"
 
-    val writer = TradeWriter(BytesWriter(path = absolutePath, cycles = cycles))
+    val writer = BytesWriter(path = absolutePath, cycles = cycles)
 
     QueueUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
 
     market.trades()
+            .encodeTrades()
             .forEach {
                 writer.write(it)
                 heartBeat.beat(relativePath)
@@ -82,11 +83,12 @@ private fun collectTrades(market: IMarket, relativePath: String, cycles: RollCyc
 private fun collectOrders(market: IMarket, relativePath: String, cycles: RollCycles) {
     val absolutePath = "${app.property("store.path")}/$relativePath"
 
-    val writer = OrderWriter(BytesWriter(path = absolutePath, cycles = cycles))
+    val writer = BytesWriter(path = absolutePath, cycles = cycles)
 
     QueueUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
 
     market.orders()
+            .encodeOrders()
             .forEach {
                 writer.write(it)
                 heartBeat.beat(relativePath)

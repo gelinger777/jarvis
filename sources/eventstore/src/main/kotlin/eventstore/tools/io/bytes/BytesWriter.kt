@@ -26,17 +26,18 @@ class BytesWriter(val path: String, val cycles: RollCycles = DAILY) {
     }
 
     @Synchronized fun write(data: ByteArray) {
-        log.debug(Supplier { "writing ${data.size} bytes to $path" })
 
-        // write the
+        // write data
         appender.write(data)
+        log.debug(Supplier { "wrote ${data.size} bytes to $path" })
 
         // update stats
         totalBytes += data.size
         totalEvents++
 
+        // print occasionally
         withProbability(
-                1 / 10.0,
+                1 / 42.0,
                 { log.trace("$path - full size : ${size(totalBytes)}, number of events : $totalEvents events, average message size : ${size(totalBytes / totalEvents)}") }
         )
     }
