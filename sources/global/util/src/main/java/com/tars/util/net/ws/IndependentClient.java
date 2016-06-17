@@ -82,8 +82,8 @@ class IndependentClient extends Endpoint implements WebsocketClient {
   @Override
   public Observable<String> stream() {
     return subject
-        .observeOn(schedulers.INSTANCE.getIo())
-        .onBackpressureBuffer();
+        .onBackpressureBuffer()
+        .observeOn(schedulers.INSTANCE.getIo());
   }
 
   @Override

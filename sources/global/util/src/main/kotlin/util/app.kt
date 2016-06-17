@@ -10,8 +10,8 @@ object app {
     val profile: String
 
     // todo : make this internal when jetbrains fixes the method not found bug
-    val reportedErrors = PublishSubject.create<Throwable>()
-    val unrecoverableErrors = PublishSubject.create<Throwable>()
+    internal val reportedErrors = PublishSubject.create<Throwable>()
+    internal val unrecoverableErrors = PublishSubject.create<Throwable>()
 
     init {
         val logs = property("log.path")

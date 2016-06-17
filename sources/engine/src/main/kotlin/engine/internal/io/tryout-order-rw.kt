@@ -2,10 +2,10 @@ package engine.internal.io
 
 import common.global.json
 import common.global.order
-import engine.io.readers.OrderStreamReader
-import engine.io.writers.OrderStreamWriter
-import eventstore.tools.io.EventStreamReader
-import eventstore.tools.io.EventStreamWriter
+import engine.io.order.OrderReader
+import engine.io.order.OrderWriter
+import eventstore.tools.io.BytesReader
+import eventstore.tools.io.BytesWriter
 import net.openhft.chronicle.queue.RollCycles
 import proto.common.Order
 import util.app
@@ -15,23 +15,23 @@ import util.app
  */
 internal fun main(args: Array<String>) {
 
-    val rawStreamWriter = EventStreamWriter(
-            path = "/Users/vach/workspace/jarvis/dist/data/temp",
+    val bw = BytesWriter(
+            path = "/Users/vach/workspace/jarvis/dist/data/temp/order",
             cycles = RollCycles.MINUTELY
     )
 
-    val orderStreamWriter = OrderStreamWriter(rawStreamWriter)
+    val orderStreamWriter = OrderWriter(bw)
 
     orderStreamWriter.write(order(Order.Side.BID, 42.0, 42.0, 100))
     orderStreamWriter.write(order(Order.Side.ASK, 42.0, 42.0, 200))
     orderStreamWriter.write(order(Order.Side.BID, 42.0, 42.0, 300))
 
-    val rawStreamReader = EventStreamReader(
-            path = "/Users/vach/workspace/jarvis/dist/data/temp",
+    val br = BytesReader(
+            path = "/Users/vach/workspace/jarvis/dist/data/temp/order",
             rollCycle = RollCycles.MINUTELY
     )
 
-    OrderStreamReader(rawStreamReader).stream().forEach {
+    OrderReader(br).stream().forEach {
         app.log.info("read : " + it.json())
     }
 

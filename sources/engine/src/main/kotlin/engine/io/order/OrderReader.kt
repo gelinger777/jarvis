@@ -1,9 +1,9 @@
-package engine.io.readers
+package engine.io.order
 
 import com.google.common.primitives.Longs
 import common.AggregatedOrderbook
 import common.global.all
-import eventstore.tools.io.EventStreamReader
+import eventstore.tools.io.BytesReader
 import proto.common.Order
 import proto.common.Raw
 import rx.Observable
@@ -13,7 +13,7 @@ import util.global.logger
 /**
  * Analyses raw stream of orders and provides api to query historical data. Streaming orders does not make sense if the initial orderbook is not being streamed first, hence it will create different orderbook snapshots.
  */
-class OrderStreamReader(val source: EventStreamReader) {
+class OrderReader(val source: BytesReader) {
     val log = logger("OrderStreamReader")
 
     var lastTime = -1L

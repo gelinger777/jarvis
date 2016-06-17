@@ -60,7 +60,7 @@ object maid {
      * Priority must be positive integer or zero.
      */
     // todo : make this internal when jetbrains fixes the method not found bug
-    @Synchronized fun internalAdd(task: () -> Unit, priority: Int = 0, key: String = UUID.randomUUID().toString()) {
+    internal @Synchronized fun internalAdd(task: () -> Unit, priority: Int = 0, key: String = UUID.randomUUID().toString()) {
         condition(priority >= 0)
         internalTasks.put(key, priority to task)
     }

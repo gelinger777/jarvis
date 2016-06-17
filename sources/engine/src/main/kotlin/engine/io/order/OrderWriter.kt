@@ -1,8 +1,8 @@
-package engine.io.writers
+package engine.io.order
 
 import com.google.common.primitives.Longs
 import common.global.json
-import eventstore.tools.io.EventStreamWriter
+import eventstore.tools.io.BytesWriter
 import proto.common.Order
 import proto.common.Order.Side.ASK
 import proto.common.Order.Side.BID
@@ -10,11 +10,11 @@ import proto.common.Raw
 import util.app
 import util.global.wtf
 
-class OrderStreamWriter(val rawWriter: EventStreamWriter) {
+class OrderWriter(val rawWriter: BytesWriter) {
 
     var lastTime = -1L
 
-    fun write(order: Order) {
+    @Synchronized fun write(order: Order) {
 
 
         app.log.info { "write : " + order.json() }

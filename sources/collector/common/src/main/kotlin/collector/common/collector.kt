@@ -5,7 +5,7 @@ import collector.common.internal.tradesRelativePath
 import common.IExchange
 import common.global.asPair
 import common.global.compact
-import eventstore.tools.io.EventStreamWriter
+import eventstore.tools.io.BytesWriter
 import eventstore.tools.net.EventStreamUploader
 import net.openhft.chronicle.queue.RollCycles
 import net.openhft.chronicle.queue.RollCycles.MINUTELY
@@ -58,7 +58,7 @@ fun startCollectorFor(client: IExchange) {
 private fun collect(dataStream: Observable<ByteArray>, relativePath: String, cycles: RollCycles) {
     val absolutePath = "${app.property("store.path")}/$relativePath"
 
-    val writer = EventStreamWriter(path = absolutePath, cycles = cycles)
+    val writer = BytesWriter(path = absolutePath, cycles = cycles)
 
     EventStreamUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
 

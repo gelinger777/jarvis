@@ -1,8 +1,6 @@
 package engine.internal
 
 import bitfinex.Bitfinex
-import bitstamp.Bitstamp
-import btce.Btce
 import common.IMarket
 import common.global.pair
 import util.global.sleepLoopUntil
@@ -17,14 +15,14 @@ internal fun main(args: Array<String>) {
             trackOrders(this)
             trackTrades(this)
         }
-        with(Bitstamp().market(this)){
-            trackOrders(this)
-            trackTrades(this)
-        }
-        with(Btce().market(this)){
-            trackOrders(this)
-            trackTrades(this)
-        }
+//        with(Bitstamp().market(this)){
+//            trackOrders(this)
+//            trackTrades(this)
+//        }
+//        with(Btce().market(this)){
+//            trackOrders(this)
+//            trackTrades(this)
+//        }
     }
 
     sleepLoopUntil({ false }, {

@@ -12,7 +12,7 @@ import util.global.size
 /**
  * Provides streaming api for reading raw data stream. Make sure to pass the correct roll cycle.
  */
-class EventStreamReader(val path: String, val rollCycle: RollCycle = RollCycles.DAILY) {
+class BytesReader(val path: String, val rollCycle: RollCycle = RollCycles.DAILY) {
     private val log = logger("EventStreamReader")
     private val chronicle = queue(path, rollCycle)
 

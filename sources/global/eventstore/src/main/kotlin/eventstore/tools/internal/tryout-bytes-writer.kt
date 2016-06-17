@@ -1,6 +1,6 @@
 package eventstore.tools.internal
 
-import eventstore.tools.io.EventStreamWriter
+import eventstore.tools.io.BytesWriter
 import net.openhft.chronicle.queue.RollCycles
 import java.time.Instant
 import java.time.ZoneOffset
@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 
 internal fun main(args: Array<String>) {
 
-    val writer = EventStreamWriter("/Users/vach/workspace/jarvis/dist/data/uuid", RollCycles.MINUTELY)
+    val writer = BytesWriter("/Users/vach/workspace/jarvis/dist/data/uuid", RollCycles.MINUTELY)
 
     while (true) {
         writer.write(current())

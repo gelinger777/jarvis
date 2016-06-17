@@ -13,7 +13,7 @@ import util.global.withProbability
  * Provides api to write data to an event stream with rollup intervals.
  * By default rollup interval is daily.
  */
-class EventStreamWriter(val path: String, val cycles: RollCycles = DAILY) {
+class BytesWriter(val path: String, val cycles: RollCycles = DAILY) {
     private val log = logger("EventStreamWriter")
     private val chronicle = queue(path, cycles)
     private val appender = chronicle.createAppender()
