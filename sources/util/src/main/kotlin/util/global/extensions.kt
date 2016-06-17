@@ -36,20 +36,21 @@ fun <T> Observable<T>.batch(scheduler: Scheduler = cpu.schedulers.io): Observabl
 fun <T> Observable<out Collection<T>>.unpack(): Observable<T> {
     return this.lift(Observable.Operator { subscriber ->
         object : Subscriber<Collection<T>>() {
+            override fun onNext(batch: Collection<T>) {
+                for (element in batch) {
+                    if (subscriber.isUnsubscribed) {
+                        break
+                    }
+                    subscriber.onNext(element)
+                }
+            }
+
+            override fun onError(error: Throwable) {
+                subscriber.onError(error)
+            }
+
             override fun onCompleted() {
                 subscriber.onCompleted()
-            }
-
-            override fun onError(e: Throwable) {
-                subscriber.onError(e)
-            }
-
-            override fun onNext(ts: Collection<T>) {
-                for (t in ts) {
-                    if (!subscriber.isUnsubscribed) {
-                        subscriber.onNext(t)
-                    }
-                }
             }
         }
     })

@@ -23,6 +23,7 @@ build/
 gen/
 dist/bin/
 dist/data/
+dist/log/
 bin/
 lib/
 dist/logs/
