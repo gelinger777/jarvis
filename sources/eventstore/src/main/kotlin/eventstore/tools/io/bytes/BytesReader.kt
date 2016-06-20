@@ -14,7 +14,7 @@ import util.global.withProbability
  * Provides streaming api for reading raw data stream. Supports unsubscribe.
  */
 class BytesReader(val path: String, val rollCycle: RollCycle = RollCycles.DAILY) {
-    private val log = logger("EventStreamReader")
+    private val log = logger("ByteReader")
     private val chronicle = queue(path, rollCycle)
 
     fun read(): Observable<Pair<Long, ByteArray>> {

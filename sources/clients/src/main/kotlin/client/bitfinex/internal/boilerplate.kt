@@ -26,10 +26,12 @@ internal fun handleMessage(data: String, channels: MutableMap<Any, (JsonArray) -
         condition(rootObject.has("event"))
 
         when (rootObject.get("event").asString) {
-            "info" -> {
-            }
-            "pong" -> {
-            }
+//            "info" -> {
+//                notImplemented()
+//            }
+//            "pong" -> {
+//                notImplemented()
+//            }
             "subscribed" -> {
                 val chanId = rootObject.get("chanId").asInt
                 val pair = rootObject.get("pair").asString.asPair()

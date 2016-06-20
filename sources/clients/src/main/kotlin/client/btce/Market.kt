@@ -1,12 +1,12 @@
 package client.btce
 
-import client.*
-import client.btce.internal.diff
 import client.btce.internal.filterNewTrades
 import client.btce.internal.pollOrders
 import client.btce.internal.pollTrades
 import common.AggregatedOrderbook
-import common.*
+import common.IExchange
+import common.IMarket
+import common.IOrderBook
 import common.global.compact
 import proto.common.Order
 import proto.common.Pair
@@ -17,6 +17,7 @@ import util.global.filterEmptyOptionals
 import util.global.logger
 import util.global.unpack
 import util.misc.RefCountRepeatingProducer
+import util.misc.RefCountRepeatingTask
 
 internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
     internal val log = logger("${exchange.name}|${pair.compact()}")
@@ -37,18 +38,15 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
 
     val book = AggregatedOrderbook()
 
-    val orderPollTask = RefCountRepeatingProducer(
+    val orderPollTask = RefCountRepeatingTask(
             name = "orders-producer:${exchange.name()}|${pair.compact()}",
-            producer = {
+            task = {
                 log.debug("polling")
-                pollOrders(pair)
+                pollOrders(pair).ifPresent { book.accept(it) }
+
             },
             delay = 420
-    ).apply {
-        this.stream().filterEmptyOptionals()
-                .forEach { diffWithOrderbook(it) }
-    }
-
+    )
 
     override fun exchange(): IExchange {
         return exchange
@@ -83,12 +81,6 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
         val result = previousTradesBatch.filterNewTrades(batch)
         previousTradesBatch = batch
         return result
-    }
-
-    private fun diffWithOrderbook(newOrderbook: Orderbook) {
-        // calculate diff
-        book.bids.diff(newOrderbook.bids).forEach { book.accept(it) }
-        book.asks.diff(newOrderbook.asks).forEach { book.accept(it) }
     }
 
 }

@@ -14,7 +14,7 @@ import util.global.withProbability
  * By default rollup interval is daily.
  */
 class BytesWriter(val path: String, val cycles: RollCycles = DAILY) {
-    private val log = logger("EventStreamWriter")
+    private val log = logger("ByteWriter")
     private val chronicle = queue(path, cycles)
     private val appender = chronicle.createAppender()
 

@@ -1,6 +1,7 @@
 package common
 
 import common.global.all
+import common.internal.diff
 import common.internal.isCanceled
 import common.internal.place
 import common.internal.remove
@@ -19,10 +20,19 @@ class AggregatedOrderbook : IOrderBook {
     val asks = TreeMap<Double, Order>(Comparator { o1, o2 -> o1.compareTo(o2) })
     internal val stream = PublishSubject.create<Order>()
 
+    /**
+     * Take a snapshot, and generate diff orders.
+     */
+    fun accept(snapshot: Orderbook){
+        bids.diff(snapshot.bids).forEach { accept(it) }
+        asks.diff(snapshot.asks).forEach { accept(it) }
+    }
+
+    /**
+     * Place price aggregated order.
+     */
     fun accept(order: Order) {
-
         synchronized(stream, {
-
             if (order.isCanceled()) {
                 this.remove(order)
             } else {

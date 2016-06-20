@@ -64,12 +64,16 @@
         <Logger name="pusher" level="ALL"/>
         <Logger name="orderSync" level="ALL"/>
 
-        <Logger name="EventStreamPoller" level="TRACE">
-            <AppenderRef ref="S3"/>
-        </Logger>
-        <Logger name="EventStreamUploader" level="TRACE">
-            <AppenderRef ref="S3"/>
-        </Logger>
+        <Logger name="OrderEncoder" level="OFF"/>
+        <Logger name="TradeEncoder" level="OFF"/>
+
+
+        <!--<Logger name="EventStreamPoller" level="TRACE">-->
+            <!--<AppenderRef ref="S3"/>-->
+        <!--</Logger>-->
+        <!--<Logger name="EventStreamUploader" level="TRACE">-->
+            <!--<AppenderRef ref="S3"/>-->
+        <!--</Logger>-->
 
     </Loggers>
 

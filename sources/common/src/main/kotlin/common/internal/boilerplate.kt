@@ -1,7 +1,10 @@
 package common.internal
 
 import common.AggregatedOrderbook
+import common.global.asMap
 import proto.common.Order
+import util.global.getMandatory
+import util.global.notContainsKey
 import util.global.report
 import util.global.wtf
 import java.util.*
@@ -34,4 +37,24 @@ internal fun AggregatedOrderbook.book(side: Order.Side): TreeMap<Double, Order> 
         Order.Side.BID -> return bids
         else -> wtf()
     }
+}
+
+fun TreeMap<Double, Order>.diff(orders: List<Order>): List<Order> {
+    val diff = mutableListOf<Order>()
+    val target = orders.asMap()
+
+    // removals
+    this.keys.filter { target.notContainsKey(it) }.toList()
+            .forEach { diff.add(this.getMandatory(it).toBuilder().setVolume(0.0).build()) }
+
+    // additions and modifications
+    target.values.forEach {
+        val existing = this[it.price]
+
+        if (existing == null || existing.volume != it.volume) {
+            diff.add(it)
+        }
+    }
+
+    return diff
 }

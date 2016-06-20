@@ -9,7 +9,6 @@ import common.global.compact
 import common.global.encodeOrders
 import common.global.encodeTrades
 import eventstore.tools.io.bytes.BytesWriter
-import eventstore.tools.net.QueueUploader
 import net.openhft.chronicle.queue.RollCycles
 import net.openhft.chronicle.queue.RollCycles.MINUTELY
 import util.app
@@ -30,13 +29,15 @@ fun startCollectorFor(client: IExchange) {
             "record.orders" // order streams to record
     )
 
-
+    // get the pairs
     val tradePairs = app.property("record.trades").split(",").map { executeAndGetMandatory { it.asPair() } }
     val orderPairs = app.property("record.orders").split(",").map { executeAndGetMandatory { it.asPair() } }
 
+    // get the rollup cycles
     val tradeCycles = app.optionalProperty("trade.cycles").flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }.ifNotPresentTake(MINUTELY).get()
     val orderCycles = app.optionalProperty("order.cycles").flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }.ifNotPresentTake(MINUTELY).get()
 
+    // start collecting trades
     for (pair in tradePairs) {
         log.info { "collecting trades of ${client.name()}|${pair.compact()}" }
 
@@ -47,6 +48,7 @@ fun startCollectorFor(client: IExchange) {
         )
     }
 
+    // start collecting orders
     for (pair in orderPairs) {
         log.info { "collecting orders of ${client.name()}|${pair.compact()}" }
 
@@ -63,7 +65,7 @@ private fun collectTrades(market: IMarket, relativePath: String, cycles: RollCyc
 
     val writer = BytesWriter(path = absolutePath, cycles = cycles)
 
-    QueueUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
+//    QueueUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
 
     market.trades()
             .encodeTrades()
@@ -85,7 +87,7 @@ private fun collectOrders(market: IMarket, relativePath: String, cycles: RollCyc
 
     val writer = BytesWriter(path = absolutePath, cycles = cycles)
 
-    QueueUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
+//    QueueUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
 
     market.orders()
             .encodeOrders()

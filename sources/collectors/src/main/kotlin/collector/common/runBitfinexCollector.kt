@@ -1,6 +1,8 @@
 package collector.common
 
 import util.app
+import util.global.sleepLoopUntil
+import util.heartBeat
 
 fun main(args: Array<String>) {
     app.ensurePropertiesAreProvided(
@@ -12,9 +14,9 @@ fun main(args: Array<String>) {
             "record.orders" // order streams to record
     )
 
-    println("all cool")
-
-//    app.log.info { "starting Bitfinex collector" }
-//    startCollectorFor(client.bitfinex.Bitfinex())
-//    sleepUntilInterrupted()
+    app.log.info { "starting Bitfinex collector" }
+    startCollectorFor(client.bitfinex.Bitfinex())
+    sleepLoopUntil({ false }, {
+        heartBeat.status()
+    })
 }

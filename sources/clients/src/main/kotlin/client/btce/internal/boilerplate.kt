@@ -2,11 +2,9 @@ package client.btce.internal
 
 import com.google.gson.JsonParser
 import common.Orderbook
-import common.global.asMap
 import common.global.asPair
 import common.global.order
 import common.global.trade
-import proto.common.Order
 import proto.common.Order.Side.ASK
 import proto.common.Order.Side.BID
 import proto.common.Pair
@@ -14,10 +12,7 @@ import proto.common.Trade
 import util.Option
 import util.app
 import util.global.executeAndGetSilent
-import util.global.getMandatory
-import util.global.notContainsKey
 import util.net.http
-import java.util.*
 
 
 internal fun pollPairs(): Option<List<Pair>> {
@@ -154,24 +149,3 @@ internal fun List<Trade>.filterNewTrades(batch: List<Trade>): Option<List<Trade>
 //
 //
 //}
-
-
-internal fun TreeMap<Double, Order>.diff(orders: List<Order>): List<Order> {
-    val diff = mutableListOf<Order>()
-    val target = orders.asMap()
-
-    // removals
-    this.keys.filter { target.notContainsKey(it) }.toList()
-            .forEach { diff.add(this.getMandatory(it).toBuilder().setVolume(0.0).build()) }
-
-    // additions and modifications
-    target.values.forEach {
-        val existing = this[it.price]
-
-        if (existing == null || existing.volume != it.volume) {
-            diff.add(it)
-        }
-    }
-
-    return diff
-}
