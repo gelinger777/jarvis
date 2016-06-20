@@ -26,12 +26,12 @@ internal fun handleMessage(data: String, channels: MutableMap<Any, (JsonArray) -
         condition(rootObject.has("event"))
 
         when (rootObject.get("event").asString) {
-//            "info" -> {
-//                notImplemented()
-//            }
-//            "pong" -> {
-//                notImplemented()
-//            }
+            "info" -> {
+                condition(data == "{\"event\":\"info\",\"version\":1.1}", "not supported api version")
+            }
+            "pong" -> {
+                // ignoring ping pong
+            }
             "subscribed" -> {
                 val chanId = rootObject.get("chanId").asInt
                 val pair = rootObject.get("pair").asString.asPair()
@@ -50,7 +50,6 @@ internal fun handleMessage(data: String, channels: MutableMap<Any, (JsonArray) -
                 channels.associateKeys(key, chanId)
 
             }
-
             else -> {
                 wtf("unexpected message from server [$data]")
             }

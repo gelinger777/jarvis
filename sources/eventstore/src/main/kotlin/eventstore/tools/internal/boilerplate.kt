@@ -30,7 +30,6 @@ fun ExcerptAppender.write(bytes: ByteArray): Long {
     return this.apply { writeBytes(Bytes.wrapForRead(bytes)) }.lastIndexAppended()
 }
 
-
 //fun RollCycles.firstIdOfCycleContaining(timestamp: Long): Int {
 //    return 0
 //}

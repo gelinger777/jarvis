@@ -12,6 +12,7 @@ import proto.common.Pair
 import proto.common.Trade
 import rx.Observable
 import rx.subjects.PublishSubject
+import util.global.executeMandatory
 import util.global.logger
 import util.misc.RefCountToggle
 
@@ -48,7 +49,7 @@ internal class Market(val exchange: Bitfinex, val pair: Pair) : IMarket {
 
         ws.stream()
                 .doOnNext { log.debug { "websocket event : $it" } }
-                .forEach { handleMessage(it, channels) }
+                .forEach { executeMandatory { handleMessage(it, channels) } }
 
         ws.start()
     }
