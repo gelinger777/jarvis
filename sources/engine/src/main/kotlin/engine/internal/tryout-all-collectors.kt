@@ -5,7 +5,7 @@ import client.bitstamp.Bitstamp
 import client.btce.Btce
 import common.IMarket
 import common.global.pair
-import util.global.sleepLoopUntil
+import util.global.sleepLoop
 import util.heartBeat
 import util.net
 import java.util.concurrent.TimeUnit
@@ -27,7 +27,7 @@ internal fun main(args: Array<String>) {
         }
     }
 
-    sleepLoopUntil({ false }, {
+    sleepLoop({ false }, {
         heartBeat.status()
     })
 }

@@ -12,7 +12,6 @@ import eventstore.tools.internal.fileName
 import util.global.*
 import util.misc.RefCountRepeatingTask
 import java.io.File
-import java.util.concurrent.TimeUnit.MINUTES
 
 /**
  * Polls data from remote data storage.
@@ -21,6 +20,7 @@ class QueuePoller(
         val localPath: String,
         val remotePath: String,
         val bucket: String,
+        val delay: Long = 5.minutes(),
         val region: Regions = US_WEST_2) {
     private val log = logger("EventStreamPoller")
 
@@ -32,8 +32,7 @@ class QueuePoller(
                 // no failures are accepted
                 executeMandatory { this.check() }
             },
-            //            delay = 2000
-            delay = 5, unit = MINUTES
+            delay = delay
     )
 
     init {
@@ -82,9 +81,9 @@ class QueuePoller(
 
         val download = tm.download(bucket, s3object.key, file)
 
-        sleepLoopUntil(
+        sleepLoop(
                 condition = { download.isDone },
-                block = {
+                task = {
                     log.info { "${download.description} (${download.state})" }
                     log.debug { "progress : ${download.progress.percentTransferred.roundDown2()} %  (${size(download.progress.bytesTransferred)})" }
                 },

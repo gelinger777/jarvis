@@ -5,7 +5,6 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.ThreadLocalRandom
-import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
 
 fun <T> consumer(consumer: Consumer<T>): (T) -> Unit {
@@ -41,7 +40,7 @@ fun Long.dateTime(): String {
     return DateTimeFormatter.ofPattern("YYY-MM-dd HH:mm:ss").format(ZonedDateTime.ofInstant (Instant.ofEpochMilli(this), ZoneOffset.UTC))
 }
 
-fun size(bytes: Int):String{
+fun size(bytes: Int): String {
     return size(bytes.toLong())
 }
 
@@ -94,13 +93,16 @@ fun withProbability(probability: Double, block: () -> Unit) {
     }
 }
 
-fun sleepLoopUntil(condition: () -> Boolean, block: () -> Unit, delay: Long = 1000, unit: TimeUnit = TimeUnit.MILLISECONDS) {
+fun sleepLoop(
+        condition: () -> Boolean = { false },
+        task: () -> Unit,
+        delay: Long = 1.seconds()) {
 
     while (!condition.invoke()) {
-        block.invoke()
+        task.invoke()
 
         try {
-            Thread.sleep(unit.toMillis(delay))
+            Thread.sleep(delay)
         } catch(e: InterruptedException) {
             break
         }

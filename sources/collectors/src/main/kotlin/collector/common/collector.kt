@@ -9,15 +9,13 @@ import common.global.compact
 import common.global.encodeOrders
 import common.global.encodeTrades
 import eventstore.tools.io.bytes.BytesWriter
+import eventstore.tools.net.QueueUploader
 import net.openhft.chronicle.queue.RollCycles
 import net.openhft.chronicle.queue.RollCycles.MINUTELY
 import util.app
 import util.app.log
-import util.global.executeAndGetMandatory
-import util.global.executeAndGetSilent
-import util.global.report
+import util.global.*
 import util.heartBeat
-import java.util.concurrent.TimeUnit.MINUTES
 
 fun startCollectorFor(client: IExchange) {
     app.ensurePropertiesAreProvided(
@@ -30,12 +28,20 @@ fun startCollectorFor(client: IExchange) {
     )
 
     // get the pairs
-    val tradePairs = app.property("record.trades").split(",").map { executeAndGetMandatory { it.asPair() } }
-    val orderPairs = app.property("record.orders").split(",").map { executeAndGetMandatory { it.asPair() } }
+    val tradePairs = app.property("record.trades").split(",")
+            .map { executeAndGetMandatory { it.asPair() } }
+
+    val orderPairs = app.property("record.orders").split(",")
+            .map { executeAndGetMandatory { it.asPair() } }
 
     // get the rollup cycles
-    val tradeCycles = app.optionalProperty("trade.cycles").flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }.ifNotPresentTake(MINUTELY).get()
-    val orderCycles = app.optionalProperty("order.cycles").flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }.ifNotPresentTake(MINUTELY).get()
+    val tradeCycles = app.optionalProperty("trade.cycles")
+            .flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }
+            .ifNotPresentTake(MINUTELY).get()
+
+    val orderCycles = app.optionalProperty("order.cycles")
+            .flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }
+            .ifNotPresentTake(MINUTELY).get()
 
     // start collecting trades
     for (pair in tradePairs) {
@@ -65,8 +71,6 @@ private fun collectTrades(market: IMarket, relativePath: String, cycles: RollCyc
 
     val writer = BytesWriter(path = absolutePath, cycles = cycles)
 
-//    QueueUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
-
     market.trades()
             .encodeTrades()
             .forEach {
@@ -74,9 +78,17 @@ private fun collectTrades(market: IMarket, relativePath: String, cycles: RollCyc
                 heartBeat.beat(relativePath)
             }
 
+    QueueUploader(
+            localPath = absolutePath,
+            remotePath = relativePath,
+            bucket = app.property("aws.bucket"),
+            delay = 5.minutes()
+    )
+
+
     heartBeat.start(
             name = relativePath,
-            timeout = MINUTES.toMillis(30),
+            timeout = 1.hours(),
             callback = { report("no events for a while") },
             keepAlive = true
     )
@@ -87,8 +99,6 @@ private fun collectOrders(market: IMarket, relativePath: String, cycles: RollCyc
 
     val writer = BytesWriter(path = absolutePath, cycles = cycles)
 
-//    QueueUploader(localPath = absolutePath, remotePath = relativePath, bucket = app.property("aws.bucket"), delay = MINUTES.toMillis(5))
-
     market.orders()
             .encodeOrders()
             .forEach {
@@ -96,9 +106,16 @@ private fun collectOrders(market: IMarket, relativePath: String, cycles: RollCyc
                 heartBeat.beat(relativePath)
             }
 
+    QueueUploader(
+            localPath = absolutePath,
+            remotePath = relativePath,
+            bucket = app.property("aws.bucket"),
+            delay = 5.minutes()
+    )
+
     heartBeat.start(
             name = relativePath,
-            timeout = MINUTES.toMillis(30),
+            timeout = 1.hours(),
             callback = { report("no events for a while") },
             keepAlive = true
     )

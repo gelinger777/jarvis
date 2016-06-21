@@ -18,6 +18,7 @@ import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.nio.charset.StandardCharsets.UTF_8
+import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
 
 
@@ -260,4 +261,17 @@ fun <T> Iterator<T>.optionalNext(): Option<T> {
 
 fun <E> Collection<E>.notContains(element: E): Boolean {
     return !contains(element)
+}
+
+
+fun Int.seconds(): Long {
+    return TimeUnit.SECONDS.toMillis(this.toLong())
+}
+
+fun Int.minutes(): Long {
+    return TimeUnit.MINUTES.toMillis(this.toLong())
+}
+
+fun Int.hours(): Long {
+    return TimeUnit.HOURS.toMillis(this.toLong())
 }

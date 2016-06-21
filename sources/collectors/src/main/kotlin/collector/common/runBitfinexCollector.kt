@@ -1,7 +1,8 @@
 package collector.common
 
+import client.bitfinex.Bitfinex
 import util.app
-import util.global.sleepLoopUntil
+import util.global.sleepLoop
 import util.heartBeat
 
 fun main(args: Array<String>) {
@@ -15,8 +16,8 @@ fun main(args: Array<String>) {
     )
 
     app.log.info { "starting Bitfinex collector" }
-    startCollectorFor(client.bitfinex.Bitfinex())
-    sleepLoopUntil({ false }, {
-        heartBeat.status()
-    })
+
+    startCollectorFor(Bitfinex())
+
+    sleepLoop(task = { heartBeat.status() })
 }

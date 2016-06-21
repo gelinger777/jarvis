@@ -90,9 +90,9 @@ class QueueUploader(
 
         val upload = tm.upload(bucket, destination, file)
 
-        sleepLoopUntil(
+        sleepLoop(
                 condition = { upload.isDone },
-                block = {
+                task = {
                     log.info { "${upload.description} (${upload.state})" }
                     log.debug { "progress : ${upload.progress.percentTransferred.roundDown2()} %  (${size(upload.progress.bytesTransferred)})" }
                 },

@@ -9,7 +9,6 @@ class RefCountRepeatingProducer<T>(
         val name: String,
         val producer: () -> T,
         @Volatile var delay: Long,
-        val unit: TimeUnit = TimeUnit.MILLISECONDS,
         val terminationTimeout: Long = 10000) {
 
     private val observable = PublishSubject.create<T>()
@@ -18,7 +17,6 @@ class RefCountRepeatingProducer<T>(
             name,
             { executeAndGetSilent(producer).ifPresent { observable.onNext(it) } },
             delay,
-            unit,
             terminationTimeout
     )
 
