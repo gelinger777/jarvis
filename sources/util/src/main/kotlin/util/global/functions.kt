@@ -94,7 +94,7 @@ fun withProbability(probability: Double, block: () -> Unit) {
 }
 
 fun sleepLoop(
-        condition: () -> Boolean = { false },
+        condition: () -> Boolean = { false }, // by default repeat forever
         task: () -> Unit,
         delay: Long = 1.seconds()) {
 

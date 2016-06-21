@@ -275,3 +275,15 @@ fun Int.minutes(): Long {
 fun Int.hours(): Long {
     return TimeUnit.HOURS.toMillis(this.toLong())
 }
+
+fun Int.second(): Long {
+    return this.seconds()
+}
+
+fun Int.minute(): Long {
+    return this.minutes()
+}
+
+fun Int.hour(): Long {
+    return this.hours()
+}

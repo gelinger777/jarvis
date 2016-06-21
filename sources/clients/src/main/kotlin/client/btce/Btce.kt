@@ -4,6 +4,7 @@ import client.btce.internal.pollPairs
 import common.IAccount
 import common.IExchange
 import common.IMarket
+import common.global.compact
 import proto.common.Pair
 import util.global.computeIfAbsent
 import util.global.condition
@@ -24,7 +25,7 @@ class Btce() : IExchange {
     }
 
     override fun market(pair: Pair): IMarket {
-        condition(pairs().contains(pair))
+        condition(pairs().contains(pair), "${pair.compact()} is not supported")
         return markets.computeIfAbsent(pair, { Market(this, it) })
     }
 

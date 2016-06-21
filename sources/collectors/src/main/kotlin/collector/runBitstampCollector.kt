@@ -1,4 +1,4 @@
-package collector.common
+package collector
 
 import util.app
 

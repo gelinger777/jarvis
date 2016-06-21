@@ -1,6 +1,7 @@
-package collector.common
+package collector
 
 import client.bitfinex.Bitfinex
+import collector.common.startCollectorFor
 import util.app
 import util.global.sleepLoop
 import util.heartBeat

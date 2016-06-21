@@ -5,71 +5,69 @@ import collector.common.internal.tradesRelativePath
 import common.IExchange
 import common.IMarket
 import common.global.asPair
-import common.global.compact
 import common.global.encodeOrders
 import common.global.encodeTrades
 import eventstore.tools.io.bytes.BytesWriter
-import eventstore.tools.net.QueueUploader
+import eventstore.tools.net.s3Uploader
 import net.openhft.chronicle.queue.RollCycles
+import net.openhft.chronicle.queue.RollCycles.HOURLY
 import net.openhft.chronicle.queue.RollCycles.MINUTELY
+import proto.common.Pair
 import util.app
 import util.app.log
-import util.global.*
+import util.global.executeAndGetMandatory
+import util.global.executeAndGetSilent
+import util.global.minutes
+import util.global.report
 import util.heartBeat
 
 fun startCollectorFor(client: IExchange) {
     app.ensurePropertiesAreProvided(
             "store.path", // root path where event streams are being recorded
+
+            "record.trades", // trade streams to record
+            "record.orders", // order streams to record
+
             "aws.accessKeyId", // aws credentials for s3 client
             "aws.secretKey", // aws credentials for s3 client
             "aws.bucket", // aws bucket where recorded data will be uploaded
-            "record.trades", // trade streams to record
-            "record.orders" // order streams to record
+
+            "uploader.delay", // delay in minutes between checking for rollups to upload
+
+            // maximum timeout of silence before alerts are created
+            "trade.stream.maxTimeout",
+            "order.stream.maxTimeout"
     )
 
-    // get the pairs
-    val tradePairs = app.property("record.trades").split(",")
-            .map { executeAndGetMandatory { it.asPair() } }
-
-    val orderPairs = app.property("record.orders").split(",")
-            .map { executeAndGetMandatory { it.asPair() } }
-
-    // get the rollup cycles
-    val tradeCycles = app.optionalProperty("trade.cycles")
-            .flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }
-            .ifNotPresentTake(MINUTELY).get()
-
-    val orderCycles = app.optionalProperty("order.cycles")
-            .flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }
-            .ifNotPresentTake(MINUTELY).get()
-
     // start collecting trades
-    for (pair in tradePairs) {
-        log.info { "collecting trades of ${client.name()}|${pair.compact()}" }
+    for (pair in tradePairs()) {
+        val market = client.market(pair)
+
+        log.info { "collecting trades of ${market.name()}" }
 
         collectTrades(
-                market = client.market(pair),
-                relativePath = tradesRelativePath(client, pair),
-                cycles = tradeCycles
+                market = market,
+                relativePath = tradesRelativePath(client, pair)
         )
     }
 
     // start collecting orders
-    for (pair in orderPairs) {
-        log.info { "collecting orders of ${client.name()}|${pair.compact()}" }
+    for (pair in orderPairs()) {
+        val market = client.market(pair)
+
+        log.info { "collecting orders of ${market.name()}" }
 
         collectOrders(
-                market = client.market(pair),
-                relativePath = ordersRelativePath(client, pair),
-                cycles = orderCycles
+                market = market,
+                relativePath = ordersRelativePath(client, pair)
         )
     }
 }
 
-private fun collectTrades(market: IMarket, relativePath: String, cycles: RollCycles) {
-    val absolutePath = "${app.property("store.path")}/$relativePath"
+private fun collectTrades(market: IMarket, relativePath: String) {
+    val absolutePath = "${storePath()}/$relativePath"
 
-    val writer = BytesWriter(path = absolutePath, cycles = cycles)
+    val writer = BytesWriter(path = absolutePath, cycles = tradeCycle())
 
     market.trades()
             .encodeTrades()
@@ -78,26 +76,20 @@ private fun collectTrades(market: IMarket, relativePath: String, cycles: RollCyc
                 heartBeat.beat(relativePath)
             }
 
-    QueueUploader(
-            localPath = absolutePath,
-            remotePath = relativePath,
-            bucket = app.property("aws.bucket"),
-            delay = 5.minutes()
-    )
+    s3Uploader.add(absolutePath, relativePath)
 
-
-    heartBeat.start(
+    heartBeat.add(
             name = relativePath,
-            timeout = 1.hours(),
+            timeout = tradeTimeout(),
             callback = { report("no events for a while") },
             keepAlive = true
     )
 }
 
-private fun collectOrders(market: IMarket, relativePath: String, cycles: RollCycles) {
-    val absolutePath = "${app.property("store.path")}/$relativePath"
+private fun collectOrders(market: IMarket, relativePath: String) {
+    val absolutePath = "${storePath()}/$relativePath"
 
-    val writer = BytesWriter(path = absolutePath, cycles = cycles)
+    val writer = BytesWriter(path = absolutePath, cycles = orderCycle())
 
     market.orders()
             .encodeOrders()
@@ -106,17 +98,45 @@ private fun collectOrders(market: IMarket, relativePath: String, cycles: RollCyc
                 heartBeat.beat(relativePath)
             }
 
-    QueueUploader(
+    s3Uploader.add(
             localPath = absolutePath,
-            remotePath = relativePath,
-            bucket = app.property("aws.bucket"),
-            delay = 5.minutes()
+            remotePath = relativePath
     )
 
-    heartBeat.start(
+    heartBeat.add(
             name = relativePath,
-            timeout = 1.hours(),
+            timeout = orderTimeout(),
             callback = { report("no events for a while") },
             keepAlive = true
     )
+}
+
+fun storePath(): String {
+    return app.property("store.path")
+}
+
+fun tradePairs(): List<Pair> {
+    return app.property("record.trades").split(",").map { executeAndGetMandatory { it.asPair() } }
+}
+
+fun orderPairs(): List<Pair> {
+    return app.property("record.orders").split(",").map { executeAndGetMandatory { it.asPair() } }
+}
+
+fun tradeCycle(): RollCycles {
+    return app.optionalProperty("trade.cycles").flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }
+            .ifNotPresentTake(HOURLY).get()
+}
+
+fun orderCycle(): RollCycles {
+    return app.optionalProperty("order.cycles").flatMap { executeAndGetSilent { RollCycles.valueOf(it) } }
+            .ifNotPresentTake(MINUTELY).get()
+}
+
+fun tradeTimeout(): Long {
+    return app.property("trade.stream.maxTimeout").toInt().minutes()
+}
+
+fun orderTimeout(): Long {
+    return app.property("order.stream.maxTimeout").toInt().minutes()
 }

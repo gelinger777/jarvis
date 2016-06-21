@@ -15,6 +15,7 @@ import rx.Observable
 import util.Option
 import util.global.filterEmptyOptionals
 import util.global.logger
+import util.global.seconds
 import util.global.unpack
 import util.misc.RefCountRepeatingProducer
 import util.misc.RefCountRepeatingTask
@@ -25,9 +26,10 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
     val tradePollTask = RefCountRepeatingProducer(
             name = "trades-producer:${exchange.name()}|${pair.compact()}",
             producer = {
+                log.debug("polling trades")
                 pollTrades(pair)
             },
-            delay = 420
+            delay = 2.seconds()
     )
 
     val trades = tradePollTask.stream().filterEmptyOptionals()
@@ -41,11 +43,10 @@ internal class Market(val exchange: Btce, val pair: Pair) : IMarket {
     val orderPollTask = RefCountRepeatingTask(
             name = "orders-producer:${exchange.name()}|${pair.compact()}",
             task = {
-                log.debug("polling")
+                log.debug("polling orders")
                 pollOrders(pair).ifPresent { book.accept(it) }
-
             },
-            delay = 420
+            delay = 2.seconds()
     )
 
     override fun exchange(): IExchange {

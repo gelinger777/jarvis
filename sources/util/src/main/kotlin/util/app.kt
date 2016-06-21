@@ -14,14 +14,13 @@ object app {
     internal val unrecoverableErrors = PublishSubject.create<Throwable>()
 
     init {
+        ensurePropertiesAreProvided(
+                "log.path",
+                "profile"
+        )
+
         val logs = property("log.path")
         profile = property("profile")
-
-        mandatoryCondition(notNullOrEmpty(logs), "'log.path' system property must be specified")
-        mandatoryCondition(notNullOrEmpty(profile), "'profile' system property must be specified")
-
-        log.debug { "profile : $profile" }
-        log.debug { "log root : $logs" }
 
         when (profile) {
             "dev" -> {
@@ -65,16 +64,20 @@ object app {
     }
 
     fun property(key: String): String {
-        return executeAndGetMandatory { System.getProperty(key) }
+        return executeAndGetMandatory {
+            System.getProperty(key).apply { condition(notNullOrEmpty(this)) }
+        }
     }
 
     fun optionalProperty(key: String): Option<String> {
-        return executeAndGetSilent { System.getProperty(key) }
+        return executeAndGetSilent {
+            System.getProperty(key).apply { condition(notNullOrEmpty(this)) }
+        }
     }
 
     fun ensurePropertiesAreProvided(vararg keys: String) {
         keys.forEach {
-            condition(notNullOrEmpty(System.getProperty(it)), "system property '$it' is required")
+            mandatoryCondition(notNullOrEmpty(System.getProperty(it)), "system property '$it' is required")
         }
     }
 

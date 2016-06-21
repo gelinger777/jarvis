@@ -11,7 +11,6 @@ import eventstore.tools.internal.fileName
 import util.global.*
 import util.misc.RefCountRepeatingTask
 import java.io.File
-import java.util.concurrent.TimeUnit.MINUTES
 
 /**
  * Tracks the stream for rollups and uploads them to the AWS S3 storage, credentials must be available via system properties...
@@ -21,7 +20,7 @@ class QueueUploader(
         val remotePath: String,
         val bucket: String,
         val region: Regions = US_WEST_2,
-        val delay : Long = MINUTES.toMillis(5)
+        val delay : Long = 5.minutes()
 ) {
     private val log = logger("EventStreamUploader")
 
@@ -96,7 +95,7 @@ class QueueUploader(
                     log.info { "${upload.description} (${upload.state})" }
                     log.debug { "progress : ${upload.progress.percentTransferred.roundDown2()} %  (${size(upload.progress.bytesTransferred)})" }
                 },
-                delay = MINUTES.toMillis(1)
+                delay = 2.seconds()
         )
 
         log.info { "successfully uploaded : ${file.name}" }

@@ -5,12 +5,12 @@
 
     <Appenders>
         <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%-20c{1} | %-20t | %-5p | %d{HH:mm:ss} | %m%n"/>
+            <PatternLayout pattern="%-30c{1} | %-30t | %-5p | %d{HH:mm:ss} | %m%n"/>
         </Console>
 
         <RollingRandomAccessFile name="ALL" fileName="${sys:log.path}/all/all.log"
                                  filePattern="${sys:log.path}/all/all-%d{MM-dd-yyyy}-%i.log">
-            <PatternLayout pattern="%-20c{1} | %-20t | %-5p | %d{HH:mm:ss} | %m%n"/>
+            <PatternLayout pattern="%-30c{1} | %-30t | %-5p | %d{HH:mm:ss} | %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="10 MB"/>
@@ -20,7 +20,7 @@
 
         <RollingRandomAccessFile name="EXCEPTIONS" fileName="${sys:log.path}/exceptions/exceptions.log"
                                  filePattern="${sys:log.path}/exceptions/exceptions-%d{MM-dd-yyyy}-%i.log">
-            <PatternLayout pattern="%-20c{1} | %-20t | %-5p | %d{HH:mm:ss} | %m%n"/>
+            <PatternLayout pattern="%-30c{1} | %-30t | %-5p | %d{HH:mm:ss} | %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="10 MB"/>
@@ -30,7 +30,7 @@
 
         <RollingRandomAccessFile name="S3" fileName="${sys:log.path}/s3/s3.log"
                                  filePattern="${sys:log.path}/s3/s3-%d{MM-dd-yyyy}-%i.log">
-            <PatternLayout pattern="%-20c{1} | %-20t | %-5p | %d{HH:mm:ss} | %m%n"/>
+            <PatternLayout pattern="%-30c{1} | %-30t | %-5p | %d{HH:mm:ss} | %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="10 MB"/>
@@ -44,8 +44,13 @@
             <AppenderRef ref="STDOUT"/>
             <AppenderRef ref="ALL"/>
         </Root>
+
         <Logger name="exc" level="ALL">
             <AppenderRef ref="EXCEPTIONS"/>
+        </Logger>
+
+        <Logger name="EventStreamUploader" level="ALL">
+            <AppenderRef ref="S3"/>
         </Logger>
 
         <Logger name="io.netty" level="ERROR"/>
@@ -53,7 +58,6 @@
         <Logger name="org.apache.http" level="ERROR"/>
         <Logger name="org.eclipse.jetty" level="ERROR"/>
         <Logger name="ws.wamp.jawampa" level="ERROR"/>
-        <!--<Logger name="util" level="INFO"/>-->
         <Logger name="com.tars.util.net.ws" level="INFO"/>
         <Logger name="com.amazonaws" level="ERROR"/>
 
@@ -62,7 +66,8 @@
         <Logger name="cpu" level="ALL"/>
         <Logger name="net" level="ALL"/>
         <Logger name="pusher" level="ALL"/>
-        <!--<Logger name="orderSync" level="ALL"/>-->
+        <Logger name="orderSync" level="OFF"/>
+        <Logger name="heartbeat" level="DEBUG"/>
 
         <Logger name="OrderEncoder" level="OFF"/>
         <Logger name="TradeEncoder" level="OFF"/>

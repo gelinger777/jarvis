@@ -4,6 +4,7 @@ import util.cpu.executors.io
 import util.global.duration
 import util.global.getOptional
 import util.global.logger
+import util.global.seconds
 import util.misc.RefCountRepeatingTask
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
@@ -24,29 +25,29 @@ object heartBeat {
                         io.execute(pulse.callback)
 
                         if (!pulse.keepAlive) {
-                            stop(pulse.name)
+                            remove(pulse.name)
                         }
                     }
                 }
             },
-            delay = 30 * 1000
+            delay = 5.seconds()
     )
 
-    fun start(name: String, timeout: Long, callback: () -> Unit, keepAlive: Boolean = false) {
+    fun add(name: String, timeout: Long, callback: () -> Unit, keepAlive: Boolean = false) {
         if (registry.containsKey(name)) {
             log.warn { "attempt to add existing heartbeat $name" }
         } else {
             registry.put(name, Pulse(name, timeout, callback, keepAlive))
             watchDogTask.increment()
-            log.info { "started heartbeat $name with maximum timeout of ${duration(timeout)}" }
+            log.info { "added heartbeat $name with maximum timeout of ${duration(timeout)}" }
         }
     }
 
-    fun stop(name: String) {
+    fun remove(name: String) {
         if (registry.containsKey(name)) {
             registry.remove(name)
             watchDogTask.decrement()
-            log.info { "stopped heartbeat $name" }
+            log.info { "removed heartbeat $name" }
         } else {
             log.warn { "attempt to stop unregistered heartbeat $name" }
         }
@@ -55,16 +56,19 @@ object heartBeat {
     fun beat(name: String) {
         registry.getOptional(name).ifPresent {
             it.lastBeat.set(app.time())
-            log.debug { "beat at $name" }
+            log.trace { "heartbeat at $name" }
         }
     }
 
     data class Pulse(val name: String, val timeout: Long, val callback: () -> Unit, val keepAlive: Boolean, val lastBeat: AtomicLong = AtomicLong(System.currentTimeMillis()))
 
     fun status() {
-        registry.values.forEach {
-            log.info { "${it.name} inactive for ${duration(app.time() - it.lastBeat.get())}" }
-        }
+        registry.values
+                .map { it.name to it.lastBeat.get() }
+                .sortedBy { it.second }
+                .forEach {
+                    log.info { "inactive for ${duration(app.time() - it.second)} - ${it.first}" }
+                }
     }
 }
 

@@ -108,7 +108,6 @@ internal fun List<Trade>.filterNewTrades(batch: List<Trade>): Option<List<Trade>
 
             if (isMatch) {
                 // match was found
-
                 return Option.of(batch.subList(lastIndex - i + 1, batch.size))
             } else {
                 // keep looking

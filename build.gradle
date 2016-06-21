@@ -5,15 +5,7 @@ description = "Fully autonomous algorithmic trading environment."
  * default environment variables in shell scripts. Feel free to
  * adjust to your working environment.
  */
-
-def distRoot = "/Users/vach/workspace/jarvis/dist/"
-
-def cfgRoot = "${distRoot}/conf"
-def binRoot = "${distRoot}/bin"
-def logRoot = "${distRoot}/log"
-def dataRoot = "${distRoot}/data"
-
-def profile = "dev"
+def distRoot = "/Users/vach/workspace/jarvis/dist"
 
 buildscript {
     repositories {
@@ -88,7 +80,6 @@ subprojects {
         compile('org.apache.logging.log4j:log4j-api:2.6') { force = true }
         compile('org.apache.logging.log4j:log4j-core:2.6') { force = true }
         compile('org.apache.logging.log4j:log4j-slf4j-impl:2.6') { force = true }
-        compile 'com.lmax:disruptor:3.3.4'
 
         // test
         testCompile "org.jetbrains.kotlin:kotlin-test:1.0.2"
@@ -260,55 +251,58 @@ project(":collectors") {
     }
 
     startScripts.enabled = false
-    installDist.destinationDir = file("${binRoot}/collectors")
+    installDist.destinationDir = file("${distRoot}/bin/collectors")
 
-    task bitfinexCollector(type: CreateStartScripts) {
-        mainClassName = "collector.common.RunBitfinexCollectorKt"
-        applicationName = "bitfinex-collector"
+    task copyConfigs(type: Copy) {
+        from "$distRoot/conf"
+        into "${project.buildDir.path}/conf"
+        outputs.dir "${project.buildDir.path}/conf"
+    }
+
+    task pingCollector(type: CreateStartScripts) {
+        mainClassName = "collector.RunAllCollectorsPingKt"
+        applicationName = "ping"
         defaultJvmOpts = [
-                "-Dlog.path=${logRoot}/bitfinex",
-                "-Dlog4j.configurationFile=${cfgRoot}/log/log4j2.xml",
-                "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
-                "-Dprofile=${profile}",
-                "-Dstore.path=${dataRoot}",
-                "-Daws.accessKeyId=CHANGEME",
-                "-Daws.secretKey=CHANGEME",
-                "-Daws.bucket=jarvis-history",
-                "-Drecord.trades=btc-usd",
-                "-Drecord.orders=btc-usd",
-                "-Dtrade.cycles=HOURLY",
-                "-Dorder.cycles=HOURLY"
+                "-Dlog4j.configurationFile=${installDist.destinationDir}/bin/log4j2.xml",
+                "-Dlog.path=${installDist.destinationDir}/logs/$applicationName",
+                "-Dprofile=dev",
         ]
 
-        outputDir = file("${project.buildDir.path}/bitfinex")
+        outputDir = file("${project.buildDir.path}/$applicationName")
         classpath = jar.outputs.files + project.configurations.runtime
     }
 
-    task bitstampCollector(type: CreateStartScripts) {
-        mainClassName = "collector.common.RunBitstampCollectorKt"
-        applicationName = "bitstamp-collector"
+    task btceCollector(type: CreateStartScripts) {
+        mainClassName = "collector.RunBtceCollectorKt"
+        applicationName = "btce"
         defaultJvmOpts = [
-                "-Dlog.path=${logRoot}/bitstamp",
-                "-Dlog4j.configurationFile=${cfgRoot}/log/log4j2.xml",
-                "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
-                "-Dprofile=${profile}",
-                "-Dstore.path=${dataRoot}",
+                "-Dlog4j.configurationFile=${installDist.destinationDir}/bin/log4j2.xml",
+                "-Dlog.path=${installDist.destinationDir}/logs/$applicationName",
+                "-Dprofile=dev",
+                "-Dstore.path=${installDist.destinationDir}/data",
                 "-Daws.accessKeyId=CHANGEME",
                 "-Daws.secretKey=CHANGEME",
                 "-Daws.bucket=jarvis-history",
-                "-Drecord.trades=btc-usd",
-                "-Drecord.orders=btc-usd",
+                "-Daws.region=us-west-2",
+                "-Drecord.trades=btc-usd,btc-rur,btc-eur,ltc-btc,ltc-usd,ltc-rur",
+                "-Drecord.orders=btc-usd,btc-rur,btc-eur,ltc-btc,ltc-usd,ltc-rur",
                 "-Dtrade.cycles=HOURLY",
-                "-Dorder.cycles=HOURLY"
-        ]
-        outputDir = file("${project.buildDir.path}/bitstamp")
+                "-Dorder.cycles=HOURLY",
+                "-Duploader.delay=30",
+                "-Dtrade.stream.maxTimeout=45",
+                "-Dorder.stream.maxTimeout=45",
+                "-Xmx32m", "-Xms32m"
 
+        ]
+
+        outputDir = file("${project.buildDir.path}/$applicationName")
         classpath = jar.outputs.files + project.configurations.runtime
     }
 
     applicationDistribution.into("bin") {
-        from(bitfinexCollector)
-        from(bitstampCollector)
+        from(pingCollector)
+        from(btceCollector)
+        from(copyConfigs)
         fileMode = 0755
     }
 }
@@ -350,7 +344,7 @@ task wrapper(type: Wrapper) {
 }
 
 task cleanOutput() {
-    delete binRoot
-    delete dataRoot
-    delete logRoot
+    delete "$distRoot/bin"
+    delete "$distRoot/data"
+    delete "$distRoot/logs"
 }
