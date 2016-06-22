@@ -1,21 +1,14 @@
 current tasks:
  ✔ add heartbeat to each collector @done (16-06-16 17:49)
  ✔ prepare binaries for deployment @done (16-06-16 17:49)
- ☐ test local for 2 days uninterrupted...
-   ☐ bitfinex
-     ☐ orders
-     ☐ trades
-   ☐ bitstamp
-     ☐ orders
-     ☐ trades
-   ☐ btce
-     ☐ orders
-     ☐ trades
  ✔ develop specialized writers for Order and Trade types @done (16-06-17 11:37)
  ✔ simplify build, generate many scripts from one project @done (16-06-21 10:36)
- ☐ deploy collectors
- 
+ ☐ add daily email report with stats
+ ☐ deploy btce collector
+ ☐ deploy bitstamp collector
+ ☐ deploy bitfinex
  ☐ support btcc
+   ☐ deploy btcc collector
  ☐ support gdax
  ☐ support itbit
  ☐ support kraken

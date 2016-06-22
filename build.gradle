@@ -1,3 +1,5 @@
+import java.util.concurrent.ThreadLocalRandom
+
 description = "Fully autonomous algorithmic trading environment."
 
 /**
@@ -5,7 +7,9 @@ description = "Fully autonomous algorithmic trading environment."
  * default environment variables in shell scripts. Feel free to
  * adjust to your working environment.
  */
-def distRoot = "/Users/vach/workspace/jarvis/dist"
+def localRoot = "/Users/vach/workspace/jarvis/dist"
+def remoteRoot = "/Users/vach/workspace/jarvis/dist"
+//def remoteRoot = "/home/ubuntu/dist"
 
 buildscript {
     repositories {
@@ -243,6 +247,7 @@ project(":clients") {
 project(":collectors") {
     apply plugin: 'application'
 
+    version = 1
     description = "[app's] Common collector functionality that is reused across collectors."
 
     dependencies {
@@ -251,57 +256,76 @@ project(":collectors") {
     }
 
     startScripts.enabled = false
-    installDist.destinationDir = file("${distRoot}/bin/collectors")
 
-    task copyConfigs(type: Copy) {
-        from "$distRoot/conf"
+    def localDestination = "$localRoot/services/collectors/$version"
+    def remoteDestination = "$remoteRoot/services/collectors/$version"
+
+    installDist.destinationDir = file(localDestination)
+
+    task copyConfigs(type: com.sun.org.apache.xalan.internal.xsltc.compiler.Copy) {
+        from "$localRoot/conf"
         into "${project.buildDir.path}/conf"
         outputs.dir "${project.buildDir.path}/conf"
-    }
-
-    task pingCollector(type: CreateStartScripts) {
-        mainClassName = "collector.RunAllCollectorsPingKt"
-        applicationName = "ping"
-        defaultJvmOpts = [
-                "-Dlog4j.configurationFile=${installDist.destinationDir}/bin/log4j2.xml",
-                "-Dlog.path=${installDist.destinationDir}/logs/$applicationName",
-                "-Dprofile=dev",
-        ]
-
-        outputDir = file("${project.buildDir.path}/$applicationName")
-        classpath = jar.outputs.files + project.configurations.runtime
     }
 
     task btceCollector(type: CreateStartScripts) {
         mainClassName = "collector.RunBtceCollectorKt"
         applicationName = "btce"
         defaultJvmOpts = [
-                "-Dlog4j.configurationFile=${installDist.destinationDir}/bin/log4j2.xml",
-                "-Dlog.path=${installDist.destinationDir}/logs/$applicationName",
-                "-Dprofile=dev",
-                "-Dstore.path=${installDist.destinationDir}/data",
+                // pairs for data collection
+                "-Drecord.trades=btc-usd,btc-rur,btc-eur,ltc-btc,ltc-usd,ltc-rur,ltc-eur,nmc-btc,nmc-usd,nvc-btc,nvc-usd,usd-rur,eur-usd,eur-rur,ppc-btc,ppc-usd,dsh-btc,eth-btc,eth-usd,eth-ltc,eth-rur",
+                "-Drecord.orders=btc-usd,btc-rur,btc-eur,ltc-btc,ltc-usd,ltc-rur,ltc-eur,nmc-btc,nmc-usd,nvc-btc,nvc-usd,usd-rur,eur-usd,eur-rur,ppc-btc,ppc-usd,dsh-btc,eth-btc,eth-usd,eth-ltc,eth-rur",
+
+                // paths for logs and data
+                "-Dlog.path=$remoteDestination/output/$applicationName/logs",
+                "-Dstore.path=$remoteDestination/output/$applicationName/data",
+
+                // data rollup settings
+                "-Dtrade.cycles=HOURLY",
+                "-Dorder.cycles=HOURLY",
+
+                // heartbeat settings (if there are no updates for the stream in defined timeout and alert will be sent to developer)
+                "-Dtrade.stream.maxTimeout=45",
+                "-Dorder.stream.maxTimeout=45",
+
+                // AWS settings
                 "-Daws.accessKeyId=CHANGEME",
                 "-Daws.secretKey=CHANGEME",
                 "-Daws.bucket=jarvis-history",
                 "-Daws.region=us-west-2",
-                "-Drecord.trades=btc-usd,btc-rur,btc-eur,ltc-btc,ltc-usd,ltc-rur",
-                "-Drecord.orders=btc-usd,btc-rur,btc-eur,ltc-btc,ltc-usd,ltc-rur",
-                "-Dtrade.cycles=HOURLY",
-                "-Dorder.cycles=HOURLY",
-                "-Duploader.delay=30",
-                "-Dtrade.stream.maxTimeout=45",
-                "-Dorder.stream.maxTimeout=45",
-                "-Xmx32m", "-Xms32m"
 
+                // logging configurations
+                "-Dlog4j.configurationFile=$remoteDestination/conf/log4j2.xml",
+                "-Dprofile=prod",
+                "-Dversion=$version",
+
+                // environmental flags
+                "-Xmx32m",
+                "-Xms32m",
+                "-XX:+UseConcMarkSweepGC",
+                "-XX:+CMSParallelRemarkEnabled",
+                "-XX:+UseCMSInitiatingOccupancyOnly",
+                "-XX:+ScavengeBeforeFullGC",
+                "-XX:+CMSScavengeBeforeRemark",
+                "-XX:+PrintGCDateStamps",
+                "-XX:+HeapDumpOnOutOfMemoryError",
+
+                // enable debug port (this must be changed)
+                "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${ThreadLocalRandom.current().nextInt(49152, 65535)}"
         ]
 
         outputDir = file("${project.buildDir.path}/$applicationName")
         classpath = jar.outputs.files + project.configurations.runtime
     }
 
+    applicationDistribution.exclude('*.bat')
+
     applicationDistribution.into("bin") {
-        from(pingCollector)
         from(btceCollector)
+        fileMode = 0755
+    }
+
+    applicationDistribution.into("conf") {
         from(copyConfigs)
         fileMode = 0755
     }
@@ -344,7 +368,7 @@ task wrapper(type: Wrapper) {
 }
 
 task cleanOutput() {
-    delete "$distRoot/bin"
-    delete "$distRoot/data"
-    delete "$distRoot/logs"
+    delete "$localRoot/services"
+    delete "$localRoot/data"
+    delete "$localRoot/logs"
 }

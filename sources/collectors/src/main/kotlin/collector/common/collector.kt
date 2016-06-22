@@ -23,20 +23,24 @@ import util.heartBeat
 
 fun startCollectorFor(client: IExchange) {
     app.ensurePropertiesAreProvided(
-            "store.path", // root path where event streams are being recorded
-
             "record.trades", // trade streams to record
             "record.orders", // order streams to record
+
+            "trade.cycles",
+            "order.cycles",
+
+            // maximum timeout of silence before alerts are created
+            "trade.stream.maxTimeout",
+            "order.stream.maxTimeout",
+
+            "store.path", // root path where event streams are being recorded
 
             "aws.accessKeyId", // aws credentials for s3 client
             "aws.secretKey", // aws credentials for s3 client
             "aws.bucket", // aws bucket where recorded data will be uploaded
+            "aws.region",
 
-            "uploader.delay", // delay in minutes between checking for rollups to upload
-
-            // maximum timeout of silence before alerts are created
-            "trade.stream.maxTimeout",
-            "order.stream.maxTimeout"
+            "version"
     )
 
     // start collecting trades
@@ -76,7 +80,10 @@ private fun collectTrades(market: IMarket, relativePath: String) {
                 heartBeat.beat(relativePath)
             }
 
-    s3Uploader.add(absolutePath, relativePath)
+    s3Uploader.add(
+            localPath = absolutePath,
+            remotePath = "${app.property("version")}/$relativePath"
+    )
 
     heartBeat.add(
             name = relativePath,
@@ -100,7 +107,7 @@ private fun collectOrders(market: IMarket, relativePath: String) {
 
     s3Uploader.add(
             localPath = absolutePath,
-            remotePath = relativePath
+            remotePath = "${app.property("version")}/$relativePath"
     )
 
     heartBeat.add(

@@ -19,7 +19,6 @@ object app {
                 "profile"
         )
 
-        val logs = property("log.path")
         profile = property("profile")
 
         when (profile) {

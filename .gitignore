@@ -21,7 +21,7 @@ build/
 
 # custom stuff
 gen/
-dist/bin/
+dist/services/
 dist/data/
 dist/log/
 bin/
